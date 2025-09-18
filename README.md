@@ -42,3 +42,27 @@ zsh autocompletion:
 ```
 $ source <(kubectl completion zsh)
 ```
+
+## k3s
+
+Ref: https://k3s.io/
+
+Install:
+
+```
+$ curl -sfL https://get.k3s.io | bash -
+```
+
+Config:
+
+- Copy **/etc/rancher/k3s/k3s.yaml** to **~/.kube/config**
+- Tune **clusters → cluster → server**
+  - From `https://127.0.0.1:6443`
+  - To `https://[ip_addr]:6443`
+
+Uninstall:
+
+```
+# systemctl stop k3s
+# k3s-uninstall.sh
+```
