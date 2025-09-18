@@ -2,6 +2,11 @@
 
 Kubernetes playground
 
+## References
+
+- https://kubernetes.io/
+- https://k3s.io/
+
 ## kubectl
 
 Google: 'kubectl install' → https://kubernetes.io/docs/tasks/tools/ → https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
