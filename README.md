@@ -2,6 +2,10 @@
 
 Kubernetes playground
 
+- [References](#references)
+- [kubectl](#kubectl)
+- [k3s](#k3s)
+
 ## References
 
 - https://kubernetes.io/
