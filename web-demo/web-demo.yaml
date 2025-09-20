@@ -42,6 +42,29 @@ spec:
 
 ---
 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: httpd-pod
+  namespace: web-demo
+  labels:
+    name: httpd-pod
+spec:
+  containers:
+  - name: httpd
+    image: httpd:latest
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "200m"
+      requests:
+        memory: "128Mi"
+        cpu: "200m"
+    ports:
+      - containerPort: 80
+
+---
+
 # Testing:
 #   $ cat /etc/hosts
 #   <ip-address> nginx.local other.local
