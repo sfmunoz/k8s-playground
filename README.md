@@ -5,12 +5,15 @@ Kubernetes playground
 - [References](#references)
 - [kubectl](#kubectl)
 - [k3s](#k3s)
+- [kind](#kind)
 - [Vultr](#vultr)
 
 ## References
 
 - https://kubernetes.io/
 - https://k3s.io/
+- https://kind.sigs.k8s.io/
+- https://www.vultr.com/
 
 ## kubectl
 
@@ -75,6 +78,25 @@ Uninstall:
 ```
 # systemctl stop k3s
 # k3s-uninstall.sh
+```
+
+## kind
+
+Ref: https://kind.sigs.k8s.io/docs/user/quick-start/
+
+```
+$ curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.30.0/kind-linux-amd64
+
+$ sudo install -o root -g root -m 0755 kind /usr/local/bin/kind
+
+$ kind version
+kind v0.30.0 go1.24.6 linux/amd64
+```
+
+zsh autocompletion:
+
+```
+$ source <(kind completion zsh)
 ```
 
 ## Vultr
