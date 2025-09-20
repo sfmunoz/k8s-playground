@@ -65,6 +65,20 @@ spec:
 
 ---
 
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpd-service
+  namespace: web-demo
+spec:
+  selector:
+    name: httpd-pod
+  ports:
+  - port: 80
+    targetPort: 80
+
+---
+
 # Testing:
 #   $ cat /etc/hosts
 #   <ip-address> nginx.local other.local
