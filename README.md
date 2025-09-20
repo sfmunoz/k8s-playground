@@ -79,9 +79,9 @@ Uninstall:
 
 ## Vultr
 
-Instance creation with **Debian 13** and **k3s** installed (plan/region/OS/script details follow):
+Instance creation with **Debian 13** and **k3s** installed (plan/region/OS/script/ssh-key details follow):
 ```
-$ vultr-cli instance create -r mad -p vc2-1c-2gb --os 2625 --script-id 402931bb-6d73-4b19-9b71-857da8951f0d
+$ vultr-cli instance create -r mad -p vc2-1c-2gb --os 2625 --script-id 402931bb-6d73-4b19-9b71-857da8951f0d -s dea4ebd6-c439-497f-a145-761cfa9ce68b
 ```
 Plan:
 ```
@@ -114,4 +114,11 @@ ID                                      DATE CREATED                    DATE MOD
 (...)
 402931bb-6d73-4b19-9b71-857da8951f0d    2025-09-19T08:03:30+00:00       2025-09-19T08:15:53+00:00       boot    k3s
 (...)
+```
+ssh-key:
+```
+$ vultr-cli ssh-key list
+ID                                      DATE CREATED                    NAME    KEY
+(...)
+dea4ebd6-c439-497f-a145-761cfa9ce68b    2025-..-..T..:..:..+..:..       sfm     ssh-rsa AAAA...g3uDkQ== sfm
 ```
