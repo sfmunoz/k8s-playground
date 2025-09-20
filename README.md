@@ -83,6 +83,18 @@ Instance creation with **Debian 13** and **k3s** installed (plan/region/OS/scrip
 ```
 $ vultr-cli instance create -r mad -p vc2-1c-2gb --os 2625 --script-id 402931bb-6d73-4b19-9b71-857da8951f0d -s dea4ebd6-c439-497f-a145-761cfa9ce68b
 ```
+ssh shortcut to use **kubectl** from the local computer (it can be used from within the instance too):
+```
+$ vultr-cli instance list
+ID                                      IP              LABEL   OS                      STATUS  REGION  CPU     RAM     DISK    BANDWIDTH       TAGS
+(...)
+0768fad1-a988-4362-9357-0554659bd854    208.76.222.72           Debian 13 x64 (trixie)  active  mad     1       2048    55      3               []
+(...)
+
+$ scp root@208.76.222.72:/etc/rancher/k3s/k3s.yaml ~/.kube/config
+
+$ ssh -L 6443:127.0.0.1:6443 root@208.76.222.72
+```
 Plan:
 ```
 $ vultr-cli plans list
