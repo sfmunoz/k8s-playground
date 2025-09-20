@@ -81,9 +81,9 @@ spec:
 
 # Testing:
 #   $ cat /etc/hosts
-#   <ip-address> nginx.local other.local
+#   <ip-address> nginx.local httpd.local
 #   https://nginx.local
-#   https://other.local
+#   https://httpd.local
 
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -102,5 +102,15 @@ spec:
         backend:
           service:
             name: nginx-service
+            port:
+              number: 80
+  - host: httpd.local
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: httpd-service
             port:
               number: 80
