@@ -99,6 +99,34 @@ zsh autocompletion:
 $ source <(kind completion zsh)
 ```
 
+Basic usage:
+
+```
+$ kind create cluster --name c1 --wait 5m
+(...)
+
+
+$ kind get clusters 
+c1
+
+$ kubectl config get-clusters
+NAME
+kind-c1
+
+$ kubectl cluster-info --context kind-c1
+Kubernetes control plane is running at https://127.0.0.1:35045
+CoreDNS is running at https://127.0.0.1:35045/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
+$ kubectl config get-contexts
+CURRENT   NAME      CLUSTER   AUTHINFO   NAMESPACE
+*         kind-c1   kind-c1   kind-c1
+
+$ kind delete cluster --name c1
+(...)
+```
+
 ## Vultr
 
 Instance creation with **Debian 13** and **k3s** installed (plan/region/OS/script/ssh-key details follow):
