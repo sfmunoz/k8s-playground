@@ -127,6 +127,24 @@ $ kind delete cluster --name c1
 (...)
 ```
 
+Ad hoc config export (e.g. combine it with k3s config in the same file):
+
+```
+$ scp root@65.20.104.59:/etc/rancher/k3s/k3s.yaml ~/.kube/config
+
+$ kubectl config get-contexts
+CURRENT   NAME      CLUSTER   AUTHINFO   NAMESPACE
+*         default   default   default
+
+$ kind export kubeconfig -n c1
+Set kubectl context to "kind-c1"
+
+$ kubectl config get-contexts
+CURRENT   NAME      CLUSTER   AUTHINFO   NAMESPACE
+          default   default   default
+*         kind-c1   kind-c1   kind-c1
+```
+
 ## Vultr
 
 Instance creation with **Debian 13** and **k3s** installed (plan/region/OS/script/ssh-key details follow):
