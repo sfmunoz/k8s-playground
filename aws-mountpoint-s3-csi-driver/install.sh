@@ -9,5 +9,6 @@ helm repo update
 helm upgrade \
   --install aws-mountpoint-s3-csi-driver \
   --namespace kube-system \
+  --set controller.nodeSelector."kubernetes\.io/role"="control-plane" \
   aws-mountpoint-s3-csi-driver/aws-mountpoint-s3-csi-driver
 { set +x; } 2>/dev/null
