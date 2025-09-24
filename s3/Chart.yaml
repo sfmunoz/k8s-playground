@@ -23,7 +23,7 @@ version: 0.1.0
 # It is recommended to use it with quotes.
 appVersion: "1.16.0"
 
-dependencies:
-  - name: aws-mountpoint-s3-csi-driver
-    version: "2.0.0"
-    repository: https://awslabs.github.io/mountpoint-s3-csi-driver
+#dependencies:
+#  - name: aws-mountpoint-s3-csi-driver
+#    version: "2.0.0"
+#    repository: https://awslabs.github.io/mountpoint-s3-csi-driver
