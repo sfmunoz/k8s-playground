@@ -1,3 +1,15 @@
+#
+# Install:
+#
+#   $ ./aws-mountpoint-s3-csi-driver/install.sh
+#   $ helm install -n dev --create-namespace s3 s3
+#
+# Uninstall:
+#
+#   $ helm uninstall -n dev s3
+#   $ kubectl delete namespaces dev
+#
+
 apiVersion: v2
 name: s3
 description: S3
