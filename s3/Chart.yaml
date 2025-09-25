@@ -2,7 +2,11 @@
 # Install:
 #
 #   $ ./aws-mountpoint-s3-csi-driver/install.sh
-#   $ helm install -n dev --create-namespace s3 s3
+#   $ helm install -n dev --create-namespace --set bucketName=some-bucket s3 s3
+#
+# Upgrade:
+#
+#   $ helm upgrade -n dev --create-namespace --set bucketName=some-bucket s3 s3
 #
 # Uninstall:
 #
