@@ -1,0 +1,9 @@
+{{- if .Values.namespace.enabled -}}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.namespace.name }}
+  labels:
+    env: {{ .Values.namespace.env }}
+    app: {{ .Values.namespace.app }}
+{{- end }}

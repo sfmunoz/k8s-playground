@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox
+  namespace: "{{ .Release.Namespace }}"
+spec:
+  containers:
+    - name: app
+      image: busybox:1.37.0-musl
+      command: ["/bin/sh"]
+      args:
+        [
+          "-c",
+          "date >> /s3/start-$(date +%Y%m%d_%H%M%S).txt ; tail -f /dev/null",
+        ]
+      volumeMounts:
+        - name: s3-vol
+          mountPath: /s3
+      resources:
+        limits:
+          memory: "256Mi"
+          cpu: "100m"
+        requests:
+          memory: "256Mi"
+          cpu: "100m"
+  volumes:
+    - name: s3-vol
+      persistentVolumeClaim:
+        claimName: "{{ include "pvcName" . }}"
