@@ -1,7 +1,7 @@
 #
 # Install/upgrade:
 #
-#   $ helm upgrade --install -n dev --create-namespace s3-cfg .
+#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml s3-cfg .
 #
 # Uninstall/cleanup:
 #
