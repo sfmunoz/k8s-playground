@@ -1,4 +1,13 @@
 #
+# Required:
+#
+#   - https://github.com/FiloSottile/age
+#     # apt install age
+#   - https://github.com/getsops/sops
+#     $ curl -LO https://github.com/getsops/sops/releases/download/v3.10.2/sops-v3.10.2.linux.amd64
+#   - https://github.com/jkroepke/helm-secrets
+#     $ helm plugin install https://github.com/jkroepke/helm-secrets
+#
 # Install/upgrade:
 #
 #   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml s3-cfg .
