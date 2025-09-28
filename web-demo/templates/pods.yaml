@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  namespace: web-demo
+  labels:
+    name: nginx-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "200m"
+      requests:
+        memory: "128Mi"
+        cpu: "200m"
+    ports:
+      - containerPort: 80
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: httpd-pod
+  namespace: web-demo
+  labels:
+    name: httpd-pod
+spec:
+  containers:
+  - name: httpd
+    image: httpd:latest
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "200m"
+      requests:
+        memory: "128Mi"
+        cpu: "200m"
+    ports:
+      - containerPort: 80
