@@ -5,7 +5,7 @@
 #
 # Install/upgrade:
 #
-#   $ helm upgrade --install -n dev --create-namespace s3 s3
+#   $ helm upgrade --install -n dev --create-namespace s3 .
 #
 # Uninstall/cleanup:
 #
