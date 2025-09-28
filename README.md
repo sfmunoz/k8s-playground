@@ -62,7 +62,7 @@ $ cat s3/Chart.yaml
 (...)
 # Install/upgrade:
 #
-#   $ helm upgrade --install -n dev --create-namespace s3 .
+#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml s3 .
 (...)
 ```
 

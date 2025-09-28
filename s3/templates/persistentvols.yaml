@@ -1,4 +1,3 @@
-{{- $secret := lookup "v1" "Secret" .Release.Namespace "aws-secret" -}}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -17,10 +16,10 @@ spec:
     - gid=70
     - allow-other
     - allow-delete
-    - {{ index $secret.data "region" | b64dec | printf "region %s" | quote }}
-    - "prefix {{ include "prefixOpt" . }}"
+    - {{ .Values.region | printf "region %s" | quote }}
+    - {{ include "prefixOpt" . | printf "prefix %s" | quote }}
   csi:
     driver: s3.csi.aws.com # Required
     volumeHandle: "{{ include "volumeHandle" . }}" # Must be unique
     volumeAttributes:
-      bucketName: {{ index $secret.data "bucket" | b64dec | quote }}
+      bucketName: {{ .Values.bucket | quote }}
