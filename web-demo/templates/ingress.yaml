@@ -8,7 +8,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: web-ingress
-  namespace: web-demo
   labels:
     name: web-ingress
 spec:
