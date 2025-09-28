@@ -1,2 +1,3 @@
 region: "s3-region"
 bucket: "s3-bucket"
+pvcName: "s3-pvc"

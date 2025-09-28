@@ -1,8 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: "{{ include "pvcName" . }}"
-  namespace: "{{ .Release.Namespace }}"
+  name: {{ .Values.pvcName | quote }}
 spec:
   accessModes:
     - ReadWriteMany # Supported options: ReadWriteMany / ReadOnlyMany
