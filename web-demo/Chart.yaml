@@ -1,0 +1,18 @@
+#
+# Install/upgrade:
+#
+#   $ helm upgrade --install -n dev --create-namespace web-demo .
+#
+# Uninstall/cleanup:
+#
+#   $ helm uninstall -n dev web-demo
+#   $ kubectl delete namespaces dev
+#
+
+apiVersion: v2
+name: web-demo
+description: web demo
+type: application
+version: 0.1.0
+appVersion: "1.16.0"
+
