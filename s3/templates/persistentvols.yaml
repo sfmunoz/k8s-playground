@@ -17,7 +17,7 @@ spec:
     - allow-other
     - allow-delete
     - {{ .Values.region | printf "region %s" | quote }}
-    - {{ include "prefixOpt" . | printf "prefix %s" | quote }}
+    - {{ .Release.Namespace | printf "prefix %s/" | quote }}
   csi:
     driver: s3.csi.aws.com # Required
     volumeHandle: "{{ include "volumeHandle" . }}" # Must be unique
