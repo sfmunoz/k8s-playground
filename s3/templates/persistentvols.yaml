@@ -10,7 +10,7 @@ spec:
   storageClassName: "" # Required for static provisioning
   claimRef: # To ensure no other PVCs can claim this PV
     namespace: "{{ .Release.Namespace }}" # Namespace is required even though it's in "default" namespace.
-    name: "{{ include "pvcName" . }}" # Name of your PVC
+    name: {{ .Values.pvcName | quote }}
   mountOptions:
     - uid=70
     - gid=70
