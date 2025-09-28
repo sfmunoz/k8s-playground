@@ -1,5 +1,0 @@
-namespace:
-  enabled: true
-  name: s3-ns
-  env: dev
-  app: s3-app
