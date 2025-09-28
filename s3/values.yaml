@@ -3,6 +3,3 @@ namespace:
   name: s3-ns
   env: dev
   app: s3-app
-
-regionOpt: eu-west-3
-bucketName: "some-volume"
