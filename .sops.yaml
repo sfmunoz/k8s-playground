@@ -1,0 +1,5 @@
+# ref: https://github.com/getsops/sops/blob/main/config/config.go
+
+creation_rules:
+  - age: >-
+      age1kuk0xhyha5ecs4hfwu7htj7xkwsxjq70runwm9lmxq3z8gumxgwq4m74j2

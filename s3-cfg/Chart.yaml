@@ -1,0 +1,26 @@
+#
+# Required:
+#
+#   - https://github.com/FiloSottile/age
+#     # apt install age
+#   - https://github.com/getsops/sops
+#     $ curl -LO https://github.com/getsops/sops/releases/download/v3.10.2/sops-v3.10.2.linux.amd64
+#   - https://github.com/jkroepke/helm-secrets
+#     $ helm plugin install https://github.com/jkroepke/helm-secrets
+#
+# Install/upgrade:
+#
+#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml s3-cfg .
+#
+# Uninstall/cleanup:
+#
+#   $ helm uninstall -n dev s3-cfg
+#   $ kubectl delete namespaces dev
+#
+
+apiVersion: v2
+name: s3-cfg
+description: s3 configuration
+type: application
+version: 0.1.0
+appVersion: "1.16.0"
