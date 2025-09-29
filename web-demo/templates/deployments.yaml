@@ -17,6 +17,9 @@ spec:
       containers:
       - name: nginx
         image: nginx:latest
+        command: ["/bin/bash","-c"]
+        args:
+          - "openssl rand -hex 4 > /usr/share/nginx/html/index.html ; exec /docker-entrypoint.sh nginx -g 'daemon off;'"
         resources:
           limits:
             memory: "128Mi"
