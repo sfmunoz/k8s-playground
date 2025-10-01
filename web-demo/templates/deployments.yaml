@@ -14,12 +14,24 @@ spec:
       labels:
         app: nginx
     spec:
+      initContainers:
+      - name: initialize
+        image: busybox:1.37.0-musl
+        command: ['sh', '/config/init-script.sh']
+        volumeMounts:
+        - name: nginx-html
+          mountPath: /nginx-html
+        - name: config-vol
+          mountPath: /config
       containers:
       - name: nginx
         image: nginx:latest
         command: ["/bin/bash","-c"]
         args:
-        - "openssl rand -hex 4 > /usr/share/nginx/html/index.html ; exec /docker-entrypoint.sh nginx -g 'daemon off;'"
+        - "exec /docker-entrypoint.sh nginx -g 'daemon off;'"
+        volumeMounts:
+        - name: nginx-html
+          mountPath: /usr/share/nginx/html
         resources:
           limits:
             memory: "128Mi"
@@ -33,6 +45,11 @@ spec:
         image: busybox:1.37.0-musl
         command: ["/bin/sh"]
         args: ["-c","exec tail -f /dev/null"]
+        volumeMounts:
+        - name: nginx-html
+          mountPath: /nginx-html
+        - name: config-vol
+          mountPath: /config
         resources:
           limits:
             memory: "256Mi"
@@ -40,3 +57,12 @@ spec:
           requests:
             memory: "256Mi"
             cpu: "100m"
+      volumes:
+      - name: config-vol
+        configMap:
+          name: my-config-map
+          items:
+          - key: init-script-sh
+            path: init-script.sh
+      - name: nginx-html
+        emptyDir: {}

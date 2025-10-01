@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config-map
+#immutable: true
+data:
+  init-script-sh: |
+    #!/bin/bash
+    cat << __EOF > /nginx-html/index.html
+    <html>
+      <head><title>Hello world</title><head>
+      <body>
+        <h3>$(hexdump -v -n 16 -e '"%02x"' /dev/urandom)</h3>
+        <h3>$(date -u)</h3>
+      </body>
+    </html>
+    __EOF
+
