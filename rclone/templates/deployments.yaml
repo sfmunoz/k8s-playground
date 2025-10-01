@@ -20,6 +20,10 @@ spec:
         command: ["/bin/sh","-c"]
         args:
         - "exec tail -f /dev/null"
+        volumeMounts:
+        - name: rclone-conf
+          mountPath: /config/rclone
+          readOnly: true
         resources:
           limits:
             memory: "256Mi"
@@ -27,3 +31,10 @@ spec:
           requests:
             memory: "256Mi"
             cpu: "200m"
+      volumes:
+      - name: rclone-conf
+        secret:
+          secretName: rclone-conf
+          items:
+          - key: rclone_conf
+            path: rclone.conf
