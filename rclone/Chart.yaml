@@ -1,7 +1,7 @@
 #
 # Install/upgrade:
 #
-#   $ helm upgrade --install -n dev --create-namespace rclone .
+#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml rclone .
 #
 # Uninstall/cleanup:
 #
