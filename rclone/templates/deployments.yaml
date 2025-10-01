@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rclone-deploy
+  labels:
+    app: rclone
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rclone
+  template:
+    metadata:
+      labels:
+        app: rclone
+    spec:
+      containers:
+      - name: rclone
+        image: rclone/rclone:sha-6805da6
+        command: ["/bin/sh","-c"]
+        args:
+        - "exec tail -f /dev/null"
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
