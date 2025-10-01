@@ -19,7 +19,7 @@ spec:
         image: nginx:latest
         command: ["/bin/bash","-c"]
         args:
-          - "openssl rand -hex 4 > /usr/share/nginx/html/index.html ; exec /docker-entrypoint.sh nginx -g 'daemon off;'"
+        - "openssl rand -hex 4 > /usr/share/nginx/html/index.html ; exec /docker-entrypoint.sh nginx -g 'daemon off;'"
         resources:
           limits:
             memory: "128Mi"
@@ -28,4 +28,15 @@ spec:
             memory: "128Mi"
             cpu: "200m"
         ports:
-          - containerPort: 80
+        - containerPort: 80
+      - name: nginx-sidecar
+        image: busybox:1.37.0-musl
+        command: ["/bin/sh"]
+        args: ["-c","exec tail -f /dev/null"]
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "100m"
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
