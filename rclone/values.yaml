@@ -6,3 +6,7 @@ rclone_conf: |
   secret_access_key = <secret_access_key>
   region = <region>
   location_constraint = <location_constraint>
+
+  [bck]
+  type = alias
+  remote = s3:bucket-name/folder-name
