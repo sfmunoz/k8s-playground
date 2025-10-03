@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rclone-deploy
+  labels:
+    app: rclone
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rclone
+  template:
+    metadata:
+      labels:
+        app: rclone
+    spec:
+      containers:
+      - name: rclone
+        image: rclone/rclone:sha-6805da6
+        env:
+        - name: MY_ENV
+          value: {{ .Release.Namespace | quote }}
+        command: ["/bin/sh","/rclone-init/init.sh"]
+        volumeMounts:
+        - name: rclone-init
+          mountPath: /rclone-init
+        - name: rclone-conf
+          mountPath: /rclone-conf
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+      volumes:
+      - name: rclone-init
+        configMap:
+          name: rclone-init
+      - name: rclone-conf
+        secret:
+          secretName: rclone-conf

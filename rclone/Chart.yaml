@@ -1,0 +1,18 @@
+#
+# Install/upgrade:
+#
+#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml rclone .
+#
+# Uninstall/cleanup:
+#
+#   $ helm uninstall -n dev rclone
+#   $ kubectl delete namespaces dev
+#
+
+apiVersion: v2
+name: rclone
+description: rclone
+type: application
+version: 0.1.0
+appVersion: "1.16.0"
+
