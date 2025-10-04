@@ -1,0 +1,5 @@
+{{- include "nginx-lib.configmap" (list . "nginx-app.configmap") -}}
+{{- define "nginx-app.configmap" -}}
+data:
+  myvalue: "Hello World"
+{{- end -}}
