@@ -1,4 +1,5 @@
 {{ define "nginx-lib.deployment" }}
+{{ $nginxRun := "exec /docker-entrypoint.sh nginx -g 'daemon off;'" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,7 +21,7 @@ spec:
         image: nginx:latest
         command: ["/bin/bash","-c"]
         args:
-        - "exec /docker-entrypoint.sh nginx -g 'daemon off;'"
+        - {{ if .Values.initCmd }}{{ list .Values.initCmd $nginxRun | join " && " | quote }}{{ else }}{{ $nginxRun | quote }}{{ end }}
         resources:
           limits:
             memory: "128Mi"
