@@ -1,0 +1,10 @@
+{{- define "nginx-lib.configmap.tpl" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name | printf "%s-%s" .Chart.Name }}
+data: {}
+{{- end -}}
+{{- define "nginx-lib.configmap" -}}
+{{- include "nginx-lib.util.merge" (append . "nginx-lib.configmap.tpl") -}}
+{{- end -}}

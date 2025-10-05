@@ -1,0 +1,10 @@
+#
+# library charts are not installable
+#
+
+apiVersion: v2
+name: nginx-lib
+description: nginx-lib
+type: library
+version: 0.1.2
+appVersion: "1.16.0"

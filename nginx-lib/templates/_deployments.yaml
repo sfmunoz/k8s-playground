@@ -1,0 +1,34 @@
+{{ define "nginx-lib.deployment" }}
+{{ $nginxRun := "exec /docker-entrypoint.sh nginx -g 'daemon off;'" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name | printf "nginx-%s-%s" .Chart.Name }}
+  labels:
+    app: nginx
+spec:
+  replicas: {{ required "replicas required" .Values.replicas }}
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        command: ["/bin/bash","-c"]
+        args:
+        - {{ if .Values.initCmd }}{{ list .Values.initCmd $nginxRun | join " && " | quote }}{{ else }}{{ $nginxRun | quote }}{{ end }}
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+          requests:
+            memory: "128Mi"
+            cpu: "200m"
+        ports:
+        - containerPort: 80
+{{ end }}
