@@ -17,15 +17,15 @@ spec:
       containers:
       - name: rclone
         image: rclone/rclone:sha-6805da6
-        env:
-        - name: MY_ENV
-          value: {{ .Release.Namespace | quote }}
-        command: ["/bin/sh","/rclone-init/init.sh"]
+        command: ["/bin/sh"]
+        args:
+        - "-c"
+        - "exec tail -f /dev/null"
         volumeMounts:
-        - name: rclone-init
-          mountPath: /rclone-init
         - name: rclone-conf
-          mountPath: /rclone-conf
+          mountPath: /config/rclone/rclone.conf
+          subPath: rcloneConf
+          readOnly: true
         resources:
           requests:
             memory: "256Mi"
@@ -34,9 +34,6 @@ spec:
             memory: "256Mi"
             cpu: "200m"
       volumes:
-      - name: rclone-init
-        configMap:
-          name: rclone-init
       - name: rclone-conf
         secret:
           secretName: rclone-conf
