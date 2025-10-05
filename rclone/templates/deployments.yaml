@@ -17,6 +17,4 @@ spec:
       containers:
 {{ include "rclone.container" . | indent 6 }}
       volumes:
-      - name: rclone-conf
-        secret:
-          secretName: rclone-conf
+{{ include "rclone.volume" . | indent 6 }}

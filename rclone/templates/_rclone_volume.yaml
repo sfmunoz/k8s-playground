@@ -1,0 +1,5 @@
+{{- define "rclone.volume" -}}
+- name: rclone-conf
+  secret:
+    secretName: rclone-conf
+{{- end -}}
