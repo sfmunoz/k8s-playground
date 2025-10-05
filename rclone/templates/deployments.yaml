@@ -15,24 +15,7 @@ spec:
         app: rclone
     spec:
       containers:
-      - name: rclone
-        image: rclone/rclone:sha-6805da6
-        command: ["/bin/sh"]
-        args:
-        - "-c"
-        - "exec tail -f /dev/null"
-        volumeMounts:
-        - name: rclone-conf
-          mountPath: /config/rclone/rclone.conf
-          subPath: rcloneConf
-          readOnly: true
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "200m"
-          limits:
-            memory: "256Mi"
-            cpu: "200m"
+{{ include "rclone.container" . | indent 6 }}
       volumes:
       - name: rclone-conf
         secret:
