@@ -1,6 +1,6 @@
 dependencies:
 - name: nginx-lib
   repository: file://../nginx-lib
-  version: 0.1.0
-digest: sha256:3bc5e1c5798df52f71dc3404a406aff2c0221f892494adbd8705083c95be9535
-generated: "2025-10-04T12:23:31.501594209Z"
+  version: 0.1.1
+digest: sha256:403ff34d2698832e4a909c436703c293eb6bb1ed4798ac818b02b13265496956
+generated: "2025-10-05T10:35:53.86383225Z"
