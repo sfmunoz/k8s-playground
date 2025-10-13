@@ -6,7 +6,7 @@
   - "-c"
   - "exec tail -f /dev/null"
   volumeMounts:
-  - name: {{ include "rclone.volumeName" . }}
+  - name: {{ required ".volumeName missing" .volumeName }}
     mountPath: /config/rclone
     readOnly: true
   resources:

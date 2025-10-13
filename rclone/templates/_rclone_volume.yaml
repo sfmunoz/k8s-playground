@@ -1,8 +1,8 @@
 {{- define "rclone.volume" -}}
-- name: {{ include "rclone.volumeName" . }}
+- name: {{ required ".volumeName missing" .volumeName }}
   secret:
-    secretName: rclone-conf
+    secretName: {{ required ".secretName missing" .secretName }}
     items:
-    - key: rcloneConf
+    - key: {{ required ".secretKey missing" .secretKey }}
       path: rclone.conf
 {{- end -}}

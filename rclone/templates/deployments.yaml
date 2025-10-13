@@ -15,6 +15,6 @@ spec:
         app: rclone
     spec:
       containers:
-{{ include "rclone.container" . | indent 6 }}
+{{ include "rclone.container" ( dict "root" . "volumeName" "rcvol" ) | indent 6 }}
       volumes:
-{{ include "rclone.volume" . | indent 6 }}
+{{ include "rclone.volume" ( dict "root" . "volumeName" "rcvol" "secretName" "rclone-conf" "secretKey" "rcloneConf" ) | indent 6 }}
