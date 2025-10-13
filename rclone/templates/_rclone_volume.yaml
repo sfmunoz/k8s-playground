@@ -2,4 +2,7 @@
 - name: {{ include "rclone.volumeName" . }}
   secret:
     secretName: rclone-conf
+    items:
+    - key: rcloneConf
+      path: rclone.conf
 {{- end -}}

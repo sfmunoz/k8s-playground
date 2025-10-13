@@ -7,8 +7,7 @@
   - "exec tail -f /dev/null"
   volumeMounts:
   - name: {{ include "rclone.volumeName" . }}
-    mountPath: /config/rclone/rclone.conf
-    subPath: rcloneConf
+    mountPath: /config/rclone
     readOnly: true
   resources:
     requests:
