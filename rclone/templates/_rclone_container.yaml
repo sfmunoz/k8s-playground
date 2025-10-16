@@ -6,9 +6,11 @@
   - "-c"
   - "exec tail -f /dev/null"
   volumeMounts:
-  - name: {{ required ".volumeName missing" .volumeName }}
+  - name: {{ required ".volumeNameConf missing" .volumeNameConf }}
     mountPath: /config/rclone
     readOnly: true
+  - name: {{ required ".volumeNameBck missing" .volumeNameBck }}
+    mountPath: /bck
   resources:
     requests:
       memory: "256Mi"
