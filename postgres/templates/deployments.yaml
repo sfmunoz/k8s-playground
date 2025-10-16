@@ -24,7 +24,7 @@ spec:
               name: postgres
               key: POSTGRES_PASSWORD
         volumeMounts:
-        - name: bck-vol
+        - name: vol-b
           mountPath: /bck
         resources:
           requests:
@@ -33,8 +33,6 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "200m"
-{{ include "rclone.container" ( dict "root" . "volumeName" "rcvol" ) | indent 6 }}
+{{ include "rclone.container" ( dict "root" . "volumeNameConf" "vol-c" "volumeNameBck" "vol-b" ) | indent 6 }}
       volumes:
-{{ include "rclone.volume" ( dict "root" . "volumeName" "rcvol" "secretName" "rclone-conf" "secretKey" "rcloneConf" ) | indent 6 }}
-      - name: bck-vol
-        emptyDir: {}
+{{ include "rclone.volume" ( dict "root" . "volumeNameConf" "vol-c" "volumeNameBck" "vol-b" "secretName" "rclone-conf" "secretKey" "rcloneConf" ) | indent 6 }}
