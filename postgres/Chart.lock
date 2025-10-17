@@ -1,6 +1,6 @@
 dependencies:
 - name: rclone
   repository: file://../rclone
-  version: 0.2.0
-digest: sha256:bdcf9a8b67242c366b3760157ae33f395f119dd8e8e5d37c899b6bd24fb8ddc6
-generated: "2025-10-16T18:15:45.101989742Z"
+  version: 0.3.0
+digest: sha256:75881ea74eb050a1ec34758e30ee7acbf8523a93c4c1a09a1fad1b1d15c301d7
+generated: "2025-10-17T17:02:29.58807823Z"
