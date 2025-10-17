@@ -8,8 +8,8 @@ spec:
     spec:
       template:
         spec:
-          containers:
-          - name: postgres-backup
+          initContainers:
+          - name: pg-dump
             image: postgres:18.0-alpine3.22
             env:
             - name: PGHOST
@@ -29,5 +29,19 @@ spec:
             command:
             - /bin/sh
             - -c
-            - "set -x ; pg_dump -c"
+            - "set -x ; pg_dump -c | gzip > /bck/pg_dump-$(date +%Y%m%d-%H%M%S).sql.gz"
+            volumeMounts:
+            - name: vol-b
+              mountPath: /bck
+            resources:
+              limits:
+                memory: "256Mi"
+                cpu: "500m"
+              requests:
+                memory: "128Mi"
+                cpu: "250m"
+          containers:
+{{ include "rclone.container" ( dict "root" . "volumeNameConf" "vol-c" "volumeNameBck" "vol-b" ) | indent 10 }}
+          volumes:
+{{ include "rclone.volume" ( dict "root" . "volumeNameConf" "vol-c" "volumeNameBck" "vol-b" "secretName" "rclone-conf" "secretKey" "rcloneConf" ) | indent 10 }}
           restartPolicy: OnFailure
