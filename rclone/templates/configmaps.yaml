@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rclone-script
+data:
+  rclone-null: |
+    exec tail -f /dev/null
+  rclone-ls: |
+    rclone ls bck: | \
+      sort -k 2 -r | \
+      awk '/pg_dump/ { print \"rclone copyto bck:\" $2 \" /bck/\" $2 ; exit 0 }'
+    exec tail -f /dev/null
