@@ -6,10 +6,13 @@
 {{- define "rclone.container" -}}
 - name: rclone
   image: rclone/rclone:sha-6805da6
-  command: ["/bin/sh"]
+  command: ["/bin/sh","-c"]
   args:
-  - "-c"
   - {{ required ".cmd missing" .cmd | quote }}
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1009
+    runAsGroup: 1009
   volumeMounts:
   - name: {{ required ".volumeNameConf missing" .volumeNameConf }}
     mountPath: /config/rclone
