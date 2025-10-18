@@ -4,9 +4,11 @@ metadata:
   name: rclone-script
 data:
   rclone-null: |
+    #!/bin/sh
     exec tail -f /dev/null
   rclone-ls: |
+    #!/bin/sh
     rclone ls bck: | \
       sort -k 2 -r | \
-      awk '/pg_dump/ { print \"rclone copyto bck:\" $2 \" /bck/\" $2 ; exit 0 }'
+      awk '/pg_dump/ { print "rclone copyto bck:" $2 " /bck/" $2 ; exit 0 }'
     exec tail -f /dev/null
