@@ -1,0 +1,26 @@
+# Command examples:
+#   exec tail -f /dev/null
+#   exit 1
+#   exit 0
+
+{{- define "rclone.container" -}}
+- name: rclone
+  image: rclone/rclone:sha-6805da6
+  command: ["/bin/sh"]
+  args:
+  - "-c"
+  - {{ required ".cmd missing" .cmd | quote }}
+  volumeMounts:
+  - name: {{ required ".volumeNameConf missing" .volumeNameConf }}
+    mountPath: /config/rclone
+    readOnly: true
+  - name: {{ required ".volumeNameBck missing" .volumeNameBck }}
+    mountPath: /bck
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+{{- end -}}

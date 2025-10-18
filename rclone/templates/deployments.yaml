@@ -15,28 +15,6 @@ spec:
         app: rclone
     spec:
       containers:
-      - name: rclone
-        image: rclone/rclone:sha-6805da6
-        env:
-        - name: MY_ENV
-          value: {{ .Release.Namespace | quote }}
-        command: ["/bin/sh","/rclone-init/init.sh"]
-        volumeMounts:
-        - name: rclone-init
-          mountPath: /rclone-init
-        - name: rclone-conf
-          mountPath: /rclone-conf
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "200m"
-          limits:
-            memory: "256Mi"
-            cpu: "200m"
+{{ include "rclone.container" ( dict "root" . "cmd" "exec tail -f /dev/null" "volumeNameConf" "vol-c" "volumeNameBck" "vol-b" ) | indent 6 }}
       volumes:
-      - name: rclone-init
-        configMap:
-          name: rclone-init
-      - name: rclone-conf
-        secret:
-          secretName: rclone-conf
+{{ include "rclone.volume" ( dict "root" . "volumeNameConf" "vol-c" "volumeNameBck" "vol-b" "secretName" "rclone-conf" "secretKey" "rcloneConf" ) | indent 6 }}

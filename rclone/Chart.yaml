@@ -12,7 +12,7 @@
 apiVersion: v2
 name: rclone
 description: rclone
-type: application
-version: 0.1.0
+type: library
+version: 0.3.0
 appVersion: "1.16.0"
 

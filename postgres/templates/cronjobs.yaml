@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          initContainers:
+          - name: pg-dump
+            image: postgres:18.0-alpine3.22
+            env:
+            - name: PGHOST
+              value: "postgres-service"
+            - name: PGPORT
+              value: "5432"
+            - name: PGDATABASE
+              value: "postgres"
+            - name: PGUSER
+              value: "postgres"
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: POSTGRES_PASSWORD
+            imagePullPolicy: IfNotPresent
+            command:
+            - /bin/sh
+            - -c
+            - "set -x ; set -e ; set -o pipefail ; while ! pg_isready ; do date ; sleep 1 ; done ; pg_dump -c --if-exists | gzip > /bck/pg_dump-$(date +%Y%m%d-%H%M%S).sql.gz"
+            volumeMounts:
+            - name: vol-b
+              mountPath: /bck
+            resources:
+              limits:
+                memory: "256Mi"
+                cpu: "500m"
+              requests:
+                memory: "128Mi"
+                cpu: "250m"
+          containers:
+{{ include "rclone.container" ( dict "root" . "cmd" "ls -l /bck ; rclone -v copyto /bck bck:" "volumeNameConf" "vol-c" "volumeNameBck" "vol-b" ) | indent 10 }}
+          volumes:
+{{ include "rclone.volume" ( dict "root" . "volumeNameConf" "vol-c" "volumeNameBck" "vol-b" "secretName" "rclone-conf" "secretKey" "rcloneConf" ) | indent 10 }}
+          restartPolicy: OnFailure
