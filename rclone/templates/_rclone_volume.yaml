@@ -1,4 +1,11 @@
 {{- define "rclone.volume" -}}
+- name: scripts-vol
+  configMap:
+    name: "rclone-script"
+    items:
+    - key: rclone-ls
+      path: rclone.sh
+      mode: 0777
 - name: {{ required ".volumeNameConf missing" .volumeNameConf }}
   secret:
     secretName: {{ required ".secretName missing" .secretName }}

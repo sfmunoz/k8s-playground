@@ -14,6 +14,9 @@
     runAsUser: 1009
     runAsGroup: 1009
   volumeMounts:
+  - name: scripts-vol
+    mountPath: /scripts
+    readOnly: true
   - name: {{ required ".volumeNameConf missing" .volumeNameConf }}
     mountPath: /config/rclone
     readOnly: true
