@@ -20,20 +20,24 @@ initContainers:
   command: ["/bin/sh","-c"]
   args:
   - |
-    F1="pg_dump-$(date +%Y%m%d-%H%M%S).sql.gz"
-    set -x
-    set -e
-    set -o pipefail
-    while ! pg_isready ; do date ; sleep 1 ; done
-    date
-    pg_dump -c --if-exists | gzip > "/loc/${F1}"
     cat > /loc/upload.sh << __EOF
-    #!/bin/sh
-    set -x
-    set -e
-    set -o pipefail
-    rclone copyto -P "/loc/${F1}" "rem:${F1}"
+    set -x -e -o pipefail
+    date
     __EOF
+    cat > /tmp/pg_dump.sh << __EOF
+    set -x -e -o pipefail
+    while ! pg_isready ; do date ; sleep 1 ; done
+    export PGDATABASE="\$1"
+    FNAME="\${PGDATABASE}-\$(date +%Y%m%d-%H%M%S).sql.gz"
+    date
+    pg_dump -c --if-exists | gzip > "/loc/\${FNAME}"
+    date
+    echo "rclone copyto -P '/loc/\${FNAME}' 'rem:\${FNAME}'" >> /loc/upload.sh
+    echo "date" >> /loc/upload.sh
+    __EOF
+    set -x -e -o pipefail
+    while ! pg_isready ; do date ; sleep 1 ; done
+    psql -Atc 'select datname from pg_database' | awk '!/^template/' | xargs -n1 /bin/sh /tmp/pg_dump.sh
   volumeMounts:
   - name: vol-loc
     mountPath: /loc
