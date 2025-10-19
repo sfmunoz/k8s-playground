@@ -1,0 +1,10 @@
+{{- if .Values.job -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-backup-job
+spec:
+  template:
+    spec:
+      {{- include "postgres.backup.spec" . | nindent 6 }}
+{{- end -}}
