@@ -37,11 +37,11 @@ initContainers:
       memory: "128Mi"
       cpu: "250m"
 containers:
-{{ include "rclone.container" ( dict "root" . "cmd" "ls -l /loc ; rclone -v copyto /loc rem:" "volName" "vol-c" ) }}
+  {{- include "rclone.container" ( dict "root" . "cmd" "ls -l /loc ; rclone -v copyto /loc rem:" "volName" "vol-c" ) | nindent 0 }}
   - name: vol-loc
     mountPath: /loc
 volumes:
-{{ include "rclone.volume" ( dict "root" . "volName" "vol-c" "secName" "rclone-conf" "secKey" "rcloneConf" ) }}
+  {{- include "rclone.volume" ( dict "root" . "volName" "vol-c" "secName" "rclone-conf" "secKey" "rcloneConf" ) | nindent 0 }}
 - name: vol-loc
   emptyDir: {}
 restartPolicy: OnFailure
