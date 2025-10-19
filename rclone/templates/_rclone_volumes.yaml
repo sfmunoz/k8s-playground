@@ -1,13 +1,11 @@
-{{- define "rclone.volumes" }}
-{{- with .volumeScripts -}}
-{{- list . | toYaml | indent 0 }}
-{{- end }}
+{{- define "rclone.volumes" -}}
 - name: {{ required ".volumeNameConf missing" .volumeNameConf }}
   secret:
     secretName: {{ required ".secretName missing" .secretName }}
     items:
     - key: {{ required ".secretKey missing" .secretKey }}
       path: rclone.conf
-- name: {{ required ".volumeNameLoc missing" .volumeNameLoc }}
-  emptyDir: {}
+{{- with .volumes }}
+{{- toYaml . | nindent 0 }}
+{{- end }}
 {{- end -}}
