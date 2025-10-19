@@ -29,10 +29,10 @@ spec:
             command:
             - /bin/sh
             - -c
-            - "set -x ; set -e ; set -o pipefail ; while ! pg_isready ; do date ; sleep 1 ; done ; pg_dump -c --if-exists | gzip > /bck/pg_dump-$(date +%Y%m%d-%H%M%S).sql.gz"
+            - "set -x ; set -e ; set -o pipefail ; while ! pg_isready ; do date ; sleep 1 ; done ; pg_dump -c --if-exists | gzip > /loc/pg_dump-$(date +%Y%m%d-%H%M%S).sql.gz"
             volumeMounts:
-            - name: vol-b
-              mountPath: /bck
+            - name: vol-l
+              mountPath: /loc
             resources:
               limits:
                 memory: "256Mi"
@@ -41,7 +41,7 @@ spec:
                 memory: "128Mi"
                 cpu: "250m"
           containers:
-{{ include "rclone.container" ( dict "root" . "cmd" "ls -l /bck ; rclone -v copyto /bck bck:" "volumeNameConf" "vol-c" "volumeNameBck" "vol-b" ) | indent 10 }}
+{{ include "rclone.container" ( dict "root" . "cmd" "ls -l /loc ; rclone -v copyto /loc rem:" "volumeNameConf" "vol-c" "volumeNameLoc" "vol-l" ) | indent 10 }}
           volumes:
-{{ include "rclone.volume" ( dict "root" . "volumeNameConf" "vol-c" "volumeNameBck" "vol-b" "secretName" "rclone-conf" "secretKey" "rcloneConf" ) | indent 10 }}
+{{ include "rclone.volume" ( dict "root" . "volumeNameConf" "vol-c" "volumeNameLoc" "vol-l" "secretName" "rclone-conf" "secretKey" "rcloneConf" ) | indent 10 }}
           restartPolicy: OnFailure
