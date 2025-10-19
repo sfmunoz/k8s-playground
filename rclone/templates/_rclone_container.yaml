@@ -14,7 +14,7 @@
     runAsUser: 1009
     runAsGroup: 1009
   volumeMounts:
-{{- .root.Values.scriptsVol | list | toYaml | nindent 2 }}
+{{- required ".volScripts missing" .volScripts | list | toYaml | nindent 2 }}
   - name: {{ required ".volumeNameConf missing" .volumeNameConf }}
     mountPath: /config/rclone
     readOnly: true

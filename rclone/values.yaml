@@ -5,7 +5,7 @@ myCfg:
   S3_BUCKET: <bucket>
   ALIAS_NAME: <alias_name>
 
-scriptsVol:
-  name: scripts-vol
+volScripts:
+  name: vol-scripts
   mountPath: /scripts
   readOnly: true
