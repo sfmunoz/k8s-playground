@@ -1,4 +1,4 @@
-{{- define "rclone.volume" }}
+{{- define "rclone.volumes" }}
 {{- with .volumeScripts -}}
 {{- list . | toYaml | indent 0 }}
 {{- end }}
