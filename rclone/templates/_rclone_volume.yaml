@@ -8,6 +8,6 @@
     items:
     - key: {{ required ".secretKey missing" .secretKey }}
       path: rclone.conf
-- name: {{ required ".volumeNameBck missing" .volumeNameBck }}
+- name: {{ required ".volumeNameLoc missing" .volumeNameLoc }}
   emptyDir: {}
 {{- end -}}

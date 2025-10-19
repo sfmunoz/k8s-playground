@@ -13,8 +13,8 @@ data:
     date
     set -e
     set -o pipefail
-    rclone ls bck: | \
+    rclone ls rem: | \
       sort -k 2 -r | \
-      awk '/pg_dump/ { print "rclone copyto bck:" $2 " /bck/" $2 ; exit 0 }'
+      awk '/pg_dump/ { print "rclone copyto rem:" $2 " /loc/" $2 ; exit 0 }'
     date
     exec tail -f /dev/null
