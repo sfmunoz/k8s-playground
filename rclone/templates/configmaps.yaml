@@ -5,10 +5,16 @@ metadata:
 data:
   rclone-null: |
     #!/bin/sh
+    set -x
     exec tail -f /dev/null
   rclone-ls: |
     #!/bin/sh
+    set -x
+    date
+    set -e
+    set -o pipefail
     rclone ls bck: | \
       sort -k 2 -r | \
       awk '/pg_dump/ { print "rclone copyto bck:" $2 " /bck/" $2 ; exit 0 }'
+    date
     exec tail -f /dev/null
