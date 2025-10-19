@@ -15,6 +15,20 @@ spec:
         app: rclone
     spec:
       containers:
-{{ include "rclone.container" ( dict "root" . "cmd" "/scripts/rclone.sh" "volumeNameConf" "vol-c" "volumeMounts" .Values.volumeMounts ) | indent 6 }}
+{{ include "rclone.container" ( dict "root" . "cmd" "/scripts/rclone.sh" "volName" "vol-c" ) | indent 6 }}
+        - name: vol-loc
+          mountPath: /loc
+        - name: vol-scripts
+          mountPath: /scripts
+          readOnly: true
       volumes:
-{{ include "rclone.volumes" ( dict "root" . "volumeNameConf" "vol-c" "secretName" "rclone-conf" "secretKey" "rcloneConf" "volumes" .Values.volumes ) | indent 6 }}
+{{ include "rclone.volume" ( dict "root" . "volName" "vol-c" "secName" "rclone-conf" "secKey" "rcloneConf" ) | indent 6 }}
+      - name: vol-loc
+        emptyDir: {}
+      - name: vol-scripts
+        configMap:
+          name: "rclone-script"
+          items:
+          - key: rclone-ls
+            path: rclone.sh
+            mode: 0777

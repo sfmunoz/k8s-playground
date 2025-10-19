@@ -15,7 +15,9 @@ spec:
         app: postgres
     spec:
       initContainers:
-{{ include "rclone.container" ( dict "root" . "cmd" "rclone ls rem: | sort -k 2 -r | awk '/pg_dump/ { print \"rclone copyto rem:\" $2 \" /loc/\" $2 ; exit 0 }' | sh -x" "volumeNameConf" "vol-c" "volumeMounts" .Values.volumeMounts ) | indent 6 }}
+{{ include "rclone.container" ( dict "root" . "cmd" "rclone ls rem: | sort -k 2 -r | awk '/pg_dump/ { print \"rclone copyto rem:\" $2 \" /loc/\" $2 ; exit 0 }' | sh -x" "volName" "vol-c" ) | indent 6 }}
+        - name: vol-loc
+          mountPath: /loc
       containers:
       - name: postgres
         image: postgres:18.0-alpine3.22
@@ -36,4 +38,6 @@ spec:
             memory: "256Mi"
             cpu: "200m"
       volumes:
-{{ include "rclone.volumes" ( dict "root" . "volumeNameConf" "vol-c" "secretName" "rclone-conf" "secretKey" "rcloneConf" "volumes" .Values.volumes ) | indent 6 }}
+{{ include "rclone.volume" ( dict "root" . "volName" "vol-c" "secName" "rclone-conf" "secKey" "rcloneConf" ) | indent 6 }}
+      - name: vol-loc
+        emptyDir: {}
