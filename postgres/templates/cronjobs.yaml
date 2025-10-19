@@ -26,10 +26,15 @@ spec:
                   name: postgres
                   key: POSTGRES_PASSWORD
             imagePullPolicy: IfNotPresent
-            command:
-            - /bin/sh
-            - -c
-            - "set -x ; set -e ; set -o pipefail ; while ! pg_isready ; do date ; sleep 1 ; done ; pg_dump -c --if-exists | gzip > /loc/pg_dump-$(date +%Y%m%d-%H%M%S).sql.gz"
+            command: ["/bin/sh","-c"]
+            args:
+            - |
+              set -x
+              set -e
+              set -o pipefail
+              while ! pg_isready ; do date ; sleep 1 ; done
+              date
+              pg_dump -c --if-exists | gzip > /loc/pg_dump-$(date +%Y%m%d-%H%M%S).sql.gz
             volumeMounts:
             - name: vol-loc
               mountPath: /loc
