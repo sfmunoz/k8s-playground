@@ -20,12 +20,20 @@ initContainers:
   command: ["/bin/sh","-c"]
   args:
   - |
+    F1="pg_dump-$(date +%Y%m%d-%H%M%S).sql.gz"
     set -x
     set -e
     set -o pipefail
     while ! pg_isready ; do date ; sleep 1 ; done
     date
-    pg_dump -c --if-exists | gzip > /loc/pg_dump-$(date +%Y%m%d-%H%M%S).sql.gz
+    pg_dump -c --if-exists | gzip > "/loc/${F1}"
+    cat > /loc/upload.sh << __EOF
+    #!/bin/sh
+    set -x
+    set -e
+    set -o pipefail
+    rclone copyto -P "/loc/${F1}" "rem:${F1}"
+    __EOF
   volumeMounts:
   - name: vol-loc
     mountPath: /loc
@@ -37,7 +45,7 @@ initContainers:
       memory: "128Mi"
       cpu: "250m"
 containers:
-  {{- include "rclone.container" ( dict "root" . "cmd" "ls -l /loc ; rclone -v copyto /loc rem:" "volName" "vol-c" ) | nindent 0 }}
+  {{- include "rclone.container" ( dict "root" . "cmd" "/bin/sh /loc/upload.sh" "volName" "vol-c" ) | nindent 0 }}
   - name: vol-loc
     mountPath: /loc
 volumes:
