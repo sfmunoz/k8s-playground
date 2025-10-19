@@ -3,10 +3,9 @@
 #
 #   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml postgres .
 #
-# Backup trigger:
+# Test (once deployed):
 #
-#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml --set job=false postgres .
-#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml --set job=true postgres .
+#   $ helm test -n dev --logs postgres
 #
 # Uninstall/cleanup:
 #
