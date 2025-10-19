@@ -15,6 +15,6 @@ spec:
         app: rclone
     spec:
       containers:
-{{ include "rclone.container" ( dict "root" . "cmd" "exec tail -f /dev/null" "volScripts" .Values.volScripts "volumeNameConf" "vol-c" "volumeNameBck" "vol-b" ) | indent 6 }}
+{{ include "rclone.container" ( dict "root" . "cmd" "exec tail -f /dev/null" "volumeMountScripts" .Values.volumeMountScripts "volumeNameConf" "vol-c" "volumeNameBck" "vol-b" ) | indent 6 }}
       volumes:
 {{ include "rclone.volume" ( dict "root" . "volumeNameConf" "vol-c" "volumeNameBck" "vol-b" "secretName" "rclone-conf" "secretKey" "rcloneConf" ) | indent 6 }}
