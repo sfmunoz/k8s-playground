@@ -3,9 +3,9 @@ kind: CronJob
 metadata:
   name: postgres-backup
 spec:
-  schedule: "* * * * *"
+  schedule: "0 0 * * *"
   jobTemplate:
     spec:
       template:
         spec:
-{{- include "postgres.backup.spec" . | nindent 10 }}
+          {{- include "postgres.backup.spec" . | nindent 10 }}
