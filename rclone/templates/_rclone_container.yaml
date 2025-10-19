@@ -19,6 +19,9 @@
     readOnly: true
   - name: {{ required ".volumeNameBck missing" .volumeNameBck }}
     mountPath: /bck
+{{- with .volumeMountScripts }}
+{{- list . | toYaml | nindent 2 }}
+{{- end }}
   resources:
     requests:
       memory: "256Mi"

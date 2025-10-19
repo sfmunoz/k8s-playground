@@ -1,4 +1,7 @@
-{{- define "rclone.volume" -}}
+{{- define "rclone.volume" }}
+{{- with .volumeScripts -}}
+{{- list . | toYaml | indent 0 }}
+{{- end }}
 - name: {{ required ".volumeNameConf missing" .volumeNameConf }}
   secret:
     secretName: {{ required ".secretName missing" .secretName }}
