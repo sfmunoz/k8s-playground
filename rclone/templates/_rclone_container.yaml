@@ -14,12 +14,14 @@
     runAsUser: 1009
     runAsGroup: 1009
   volumeMounts:
-{{- required ".volumeMountScripts missing" .volumeMountScripts | list | toYaml | nindent 2 }}
   - name: {{ required ".volumeNameConf missing" .volumeNameConf }}
     mountPath: /config/rclone
     readOnly: true
   - name: {{ required ".volumeNameBck missing" .volumeNameBck }}
     mountPath: /bck
+{{- with .volumeMountScripts }}
+{{- list . | toYaml | nindent 2 }}
+{{- end }}
   resources:
     requests:
       memory: "256Mi"
