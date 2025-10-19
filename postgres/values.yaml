@@ -5,11 +5,3 @@ myCfg:
   S3_REGION: <region>
   S3_BUCKET: <bucket>
   ALIAS_NAME: <alias_name>
-
-volumeMounts:
-- name: vol-loc
-  mountPath: /loc
-
-volumes:
-- name: vol-loc
-  emptyDir: {}
