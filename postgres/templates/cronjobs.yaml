@@ -31,7 +31,7 @@ spec:
             - -c
             - "set -x ; set -e ; set -o pipefail ; while ! pg_isready ; do date ; sleep 1 ; done ; pg_dump -c --if-exists | gzip > /loc/pg_dump-$(date +%Y%m%d-%H%M%S).sql.gz"
             volumeMounts:
-            - name: vol-l
+            - name: vol-loc
               mountPath: /loc
             resources:
               limits:
@@ -41,7 +41,7 @@ spec:
                 memory: "128Mi"
                 cpu: "250m"
           containers:
-{{ include "rclone.container" ( dict "root" . "cmd" "ls -l /loc ; rclone -v copyto /loc rem:" "volumeNameConf" "vol-c" "volumeNameLoc" "vol-l" ) | indent 10 }}
+{{ include "rclone.container" ( dict "root" . "cmd" "ls -l /loc ; rclone -v copyto /loc rem:" "volumeNameConf" "vol-c" "volumeMounts" .Values.volumeMounts ) | indent 10 }}
           volumes:
-{{ include "rclone.volume" ( dict "root" . "volumeNameConf" "vol-c" "volumeNameLoc" "vol-l" "secretName" "rclone-conf" "secretKey" "rcloneConf" ) | indent 10 }}
+{{ include "rclone.volumes" ( dict "root" . "volumeNameConf" "vol-c" "secretName" "rclone-conf" "secretKey" "rcloneConf" "volumes" .Values.volumes ) | indent 10 }}
           restartPolicy: OnFailure

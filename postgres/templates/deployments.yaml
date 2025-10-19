@@ -15,7 +15,7 @@ spec:
         app: postgres
     spec:
       initContainers:
-{{ include "rclone.container" ( dict "root" . "cmd" "rclone ls rem: | sort -k 2 -r | awk '/pg_dump/ { print \"rclone copyto rem:\" $2 \" /loc/\" $2 ; exit 0 }' | sh -x" "volumeNameConf" "vol-c" "volumeNameLoc" "vol-l" ) | indent 6 }}
+{{ include "rclone.container" ( dict "root" . "cmd" "rclone ls rem: | sort -k 2 -r | awk '/pg_dump/ { print \"rclone copyto rem:\" $2 \" /loc/\" $2 ; exit 0 }' | sh -x" "volumeNameConf" "vol-c" "volumeMounts" .Values.volumeMounts ) | indent 6 }}
       containers:
       - name: postgres
         image: postgres:18.0-alpine3.22
@@ -26,7 +26,7 @@ spec:
               name: postgres
               key: POSTGRES_PASSWORD
         volumeMounts:
-        - name: vol-l
+        - name: vol-loc
           mountPath: /docker-entrypoint-initdb.d
         resources:
           requests:
@@ -36,4 +36,4 @@ spec:
             memory: "256Mi"
             cpu: "200m"
       volumes:
-{{ include "rclone.volume" ( dict "root" . "volumeNameConf" "vol-c" "volumeNameLoc" "vol-l" "secretName" "rclone-conf" "secretKey" "rcloneConf" ) | indent 6 }}
+{{ include "rclone.volumes" ( dict "root" . "volumeNameConf" "vol-c" "secretName" "rclone-conf" "secretKey" "rcloneConf" "volumes" .Values.volumes ) | indent 6 }}

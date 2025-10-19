@@ -5,13 +5,17 @@ myCfg:
   S3_BUCKET: <bucket>
   ALIAS_NAME: <alias_name>
 
-volumeMountScripts:
-  name: vol-scripts
+volumeMounts:
+- name: vol-loc
+  mountPath: /loc
+- name: vol-scripts
   mountPath: /scripts
   readOnly: true
 
-volumeScripts:
-  name: vol-scripts
+volumes:
+- name: vol-loc
+  emptyDir: {}
+- name: vol-scripts
   configMap:
     name: "rclone-script"
     items:

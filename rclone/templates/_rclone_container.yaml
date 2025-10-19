@@ -17,10 +17,8 @@
   - name: {{ required ".volumeNameConf missing" .volumeNameConf }}
     mountPath: /config/rclone
     readOnly: true
-  - name: {{ required ".volumeNameLoc missing" .volumeNameLoc }}
-    mountPath: /loc
-{{- with .volumeMountScripts }}
-{{- list . | toYaml | nindent 2 }}
+{{- with .volumeMounts }}
+{{- toYaml . | nindent 2 }}
 {{- end }}
   resources:
     requests:
