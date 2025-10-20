@@ -1,6 +1,6 @@
 {{- define "postgres.backup.spec" -}}
 initContainers:
-- name: pg-dump
+- name: pg-backup
   image: postgres:18.0-alpine3.22
   env:
   - name: PGHOST
@@ -20,24 +20,21 @@ initContainers:
   command: ["/bin/sh","-c"]
   args:
   - |
+    set -x -e -o pipefail
+    while ! pg_isready ; do date ; sleep 1 ; done
+    FOLDER="bck-$(date +%Y%m%d-%H%M%S)"
+    date
+    pg_basebackup -U postgres -D "/loc/${FOLDER}" -F tar -z -P -v
+    date
+    chmod -v 0755 "/loc/${FOLDER}"
+    chmod -v 0644 "/loc/${FOLDER}/"*
     cat > /loc/upload.sh << __EOF
     set -x -e -o pipefail
     date
-    __EOF
-    cat > /tmp/pg_dump.sh << __EOF
-    set -x -e -o pipefail
-    while ! pg_isready ; do date ; sleep 1 ; done
-    export PGDATABASE="\$1"
-    FNAME="\${PGDATABASE}-\$(date +%Y%m%d-%H%M%S).sql.gz"
+    rclone copyto -P "/loc/${FOLDER}" "rem:${FOLDER}"
     date
-    pg_dump -c --if-exists | gzip > "/loc/\${FNAME}"
-    date
-    echo "rclone copyto -P '/loc/\${FNAME}' 'rem:\${FNAME}'" >> /loc/upload.sh
-    echo "date" >> /loc/upload.sh
     __EOF
-    set -x -e -o pipefail
-    while ! pg_isready ; do date ; sleep 1 ; done
-    psql -Atc 'select datname from pg_database' | awk '!/^template/' | xargs -n1 /bin/sh /tmp/pg_dump.sh
+    cat /loc/upload.sh
   volumeMounts:
   - name: vol-loc
     mountPath: /loc
