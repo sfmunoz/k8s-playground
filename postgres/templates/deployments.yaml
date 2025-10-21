@@ -16,7 +16,7 @@ spec:
     spec:
       initContainers:
       - name: rclone
-        image: rclone/rclone:sha-6805da6
+        image: {{ .Values.rclone.image }}
         command: ["/bin/sh","-c"]
         args:
         - "rclone ls rem: | sort -k 2 -r | awk '/pg_dump/ { print \"rclone copyto rem:\" $2 \" /loc/\" $2 ; exit 0 }' | sh -x"
@@ -39,7 +39,7 @@ spec:
           mountPath: /loc
       containers:
       - name: postgres
-        image: postgres:18.0-alpine3.22
+        image: {{ .Values.postgres.image }}
         command: ["/bin/sh","-c"]
         args:
         - |

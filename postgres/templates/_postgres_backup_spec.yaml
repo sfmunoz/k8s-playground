@@ -1,7 +1,7 @@
 {{- define "postgres.backup.spec" -}}
 initContainers:
 - name: pg-backup
-  image: postgres:18.0-alpine3.22
+  image: {{ .Values.postgres.image }}
   env:
   - name: PGHOST
     value: "postgres-service"
@@ -47,7 +47,7 @@ initContainers:
       cpu: "250m"
 containers:
 - name: rclone
-  image: rclone/rclone:sha-6805da6
+  image: {{ .Values.rclone.image }}
   command: ["/bin/sh","-c"]
   args:
   - "/bin/sh /loc/upload.sh"
