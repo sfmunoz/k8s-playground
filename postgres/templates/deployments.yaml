@@ -15,7 +15,26 @@ spec:
         app: postgres
     spec:
       initContainers:
-        {{- include "rclone.container" ( dict "root" . "cmd" "rclone ls rem: | sort -k 2 -r | awk '/pg_dump/ { print \"rclone copyto rem:\" $2 \" /loc/\" $2 ; exit 0 }' | sh -x" "volName" "vol-c" ) | nindent 6 }}
+      - name: rclone
+        image: rclone/rclone:sha-6805da6
+        command: ["/bin/sh","-c"]
+        args:
+        - "rclone ls rem: | sort -k 2 -r | awk '/pg_dump/ { print \"rclone copyto rem:\" $2 \" /loc/\" $2 ; exit 0 }' | sh -x"
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1009
+          runAsGroup: 1009
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        volumeMounts:
+        - name: vol-c
+          mountPath: /config/rclone
+          readOnly: true
         - name: vol-loc
           mountPath: /loc
       containers:
@@ -48,6 +67,11 @@ spec:
             memory: "256Mi"
             cpu: "200m"
       volumes:
-        {{- include "rclone.volume" ( dict "root" . "volName" "vol-c" "secName" "rclone-conf" "secKey" "rcloneConf" ) | nindent 6 }}
+      - name: vol-c
+        secret:
+          secretName: postgres-rclone-conf
+          items:
+          - key: rcloneConf
+            path: rclone.conf
       - name: vol-loc
         emptyDir: {}
