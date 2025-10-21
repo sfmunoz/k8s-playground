@@ -19,11 +19,9 @@ spec:
         image: {{ .Values.rclone.image }}
         command: ["/bin/sh","-c"]
         args:
-        - "rclone ls rem: | sort -k 2 -r | awk '/pg_dump/ { print \"rclone copyto rem:\" $2 \" /loc/\" $2 ; exit 0 }' | sh -x"
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 1009
-          runAsGroup: 1009
+        - |
+          #!/bin/sh
+          cp /usr/local/bin/rclone /shared/rclone
         resources:
           requests:
             memory: "256Mi"
@@ -32,11 +30,8 @@ spec:
             memory: "256Mi"
             cpu: "200m"
         volumeMounts:
-        - name: vol-c
-          mountPath: /config/rclone
-          readOnly: true
-        - name: vol-loc
-          mountPath: /loc
+        - name: vol-shared
+          mountPath: /shared
       containers:
       - name: postgres
         image: {{ .Values.postgres.image }}
@@ -44,7 +39,11 @@ spec:
         args:
         - |
           set -x -e -o pipefail
+          cp /shared/rclone /usr/local/bin/rclone
+          chown 0:0 /usr/local/bin/rclone
+          chmod 755 /usr/local/bin/rclone
           date
+          rclone ls rem: | sort -k 2 -r | awk '/pg_dump/ { print "rclone copyto rem:" $2 " /docker-entrypoint-initdb.d/" $2 ; exit 0 }' | sh -x
           cat << __EOF > /docker-entrypoint-initdb.d/0_pg_hba.sh
           #!/bin/sh
           echo 'host replication all all scram-sha-256' >> "${PGDATA}/pg_hba.conf"
@@ -57,8 +56,14 @@ spec:
               name: postgres
               key: POSTGRES_PASSWORD
         volumeMounts:
-        - name: vol-loc
-          mountPath: /docker-entrypoint-initdb.d
+        - name: vol-c
+          mountPath: /root/.config/rclone
+          readOnly: true
+        - name: vol-c
+          mountPath: /var/lib/postgresql/.config/rclone
+          readOnly: true
+        - name: vol-shared
+          mountPath: /shared
         resources:
           requests:
             memory: "256Mi"
@@ -73,5 +78,5 @@ spec:
           items:
           - key: rcloneConf
             path: rclone.conf
-      - name: vol-loc
+      - name: vol-shared
         emptyDir: {}
