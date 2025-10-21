@@ -1,6 +1,0 @@
-dependencies:
-- name: rclone
-  repository: file://../rclone
-  version: 0.8.0
-digest: sha256:cda0c80d7eda8791b7f2749695d67b7f8a7c762ed9ec85ae301a13f5fbffdd1d
-generated: "2025-10-19T15:44:02.752129917Z"

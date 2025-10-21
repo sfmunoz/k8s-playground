@@ -1,7 +1,7 @@
 {{- define "postgres.backup.spec" -}}
 initContainers:
 - name: pg-backup
-  image: postgres:18.0-alpine3.22
+  image: {{ .Values.postgres.image }}
   env:
   - name: PGHOST
     value: "postgres-service"
@@ -46,11 +46,35 @@ initContainers:
       memory: "128Mi"
       cpu: "250m"
 containers:
-  {{- include "rclone.container" ( dict "root" . "cmd" "/bin/sh /loc/upload.sh" "volName" "vol-c" ) | nindent 0 }}
+- name: rclone
+  image: {{ .Values.rclone.image }}
+  command: ["/bin/sh","-c"]
+  args:
+  - "/bin/sh /loc/upload.sh"
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1009
+    runAsGroup: 1009
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  volumeMounts:
+  - name: vol-c
+    mountPath: /config/rclone
+    readOnly: true
   - name: vol-loc
     mountPath: /loc
 volumes:
-  {{- include "rclone.volume" ( dict "root" . "volName" "vol-c" "secName" "rclone-conf" "secKey" "rcloneConf" ) | nindent 0 }}
+- name: vol-c
+  secret:
+    secretName: postgres-rclone-conf
+    items:
+    - key: rcloneConf
+      path: rclone.conf
 - name: vol-loc
   emptyDir: {}
 restartPolicy: OnFailure
