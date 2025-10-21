@@ -1,0 +1,57 @@
+{{- define "postgres.backup.spec" -}}
+initContainers:
+- name: pg-backup
+  image: postgres:18.0-alpine3.22
+  env:
+  - name: PGHOST
+    value: "postgres-service"
+  - name: PGPORT
+    value: "5432"
+  - name: PGDATABASE
+    value: "postgres"
+  - name: PGUSER
+    value: "postgres"
+  - name: PGPASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: postgres
+        key: POSTGRES_PASSWORD
+  imagePullPolicy: IfNotPresent
+  command: ["/bin/sh","-c"]
+  args:
+  - |
+    set -x -e -o pipefail
+    while ! pg_isready ; do date ; sleep 1 ; done
+    FOLDER="bck-$(date +%Y%m%d-%H%M%S)"
+    date
+    pg_basebackup -U postgres -D "/loc/${FOLDER}" -F tar -z -P -v
+    date
+    chmod -v 0755 "/loc/${FOLDER}"
+    chmod -v 0644 "/loc/${FOLDER}/"*
+    cat > /loc/upload.sh << __EOF
+    set -x -e -o pipefail
+    date
+    rclone copyto -P "/loc/${FOLDER}" "rem:${FOLDER}"
+    date
+    __EOF
+    cat /loc/upload.sh
+  volumeMounts:
+  - name: vol-loc
+    mountPath: /loc
+  resources:
+    limits:
+      memory: "256Mi"
+      cpu: "500m"
+    requests:
+      memory: "128Mi"
+      cpu: "250m"
+containers:
+  {{- include "rclone.container" ( dict "root" . "cmd" "/bin/sh /loc/upload.sh" "volName" "vol-c" ) | nindent 0 }}
+  - name: vol-loc
+    mountPath: /loc
+volumes:
+  {{- include "rclone.volume" ( dict "root" . "volName" "vol-c" "secName" "rclone-conf" "secKey" "rcloneConf" ) | nindent 0 }}
+- name: vol-loc
+  emptyDir: {}
+restartPolicy: OnFailure
+{{- end -}}

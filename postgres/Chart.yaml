@@ -3,6 +3,10 @@
 #
 #   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml postgres .
 #
+# Test (once deployed):
+#
+#   $ helm test -n dev --logs postgres
+#
 # Uninstall/cleanup:
 #
 #   $ helm uninstall -n dev postgres

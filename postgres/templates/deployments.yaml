@@ -15,12 +15,22 @@ spec:
         app: postgres
     spec:
       initContainers:
-{{ include "rclone.container" ( dict "root" . "cmd" "rclone ls rem: | sort -k 2 -r | awk '/pg_dump/ { print \"rclone copyto rem:\" $2 \" /loc/\" $2 ; exit 0 }' | sh -x" "volName" "vol-c" ) | indent 6 }}
+        {{- include "rclone.container" ( dict "root" . "cmd" "rclone ls rem: | sort -k 2 -r | awk '/pg_dump/ { print \"rclone copyto rem:\" $2 \" /loc/\" $2 ; exit 0 }' | sh -x" "volName" "vol-c" ) | nindent 6 }}
         - name: vol-loc
           mountPath: /loc
       containers:
       - name: postgres
         image: postgres:18.0-alpine3.22
+        command: ["/bin/sh","-c"]
+        args:
+        - |
+          set -x -e -o pipefail
+          date
+          cat << __EOF > /docker-entrypoint-initdb.d/0_pg_hba.sh
+          #!/bin/sh
+          echo 'host replication all all scram-sha-256' >> "${PGDATA}/pg_hba.conf"
+          __EOF
+          exec docker-entrypoint.sh postgres
         env:
         - name: POSTGRES_PASSWORD
           valueFrom:
@@ -38,6 +48,6 @@ spec:
             memory: "256Mi"
             cpu: "200m"
       volumes:
-{{ include "rclone.volume" ( dict "root" . "volName" "vol-c" "secName" "rclone-conf" "secKey" "rcloneConf" ) | indent 6 }}
+        {{- include "rclone.volume" ( dict "root" . "volName" "vol-c" "secName" "rclone-conf" "secKey" "rcloneConf" ) | nindent 6 }}
       - name: vol-loc
         emptyDir: {}
