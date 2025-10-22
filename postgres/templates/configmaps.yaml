@@ -46,6 +46,7 @@ data:
     #!/bin/sh
     cat << __EOF >> "${PGDATA}/postgresql.conf"
     wal_level = replica
+    wal_compression = on
     archive_mode = on
     archive_command = 'rclone copyto -P %p rem:pg_wal/%f'
     archive_timeout = 30
