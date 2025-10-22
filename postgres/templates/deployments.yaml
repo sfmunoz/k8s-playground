@@ -37,30 +37,7 @@ spec:
         image: {{ .Values.postgres.image }}
         command: ["/bin/sh","-c"]
         args:
-        - |
-          set -x -e -o pipefail
-          cp /shared/rclone /usr/local/bin/rclone
-          chown 0:0 /usr/local/bin/rclone
-          chmod 755 /usr/local/bin/rclone
-          date
-          FOLDER="$(rclone lsf rem: | sort -r | awk '/^bck-\d{8}-\d{6}\/$/ { print substr($1,1,19) ; exit 0 ; }')"
-          date
-          if [ "$FOLDER" != "" ]
-          then
-            mkdir -p "${PGDATA}"
-            chown postgres:root "${PGDATA}"
-            chmod 0700 "${PGDATA}"
-            date
-            rclone copyto -P "rem:${FOLDER}" "/loc/${FOLDER}"
-            date
-            tar -C "${PGDATA}" -xvzf "/loc/${FOLDER}/base.tar.gz"
-            date
-            tar -C "${PGDATA}/pg_wal" -xvzf "/loc/${FOLDER}/pg_wal.tar.gz"
-            date
-            rm -rf "/loc/${FOLDER}"
-          fi
-          date
-          exec docker-entrypoint.sh postgres
+        - "exec /bin/sh /postgres-init/init.sh"
         env:
         - name: POSTGRES_PASSWORD
           valueFrom:
@@ -73,6 +50,9 @@ spec:
           readOnly: true
         - name: vol-c
           mountPath: /var/lib/postgresql/.config/rclone
+          readOnly: true
+        - name: vol-postgres-init
+          mountPath: /postgres-init
           readOnly: true
         - name: vol-docker-entrypoint-initdb-d
           mountPath: /docker-entrypoint-initdb.d
@@ -93,8 +73,11 @@ spec:
           items:
           - key: rcloneConf
             path: rclone.conf
-      - name: vol-shared
-        emptyDir: {}
+      - name: vol-postgres-init
+        configMap:
+          name: postgres-init
       - name: vol-docker-entrypoint-initdb-d
         configMap:
           name: postgres-docker-entrypoint-initdb-d
+      - name: vol-shared
+        emptyDir: {}
