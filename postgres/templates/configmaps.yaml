@@ -10,7 +10,8 @@ data:
     chown 0:0 /usr/local/bin/rclone
     chmod 755 /usr/local/bin/rclone
     date
-    FOLDER="$(rclone lsf rem: | sort -r | awk '/^bck-\d{8}-\d{6}\/$/ { print substr($1,1,19) ; exit 0 ; }')"
+    #FOLDER="$(rclone lsf rem: | sort -r | awk '/^bck-\d{8}-\d{6}\/$/ { print substr($1,1,19) ; exit 0 ; }')"
+    FOLDER=""  # enforce db init
     date
     if [ "$FOLDER" != "" ]
     then
@@ -38,7 +39,15 @@ metadata:
 data:
   0_pg_hba.sh: |
     #!/bin/sh
-    echo "host replication all all scram-sha-256" >> "${PGDATA}/pg_hba.conf"
+    cat >> "${PGDATA}/pg_hba.conf" << __EOF
+    host replication all all scram-sha-256
+    __EOF
   1_postgresql_conf.sh: |
     #!/bin/sh
-    #echo "port = 5433" >> "${PGDATA}/postgresql.conf"
+    cat << __EOF >> "${PGDATA}/postgresql.conf"
+    wal_level = replica
+    archive_mode = on
+    archive_command = 'rclone copyto -P %p rem:pg_wal/%f'
+    archive_timeout = 30
+    restore_command = 'rclone copyto -P rem:pg_wal/%f %p'
+    __EOF
