@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-docker-entrypoint-initdb-d
+data:
+  0_pg_hba.sh: |
+    #!/bin/sh
+    echo "host replication all all scram-sha-256" >> "${PGDATA}/pg_hba.conf"
+  1_postgresql_conf.sh: |
+    #!/bin/sh
+    #echo "port = 5433" >> "${PGDATA}/postgresql.conf"

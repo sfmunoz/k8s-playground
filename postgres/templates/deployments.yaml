@@ -45,10 +45,8 @@ spec:
           date
           FOLDER="$(rclone lsf rem: | sort -r | awk '/^bck-\d{8}-\d{6}\/$/ { print substr($1,1,19) ; exit 0 ; }')"
           date
-          if [ "$FOLDER" == "" ]
+          if [ "$FOLDER" != "" ]
           then
-            echo -en '#!/bin/sh\necho "host replication all all scram-sha-256" >> "${PGDATA}/pg_hba.conf"\n' > /docker-entrypoint-initdb.d/0_pg_hba.sh
-          else
             mkdir -p "${PGDATA}"
             chown postgres:root "${PGDATA}"
             chmod 0700 "${PGDATA}"
@@ -76,6 +74,9 @@ spec:
         - name: vol-c
           mountPath: /var/lib/postgresql/.config/rclone
           readOnly: true
+        - name: vol-docker-entrypoint-initdb-d
+          mountPath: /docker-entrypoint-initdb.d
+          readOnly: true
         - name: vol-shared
           mountPath: /shared
         resources:
@@ -94,3 +95,6 @@ spec:
             path: rclone.conf
       - name: vol-shared
         emptyDir: {}
+      - name: vol-docker-entrypoint-initdb-d
+        configMap:
+          name: postgres-docker-entrypoint-initdb-d
