@@ -10,6 +10,8 @@
 # Test (once deployed):
 #
 #   $ helm test -n dev --logs postgres
+#   $ helm test -n dev --logs --filter name=postgres-backup-test postgres
+#   $ helm test -n dev --logs --filter name=postgres-pgbench-test postgres
 #
 # Uninstall/cleanup:
 #
