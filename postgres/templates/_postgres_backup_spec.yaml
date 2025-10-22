@@ -1,5 +1,23 @@
 {{- define "postgres.backup.spec" -}}
 initContainers:
+- name: rclone
+  image: {{ .Values.rclone.image }}
+  command: ["/bin/sh","-c"]
+  args:
+  - |
+    #!/bin/sh
+    cp /usr/local/bin/rclone /shared/rclone
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  volumeMounts:
+  - name: vol-shared
+    mountPath: /shared
+containers:
 - name: pg-backup
   image: {{ .Values.postgres.image }}
   env:
@@ -21,23 +39,28 @@ initContainers:
   args:
   - |
     set -x -e -o pipefail
+    date
+    cp /shared/rclone /usr/local/bin/rclone
+    chown 0:0 /usr/local/bin/rclone
+    chmod 755 /usr/local/bin/rclone
     while ! pg_isready ; do date ; sleep 1 ; done
+    date
     FOLDER="bck-$(date +%Y%m%d-%H%M%S)"
+    mkdir -p /loc
     date
-    pg_basebackup -U postgres -D "/loc/${FOLDER}" -F tar -z -P -v
-    date
-    chmod -v 0755 "/loc/${FOLDER}"
-    chmod -v 0644 "/loc/${FOLDER}/"*
-    cat > /loc/upload.sh << __EOF
-    set -x -e -o pipefail
+    pg_basebackup -U postgres -c fast -D "/loc/${FOLDER}" -F tar -z -P -v
     date
     rclone copyto -P "/loc/${FOLDER}" "rem:${FOLDER}"
     date
-    __EOF
-    cat /loc/upload.sh
   volumeMounts:
-  - name: vol-loc
-    mountPath: /loc
+  - name: vol-c
+    mountPath: /root/.config/rclone
+    readOnly: true
+  - name: vol-c
+    mountPath: /var/lib/postgresql/.config/rclone
+    readOnly: true
+  - name: vol-shared
+    mountPath: /shared
   resources:
     limits:
       memory: "256Mi"
@@ -45,29 +68,6 @@ initContainers:
     requests:
       memory: "128Mi"
       cpu: "250m"
-containers:
-- name: rclone
-  image: {{ .Values.rclone.image }}
-  command: ["/bin/sh","-c"]
-  args:
-  - "/bin/sh /loc/upload.sh"
-  securityContext:
-    runAsNonRoot: true
-    runAsUser: 1009
-    runAsGroup: 1009
-  resources:
-    requests:
-      memory: "256Mi"
-      cpu: "200m"
-    limits:
-      memory: "256Mi"
-      cpu: "200m"
-  volumeMounts:
-  - name: vol-c
-    mountPath: /config/rclone
-    readOnly: true
-  - name: vol-loc
-    mountPath: /loc
 volumes:
 - name: vol-c
   secret:
@@ -75,7 +75,7 @@ volumes:
     items:
     - key: rcloneConf
       path: rclone.conf
-- name: vol-loc
+- name: vol-shared
   emptyDir: {}
 restartPolicy: OnFailure
 {{- end -}}

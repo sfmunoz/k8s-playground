@@ -43,11 +43,25 @@ spec:
           chown 0:0 /usr/local/bin/rclone
           chmod 755 /usr/local/bin/rclone
           date
-          rclone ls rem: | sort -k 2 -r | awk '/pg_dump/ { print "rclone copyto rem:" $2 " /docker-entrypoint-initdb.d/" $2 ; exit 0 }' | sh -x
-          cat << __EOF > /docker-entrypoint-initdb.d/0_pg_hba.sh
-          #!/bin/sh
-          echo 'host replication all all scram-sha-256' >> "${PGDATA}/pg_hba.conf"
-          __EOF
+          FOLDER="$(rclone lsf rem: | sort -r | awk '/^bck-\d{8}-\d{6}\/$/ { print substr($1,1,19) ; exit 0 ; }')"
+          date
+          if [ "$FOLDER" == "" ]
+          then
+            echo -en '#!/bin/sh\necho "host replication all all scram-sha-256" >> "${PGDATA}/pg_hba.conf"\n' > /docker-entrypoint-initdb.d/0_pg_hba.sh
+          else
+            mkdir -p "${PGDATA}"
+            chown postgres:root "${PGDATA}"
+            chmod 0700 "${PGDATA}"
+            date
+            rclone copyto -P "rem:${FOLDER}" "/loc/${FOLDER}"
+            date
+            tar -C "${PGDATA}" -xvzf "/loc/${FOLDER}/base.tar.gz"
+            date
+            tar -C "${PGDATA}/pg_wal" -xvzf "/loc/${FOLDER}/pg_wal.tar.gz"
+            date
+            rm -rf "/loc/${FOLDER}"
+          fi
+          date
           exec docker-entrypoint.sh postgres
         env:
         - name: POSTGRES_PASSWORD
