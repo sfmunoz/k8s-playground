@@ -10,8 +10,11 @@ data:
     chown 0:0 /usr/local/bin/rclone
     chmod 755 /usr/local/bin/rclone
     date
-    #FOLDER="$(rclone lsf rem: | sort -r | awk '/^bck-\d{8}-\d{6}\/$/ { print substr($1,1,19) ; exit 0 ; }')"
-    FOLDER=""  # enforce db init
+    FOLDER=""
+    if [ "$EMPTY" != "yes" ]
+    then
+      FOLDER="$(rclone lsf rem: | sort -r | awk '/^bck-\d{8}-\d{6}\/$/ { print substr($1,1,19) ; exit 0 ; }')"
+    fi
     date
     if [ "$FOLDER" != "" ]
     then

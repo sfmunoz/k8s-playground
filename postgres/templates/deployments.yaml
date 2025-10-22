@@ -44,6 +44,8 @@ spec:
             secretKeyRef:
               name: postgres
               key: POSTGRES_PASSWORD
+        - name: EMPTY
+          value: {{ .Values.postgres.empty | ternary "yes" "no" | quote }}
         volumeMounts:
         - name: vol-c
           mountPath: /root/.config/rclone

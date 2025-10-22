@@ -3,6 +3,10 @@
 #
 #   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml postgres .
 #
+# Install/upgrade (no restore attempt):
+#
+#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml --set postgres.empty=true postgres .
+#
 # Test (once deployed):
 #
 #   $ helm test -n dev --logs postgres
