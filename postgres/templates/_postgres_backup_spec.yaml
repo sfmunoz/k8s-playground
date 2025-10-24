@@ -22,7 +22,7 @@ containers:
   image: {{ .Values.postgres.image }}
   env:
   - name: PGHOST
-    value: "postgres-service"
+    value: "pdb"
   - name: PGPORT
     value: "5432"
   - name: PGDATABASE
