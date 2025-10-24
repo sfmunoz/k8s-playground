@@ -51,7 +51,7 @@ data:
     wal_level = replica
     wal_compression = on
     archive_mode = on
-    archive_command = 'rclone copyto -P %p rem:pg_wal/%f'
+    archive_command = 'set -x -e -o pipefail ; gzip -c %p | rclone -P rcat rem:pg_wal/%f.gz'
     archive_timeout = 30
-    restore_command = 'rclone copyto -P rem:pg_wal/%f %p'
+    restore_command = 'set -x -e -o pipefail ; rclone -P cat rem:pg_wal/%f.gz | gunzip > %p'
     __EOF
