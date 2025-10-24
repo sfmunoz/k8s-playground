@@ -28,6 +28,9 @@ data:
       date
       tar -C "${PGDATA}/pg_wal" -xvzf "/loc/${FOLDER}/pg_wal.tar.gz"
       date
+      touch "${PGDATA}/recovery.signal"
+      chown postgres:postgres "${PGDATA}/recovery.signal"
+      chmod 600 "${PGDATA}/recovery.signal"
       rm -rf "/loc/${FOLDER}"
     fi
     date
