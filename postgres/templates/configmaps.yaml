@@ -41,6 +41,30 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: postgres-backup
+data:
+  backup.sh: |
+    #!/bin/sh
+    set -x -e -o pipefail
+    date
+    cp /shared/rclone /usr/local/bin/rclone
+    chown 0:0 /usr/local/bin/rclone
+    chmod 755 /usr/local/bin/rclone
+    while ! pg_isready ; do date ; sleep 1 ; done
+    date
+    FOLDER="bck-$(date +%Y%m%d-%H%M%S)"
+    mkdir -p /loc
+    date
+    pg_basebackup -U postgres -c fast -D "/loc/${FOLDER}" -F tar -z -P -v
+    date
+    rclone copyto -P "/loc/${FOLDER}" "rem:${FOLDER}"
+    date
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: postgres-docker-entrypoint-initdb-d
 data:
   0_pg_hba.sh: |
