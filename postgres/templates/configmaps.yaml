@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+data:
+  init.sh: |
+    #!/bin/sh
+    set -x -e -o pipefail
+    cp /shared/rclone /usr/local/bin/rclone
+    chown 0:0 /usr/local/bin/rclone
+    chmod 755 /usr/local/bin/rclone
+    date
+    FOLDER=""
+    if [ "$EMPTY" != "yes" ]
+    then
+      FOLDER="$(rclone lsf rem: | sort -r | awk '/^bck-\d{8}-\d{6}\/$/ { print substr($1,1,19) ; exit 0 ; }')"
+    fi
+    date
+    if [ "$FOLDER" != "" ]
+    then
+      mkdir -p "${PGDATA}"
+      chown postgres:root "${PGDATA}"
+      chmod 0700 "${PGDATA}"
+      date
+      rclone copyto -P "rem:${FOLDER}" "/loc/${FOLDER}"
+      date
+      tar -C "${PGDATA}" -xvzf "/loc/${FOLDER}/base.tar.gz"
+      date
+      tar -C "${PGDATA}/pg_wal" -xvzf "/loc/${FOLDER}/pg_wal.tar.gz"
+      date
+      touch "${PGDATA}/recovery.signal"
+      chown postgres:postgres "${PGDATA}/recovery.signal"
+      chmod 600 "${PGDATA}/recovery.signal"
+      rm -rf "/loc/${FOLDER}"
+    fi
+    date
+    exec docker-entrypoint.sh postgres
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-docker-entrypoint-initdb-d
+data:
+  0_pg_hba.sh: |
+    #!/bin/sh
+    cat >> "${PGDATA}/pg_hba.conf" << __EOF
+    host replication all all scram-sha-256
+    __EOF
+  1_postgresql_conf.sh: |
+    #!/bin/sh
+    cat << __EOF >> "${PGDATA}/postgresql.conf"
+    wal_level = replica
+    wal_compression = on
+    archive_mode = on
+    archive_command = 'set -x -e -o pipefail ; gzip -c %p | rclone -P rcat rem:pg_wal/%f.gz'
+    archive_timeout = 30
+    restore_command = 'set -x -e -o pipefail ; rclone -P cat rem:pg_wal/%f.gz | gunzip > %p'
+    __EOF
