@@ -37,27 +37,16 @@ containers:
   imagePullPolicy: IfNotPresent
   command: ["/bin/sh","-c"]
   args:
-  - |
-    set -x -e -o pipefail
-    date
-    cp /shared/rclone /usr/local/bin/rclone
-    chown 0:0 /usr/local/bin/rclone
-    chmod 755 /usr/local/bin/rclone
-    while ! pg_isready ; do date ; sleep 1 ; done
-    date
-    FOLDER="bck-$(date +%Y%m%d-%H%M%S)"
-    mkdir -p /loc
-    date
-    pg_basebackup -U postgres -c fast -D "/loc/${FOLDER}" -F tar -z -P -v
-    date
-    rclone copyto -P "/loc/${FOLDER}" "rem:${FOLDER}"
-    date
+  - "exec /bin/sh /postgres-backup/backup.sh"
   volumeMounts:
   - name: vol-c
     mountPath: /root/.config/rclone
     readOnly: true
   - name: vol-c
     mountPath: /var/lib/postgresql/.config/rclone
+    readOnly: true
+  - name: vol-postgres-backup
+    mountPath: /postgres-backup
     readOnly: true
   - name: vol-shared
     mountPath: /shared
@@ -75,6 +64,9 @@ volumes:
     items:
     - key: rcloneConf
       path: rclone.conf
+- name: vol-postgres-backup
+  configMap:
+    name: postgres-backup
 - name: vol-shared
   emptyDir: {}
 restartPolicy: OnFailure
