@@ -1,19 +1,19 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: postgres-deploy
-  labels:
-    app: postgres
+  name: db
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: postgres
+  serviceName: pdb
+  replicas: 1
   template:
     metadata:
       labels:
         app: postgres
     spec:
+      terminationGracePeriodSeconds: 60
       initContainers:
       - name: rclone
         image: {{ .Values.rclone.image }}
