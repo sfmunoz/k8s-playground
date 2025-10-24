@@ -10,7 +10,11 @@ spec:
     image: {{ .Values.postgres.image }}
     command: ["/bin/sh","-c"]
     args:
-    - "exec pgbench -i"
+    - |
+      set -x -e -o pipefail
+      pgbench -i
+      pgbench -c 3 -j 2 -T 2
+      psql -c checkpoint
     env:
     - name: PGHOST
       value: "postgres-service"
