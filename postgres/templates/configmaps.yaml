@@ -9,11 +9,11 @@ data:
     #!/bin/sh
     set -x -e -o pipefail
     date
-    [ "$HOSTNAME" = "db-0" ] || exec tail -f /dev/null
     cp /shared/rclone /usr/local/bin/rclone
     chown 0:0 /usr/local/bin/rclone
     chmod 755 /usr/local/bin/rclone
     date
+    [ "${HOSTNAME: -2}" = "-0" ] || exec tail -f /dev/null
     FOLDER=""
     if [ "$EMPTY" != "yes" ]
     then
