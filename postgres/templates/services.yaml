@@ -9,6 +9,9 @@ spec:
   clusterIP: None
   selector:
     {{- include "postgres.selectorLabels" . | nindent 4 }}
+    {{- with .Values.podLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   # host -t a/srv <name>
   # host -t a/srv _main-port._tcp.<name>
   ports:  # Not mandatory for 'clusterIP=None'. Used to define DNS->SRV records
