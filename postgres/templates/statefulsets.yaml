@@ -1,21 +1,30 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: db
+  name: {{ include "postgres.fullname" . }}
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: postgres
-  serviceName: pdb
+      {{- include "postgres.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "postgres.service.main" . }}
   replicas: 1
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        app: postgres
+        {{- include "postgres.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: {{ .Values.postgres.terminationGracePeriodSeconds | default 60 }}
       initContainers:
-      - name: rclone
+      - name: {{ include "postgres.name" . }}-rclone
         image: {{ .Values.rclone.image }}
         command: ["/bin/sh","-c"]
         args:
@@ -33,7 +42,7 @@ spec:
         - name: vol-shared
           mountPath: /shared
       containers:
-      - name: postgres
+      - name: {{ include "postgres.name" . }}-db
         image: {{ .Values.postgres.image }}
         command: ["/bin/sh","-c"]
         args:
@@ -42,7 +51,7 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: postgres
+              name: {{ include "postgres.secret.superuser.password" . }}
               key: POSTGRES_PASSWORD
         - name: EMPTY
           value: {{ .Values.postgres.empty | ternary "yes" "no" | quote }}
@@ -71,15 +80,15 @@ spec:
       volumes:
       - name: vol-c
         secret:
-          secretName: postgres-rclone-conf
+          secretName: {{ include "postgres.secret.rclone.conf" . }}
           items:
           - key: rcloneConf
             path: rclone.conf
       - name: vol-postgres-init
         configMap:
-          name: postgres-init
+          name: {{ include "postgres.configmap.init" . }}
       - name: vol-docker-entrypoint-initdb-d
         configMap:
-          name: postgres-docker-entrypoint-initdb-d
+          name: {{ include "postgres.configmap.entrypoint" . }}
       - name: vol-shared
         emptyDir: {}

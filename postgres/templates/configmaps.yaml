@@ -1,17 +1,19 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-init
+  name: {{ include "postgres.configmap.init" . }}
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
 data:
   init.sh: |
     #!/bin/sh
     set -x -e -o pipefail
     date
-    [ "$HOSTNAME" = "db-0" ] || exec tail -f /dev/null
     cp /shared/rclone /usr/local/bin/rclone
     chown 0:0 /usr/local/bin/rclone
     chmod 755 /usr/local/bin/rclone
     date
+    [ "${HOSTNAME: -2}" = "-0" ] || exec tail -f /dev/null
     FOLDER=""
     if [ "$EMPTY" != "yes" ]
     then
@@ -43,7 +45,9 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-backup
+  name: {{ include "postgres.configmap.backup" . }}
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
 data:
   backup.sh: |
     #!/bin/sh
@@ -67,7 +71,9 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-docker-entrypoint-initdb-d
+  name: {{ include "postgres.configmap.entrypoint" . }}
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
 data:
   0_pg_hba.sh: |
     #!/bin/sh

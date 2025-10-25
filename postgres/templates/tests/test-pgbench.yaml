@@ -1,12 +1,14 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: postgres-pgbench-test
+  name: {{ include "postgres.fullname" . }}-pgbench-test
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
 spec:
   containers:
-  - name: postgres
+  - name: {{ include "postgres.name" . }}-pgbench
     image: {{ .Values.postgres.image }}
     command: ["/bin/sh","-c"]
     args:
@@ -17,7 +19,7 @@ spec:
       psql -c checkpoint
     env:
     - name: PGHOST
-      value: "pdb"
+      value: {{ include "postgres.service.main" . }}
     - name: PGPORT
       value: "5432"
     - name: PGDATABASE
@@ -27,6 +29,6 @@ spec:
     - name: PGPASSWORD
       valueFrom:
         secretKeyRef:
-          name: postgres
+          name: {{ include "postgres.secret.superuser.password" . }}
           key: POSTGRES_PASSWORD
   restartPolicy: Never

@@ -1,7 +1,9 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: postgres-backup
+  name: {{ include "postgres.fullname" . }}-backup
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
 spec:
   schedule: "0 0 * * *"
   jobTemplate:
