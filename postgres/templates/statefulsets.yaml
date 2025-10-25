@@ -1,21 +1,30 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: db
+  name: {{ include "postgres.fullname" . }}
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: postgres
-  serviceName: pdb
+      {{- include "postgres.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "postgres.fullname" . }}
   replicas: 1
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        app: postgres
+        {{- include "postgres.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       terminationGracePeriodSeconds: 60
       initContainers:
-      - name: rclone
+      - name: {{ .Chart.Name }}-rclone
         image: {{ .Values.rclone.image }}
         command: ["/bin/sh","-c"]
         args:
@@ -33,7 +42,7 @@ spec:
         - name: vol-shared
           mountPath: /shared
       containers:
-      - name: postgres
+      - name: {{ .Chart.Name }}-db
         image: {{ .Values.postgres.image }}
         command: ["/bin/sh","-c"]
         args:
