@@ -1,22 +1,5 @@
 #
-# Install/upgrade:
-#
-#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml pdb .
-#
-# Install/upgrade (no restore attempt):
-#
-#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml --set postgres.empty=true pdb .
-#
-# Test (once deployed using 'release=pdb'):
-#
-#   $ helm test -n dev --logs pdb
-#   $ helm test -n dev --logs --filter name=pdb-postgres-backup-test pdb
-#   $ helm test -n dev --logs --filter name=pdb-postgres-pgbench-test pdb
-#
-# Uninstall/cleanup:
-#
-#   $ helm uninstall -n dev postgres
-#   $ kubectl delete namespaces dev
+# Usage details: 'templates/NOTES.txt'
 #
 
 apiVersion: v2
