@@ -76,3 +76,7 @@ Create the name of the service account to use
 {{- define "postgres.secret.rclone.conf" -}}
 {{ include "postgres.fullname" . }}-rclone-conf
 {{- end }}
+
+{{- define "postgres.secret.superuser.password" -}}
+{{ include "postgres.fullname" . }}-superuser-password
+{{- end }}

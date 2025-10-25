@@ -32,7 +32,7 @@ containers:
   - name: PGPASSWORD
     valueFrom:
       secretKeyRef:
-        name: postgres
+        name: {{ include "postgres.secret.superuser.password" . }}
         key: POSTGRES_PASSWORD
   imagePullPolicy: IfNotPresent
   command: ["/bin/sh","-c"]
