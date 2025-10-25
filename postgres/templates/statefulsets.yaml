@@ -86,7 +86,7 @@ spec:
             path: rclone.conf
       - name: vol-postgres-init
         configMap:
-          name: postgres-init
+          name: {{ include "postgres.configmap.init" . }}
       - name: vol-docker-entrypoint-initdb-d
         configMap:
           name: postgres-docker-entrypoint-initdb-d
