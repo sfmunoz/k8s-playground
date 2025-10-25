@@ -25,5 +25,5 @@ Uninstall/cleanup:
 
 Template:
 
-  $ helm install --dry-run --debug --disable-openapi-validation -f secrets://secrets.yaml {{ .Release.Name }} .
+  $ helm install --dry-run --debug --disable-openapi-validation -f secrets://secrets.yaml -n {{ .Release.Namespace }} {{ .Release.Name }} .
   $ helm template .
