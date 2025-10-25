@@ -24,7 +24,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: {{ .Values.postgres.terminationGracePeriodSeconds | default 60 }}
       initContainers:
-      - name: {{ .Chart.Name }}-rclone
+      - name: {{ include "postgres.name" . }}-rclone
         image: {{ .Values.rclone.image }}
         command: ["/bin/sh","-c"]
         args:
@@ -42,7 +42,7 @@ spec:
         - name: vol-shared
           mountPath: /shared
       containers:
-      - name: {{ .Chart.Name }}-db
+      - name: {{ include "postgres.name" . }}-db
         image: {{ .Values.postgres.image }}
         command: ["/bin/sh","-c"]
         args:

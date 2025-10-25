@@ -8,7 +8,7 @@ metadata:
     "helm.sh/hook": test
 spec:
   containers:
-  - name: {{ .Chart.Name }}-pgbench
+  - name: {{ include "postgres.name" . }}-pgbench
     image: {{ .Values.postgres.image }}
     command: ["/bin/sh","-c"]
     args:

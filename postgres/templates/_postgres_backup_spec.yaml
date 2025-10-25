@@ -1,6 +1,6 @@
 {{- define "postgres.backup.spec" -}}
 initContainers:
-- name: {{ .Chart.Name }}-rclone
+- name: {{ include "postgres.name" . }}-rclone
   image: {{ .Values.rclone.image }}
   command: ["/bin/sh","-c"]
   args:
@@ -18,7 +18,7 @@ initContainers:
   - name: vol-shared
     mountPath: /shared
 containers:
-- name: {{ .Chart.Name }}-backup
+- name: {{ include "postgres.name" . }}-backup
   image: {{ .Values.postgres.image }}
   env:
   - name: PGHOST
