@@ -5,6 +5,8 @@ myCfg:
   S3_REGION: <region>
   S3_BUCKET: <bucket>
   ALIAS_NAME: <alias_name>
+  CRYPT_PASSWORD: <password>
+  CRYPT_PASSWORD2: <password2>
 
 rclone:
   image: rclone/rclone:sha-6805da6
