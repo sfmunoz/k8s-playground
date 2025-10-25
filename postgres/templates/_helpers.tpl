@@ -92,3 +92,7 @@ Create the name of the service account to use
 {{- define "postgres.test.backup" -}}
 {{ include "postgres.fullname" . }}-backup-test
 {{- end }}
+
+{{- define "postgres.test.pgbench" -}}
+{{ include "postgres.fullname" . }}-pgbench-test
+{{- end }}

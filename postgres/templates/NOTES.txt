@@ -10,13 +10,11 @@ Install/upgrade (empty database):
 
   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml --set postgres.empty=true <release-name> .
 
-{{ include "postgres.fullname" . }}
-
 Test (once deployed using release-name="{{ .Release.Name }}"):
 
   $ helm test -n {{ .Release.Namespace }} --logs {{ .Release.Name }}
   $ helm test -n {{ .Release.Namespace }} --logs --filter name={{ include "postgres.test.backup" . }} {{ .Release.Name }}
-  $ helm test -n {{ .Release.Namespace }} --logs --filter name=pdb-postgres-pgbench-test {{ .Release.Name }}
+  $ helm test -n {{ .Release.Namespace }} --logs --filter name={{ include "postgres.test.pgbench" . }} {{ .Release.Name }}
 
 Uninstall/cleanup:
 
