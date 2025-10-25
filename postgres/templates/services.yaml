@@ -1,14 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: pdb
+  name: {{ include "postgres.fullname" . }}
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   clusterIP: None
   selector:
-    app: postgres
-  # host -t a/srv pdb
-  # host -t a/srv _main-port._tcp.pdb
+    {{- include "postgres.selectorLabels" . | nindent 4 }}
+  # host -t a/srv <name>
+  # host -t a/srv _main-port._tcp.<name>
   ports:  # Not mandatory for 'clusterIP=None'. Used to define DNS->SRV records
   - name: main-port
     port: 5432
