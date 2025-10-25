@@ -15,7 +15,7 @@ Install/upgrade (empty database):
 Test (once deployed using release-name="{{ .Release.Name }}"):
 
   $ helm test -n {{ .Release.Namespace }} --logs {{ .Release.Name }}
-  $ helm test -n {{ .Release.Namespace }} --logs --filter name=pdb-postgres-backup-test {{ .Release.Name }}
+  $ helm test -n {{ .Release.Namespace }} --logs --filter name={{ include "postgres.test.backup" . }} {{ .Release.Name }}
   $ helm test -n {{ .Release.Namespace }} --logs --filter name=pdb-postgres-pgbench-test {{ .Release.Name }}
 
 Uninstall/cleanup:
