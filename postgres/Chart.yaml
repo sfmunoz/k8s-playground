@@ -1,17 +1,17 @@
 #
 # Install/upgrade:
 #
-#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml postgres .
+#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml pdb .
 #
 # Install/upgrade (no restore attempt):
 #
-#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml --set postgres.empty=true postgres .
+#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml --set postgres.empty=true pdb .
 #
-# Test (once deployed):
+# Test (once deployed using 'release=pdb'):
 #
-#   $ helm test -n dev --logs postgres
-#   $ helm test -n dev --logs --filter name=postgres-backup-test postgres
-#   $ helm test -n dev --logs --filter name=postgres-pgbench-test postgres
+#   $ helm test -n dev --logs pdb
+#   $ helm test -n dev --logs --filter name=pdb-postgres-backup-test pdb
+#   $ helm test -n dev --logs --filter name=pdb-postgres-pgbench-test pdb
 #
 # Uninstall/cleanup:
 #
