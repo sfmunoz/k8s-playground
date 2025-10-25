@@ -1,7 +1,3 @@
-+----------+
-| Postgres |
-+----------+
-
 Install/upgrade (usual: release-name="pdb"):
 
   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml <flags> <release-name> .
