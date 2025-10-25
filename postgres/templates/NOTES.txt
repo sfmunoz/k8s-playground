@@ -4,11 +4,12 @@
 
 Install/upgrade (usual: release-name="pdb"):
 
-  $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml <release-name> .
+  $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml <flags> <release-name> .
 
-Install/upgrade (empty database):
+Flags (optional):
 
-  $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml --set postgres.empty=true <release-name> .
+  --set postgres.empty=true : empty database (don't restore)
+  --set postgres.terminationGracePeriodSeconds=10 : time to wait for pod to finish before killing it (default is 60s)
 
 Test (once deployed using release-name="{{ .Release.Name }}"):
 
