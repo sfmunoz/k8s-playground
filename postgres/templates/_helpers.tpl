@@ -80,3 +80,7 @@ Create the name of the service account to use
 {{- define "postgres.secret.superuser.password" -}}
 {{ include "postgres.fullname" . }}-superuser-password
 {{- end }}
+
+{{- define "postgres.service.main" -}}
+{{ include "postgres.fullname" . }}-main
+{{- end }}

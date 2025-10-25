@@ -19,7 +19,7 @@ spec:
       psql -c checkpoint
     env:
     - name: PGHOST
-      value: "pdb"
+      value: {{ include "postgres.service.main" . }}
     - name: PGPORT
       value: "5432"
     - name: PGDATABASE
