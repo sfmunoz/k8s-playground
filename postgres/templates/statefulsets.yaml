@@ -80,7 +80,7 @@ spec:
       volumes:
       - name: vol-c
         secret:
-          secretName: postgres-rclone-conf
+          secretName: {{ include "postgres.secret.rclone.conf" . }}
           items:
           - key: rcloneConf
             path: rclone.conf

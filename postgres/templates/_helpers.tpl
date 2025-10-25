@@ -72,3 +72,7 @@ Create the name of the service account to use
 {{- define "postgres.configmap.entrypoint" -}}
 {{ include "postgres.fullname" . }}-entrypoint
 {{- end }}
+
+{{- define "postgres.secret.rclone.conf" -}}
+{{ include "postgres.fullname" . }}-rclone-conf
+{{- end }}
