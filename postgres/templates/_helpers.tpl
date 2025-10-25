@@ -84,3 +84,7 @@ Create the name of the service account to use
 {{- define "postgres.service.main" -}}
 {{ include "postgres.fullname" . }}-main
 {{- end }}
+
+{{- define "postgres.dirname" -}}
+{{ .Release.Namespace }}/{{ include "postgres.fullname" . }}
+{{- end }}

@@ -9,5 +9,5 @@ location_constraint = {{ required "S3_REGION missing" .S3_REGION }}
 
 [{{ required "ALIAS_NAME missing" .ALIAS_NAME }}]
 type = alias
-remote = s3:{{ required "S3_BUCKET missing" .S3_BUCKET }}/{{ .S3_FOLDER }}
+remote = s3:{{ required "S3_BUCKET missing" .S3_BUCKET }}/{{ required "S3_FOLDER missing" .S3_FOLDER }}
 {{ end }}
