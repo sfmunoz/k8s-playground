@@ -1,0 +1,15 @@
+Install/upgrade (example: namespace=dev, name=pdb)
+  $ helm upgrade --install -n <namespace> --create-namespace -f secrets://secrets.yaml <flags> <name> .
+  Flags (optional):
+    --set postgres.empty=true : empty database (don't restore)
+    --set postgres.terminationGracePeriodSeconds=10 : time to wait for pod to finish before killing it (default is 60s)
+Test (once deployed using release-name="{{ .Release.Name }}"):
+  $ helm test -n {{ .Release.Namespace }} --logs {{ .Release.Name }}
+  $ helm test -n {{ .Release.Namespace }} --logs --filter name={{ include "postgres.test.backup" . }} {{ .Release.Name }}
+  $ helm test -n {{ .Release.Namespace }} --logs --filter name={{ include "postgres.test.pgbench" . }} {{ .Release.Name }}
+Uninstall/cleanup:
+  $ helm uninstall -n {{ .Release.Namespace }} {{ .Release.Name }}
+  $ kubectl delete namespaces {{ .Release.Namespace }}
+Template:
+  $ helm install --dry-run --debug --disable-openapi-validation -f secrets://secrets.yaml -n {{ .Release.Namespace }} {{ .Release.Name }} .
+  $ helm template .
