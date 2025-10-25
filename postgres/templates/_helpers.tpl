@@ -68,3 +68,7 @@ Create the name of the service account to use
 {{- define "postgres.configmap.backup" -}}
 {{ include "postgres.fullname" . }}-backup
 {{- end }}
+
+{{- define "postgres.configmap.entrypoint" -}}
+{{ include "postgres.fullname" . }}-entrypoint
+{{- end }}

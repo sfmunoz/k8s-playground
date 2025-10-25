@@ -71,7 +71,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "postgres.fullname" . }}-entrypoint
+  name: {{ include "postgres.configmap.entrypoint" . }}
   labels:
     {{- include "postgres.labels" . | nindent 4 }}
 data:

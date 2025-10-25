@@ -89,6 +89,6 @@ spec:
           name: {{ include "postgres.configmap.init" . }}
       - name: vol-docker-entrypoint-initdb-d
         configMap:
-          name: postgres-docker-entrypoint-initdb-d
+          name: {{ include "postgres.configmap.entrypoint" . }}
       - name: vol-shared
         emptyDir: {}
