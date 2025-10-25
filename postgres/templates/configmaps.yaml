@@ -1,7 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-init
+  name: {{ include "postgres.fullname" . }}-init
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
 data:
   init.sh: |
     #!/bin/sh
@@ -43,7 +45,9 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-backup
+  name: {{ include "postgres.fullname" . }}-backup
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
 data:
   backup.sh: |
     #!/bin/sh
@@ -67,7 +71,9 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-docker-entrypoint-initdb-d
+  name: {{ include "postgres.fullname" . }}-entrypoint
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
 data:
   0_pg_hba.sh: |
     #!/bin/sh
