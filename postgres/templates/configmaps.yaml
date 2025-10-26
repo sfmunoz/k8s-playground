@@ -76,14 +76,17 @@ data:
     date
     rclone copyto -P "/loc/${LABEL}" "rem:${DNAME}/${LABEL}-${START_WAL_LOCATION}"
     date
-    # cleanup
+    # cleanup (full backups)
+    FULL_KEEP=10
+    rclone lsf "rem:${DNAME}" | awk -F '/' '/^[0-9]{8}-[0-9]{6}-[0-9A-F]{24}\/$/ { print $1 }' | sort | head -n -${FULL_KEEP} | awk -v DNAME="${DNAME}" '{ printf("rclone -v delete rem:%s/%s\n",DNAME,$1) }' | sh -x -e -o pipefail
+    # cleanup (WALs)
     WAL_MIN="$(rclone lsf "rem:${DNAME}" | sort | awk -F '/' '/^[0-9]{8}-[0-9]{6}-[0-9A-F]{24}\/$/ { print substr($1,17) ; exit 0 ; }')"
     if [ "${#WAL_MIN}" != "24" ]
     then
       echo "notice: cannot use WAL_MIN='${WAL_MIN}' (length is not 24)"
       exit 0
     fi
-    rclone lsf rem:pg_wal | awk -v WAL_MIN="${WAL_MIN}" -F '/' '/^[0-9A-F]{24}\..*gz$/ { if ( substr($1,1,24) < WAL_MIN ) { printf "rclone -v delete rem:pg_wal/%s\n",$1 } }' | sh -x -e -o pipefail
+    rclone lsf rem:pg_wal | awk -v WAL_MIN="${WAL_MIN}" -F '/' '/^[0-9A-F]{24}\..*gz$/ { if ( substr($1,1,24) < WAL_MIN ) { printf("rclone -v delete rem:pg_wal/%s\n",$1) } }' | sh -x -e -o pipefail
 
 ---
 
