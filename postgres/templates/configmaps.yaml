@@ -15,28 +15,28 @@ data:
     chmod 755 /usr/local/bin/rclone
     date
     [ "${HOSTNAME: -2}" = "-0" ] || exec tail -f /dev/null
-    FOLDER=""
+    LABEL=""
     if [ "$EMPTY" != "yes" ]
     then
-      FOLDER="$(rclone lsf "rem:${DNAME}" | sort -r | awk -F '/' '/^\d{8}-\d{6}\/$/ { print $1 ; exit 0 ; }')"
+      LABEL="$(rclone lsf "rem:${DNAME}" | sort -r | awk -F '/' '/^\d{8}-\d{6}\/$/ { print $1 ; exit 0 ; }')"
     fi
     date
-    if [ "$FOLDER" != "" ]
+    if [ "$LABEL" != "" ]
     then
       mkdir -p "${PGDATA}"
       chown postgres:root "${PGDATA}"
       chmod 0700 "${PGDATA}"
       date
-      rclone copyto -P "rem:${DNAME}/${FOLDER}" "/loc/${FOLDER}"
+      rclone copyto -P "rem:${DNAME}/${LABEL}" "/loc/${LABEL}"
       date
-      tar -C "${PGDATA}" -xvzf "/loc/${FOLDER}/base.tar.gz"
+      tar -C "${PGDATA}" -xvzf "/loc/${LABEL}/base.tar.gz"
       date
-      tar -C "${PGDATA}/pg_wal" -xvzf "/loc/${FOLDER}/pg_wal.tar.gz"
+      tar -C "${PGDATA}/pg_wal" -xvzf "/loc/${LABEL}/pg_wal.tar.gz"
       date
       touch "${PGDATA}/recovery.signal"
       chown postgres:postgres "${PGDATA}/recovery.signal"
       chmod 600 "${PGDATA}/recovery.signal"
-      rm -rf "/loc/${FOLDER}"
+      rm -rf "/loc/${LABEL}"
     fi
     date
     exec docker-entrypoint.sh postgres
@@ -60,12 +60,12 @@ data:
     chmod 755 /usr/local/bin/rclone
     while ! pg_isready ; do date ; sleep 1 ; done
     date
-    FOLDER="$(date +%Y%m%d-%H%M%S)"
+    LABEL="$(date +%Y%m%d-%H%M%S)"
     mkdir -p /loc
     date
-    pg_basebackup -U postgres -c fast -D "/loc/${FOLDER}" -l "${FOLDER}" -F tar -z -P -v
+    pg_basebackup -U postgres -c fast -D "/loc/${LABEL}" -l "${LABEL}" -F tar -z -P -v
     date
-    rclone copyto -P "/loc/${FOLDER}" "rem:${DNAME}/${FOLDER}"
+    rclone copyto -P "/loc/${LABEL}" "rem:${DNAME}/${LABEL}"
     date
 
 ---
