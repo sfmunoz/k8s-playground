@@ -34,16 +34,13 @@ data:
       chown postgres:root "${PGDATA}"
       chmod 0700 "${PGDATA}"
       date
-      rclone copyto -P "rem:${DNAME}/${LABEL}" "/loc/${LABEL}"
+      rclone -P cat "rem:${DNAME}/${LABEL}/base.tar.gz" | tar -xvzC "${PGDATA}"
       date
-      tar -C "${PGDATA}" -xvzf "/loc/${LABEL}/base.tar.gz"
-      date
-      tar -C "${PGDATA}/pg_wal" -xvzf "/loc/${LABEL}/pg_wal.tar.gz"
+      rclone -P cat "rem:${DNAME}/${LABEL}/pg_wal.tar.gz" | tar -xvzC "${PGDATA}/pg_wal"
       date
       touch "${PGDATA}/recovery.signal"
       chown postgres:postgres "${PGDATA}/recovery.signal"
       chmod 600 "${PGDATA}/recovery.signal"
-      rm -rf "/loc/${LABEL}"
     fi
     date
     exec docker-entrypoint.sh postgres
