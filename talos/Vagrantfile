@@ -79,8 +79,13 @@ Vagrant.configure("2") do |config|
   #   apt-get install -y apache2
   # SHELL
 
+  # https://docs.brew.sh/Homebrew-on-Linux
+  # sudo apt-get install build-essential procps curl file git
   config.vm.provision "shell", inline: <<-SHELL
     apt update
-    apt install -y tmux htop
+    apt install -y tmux htop build-essential procps curl file git
+    sudo -u vagrant /bin/bash -c "NONINTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    echo >> /home/vagrant/.bashrc
+    echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/vagrant/.bashrc
   SHELL
 end
