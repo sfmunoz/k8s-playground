@@ -7,6 +7,7 @@ metadata:
 data:
   init.sh: |
     #!/bin/sh
+    DNAME="full"
     set -x -e -o pipefail
     date
     cp /shared/rclone /usr/local/bin/rclone
@@ -17,7 +18,7 @@ data:
     FOLDER=""
     if [ "$EMPTY" != "yes" ]
     then
-      FOLDER="$(rclone lsf rem: | sort -r | awk '/^bck-\d{8}-\d{6}\/$/ { print substr($1,1,19) ; exit 0 ; }')"
+      FOLDER="$(rclone lsf "rem:${DNAME}" | sort -r | awk -F '/' '/^\d{8}-\d{6}\/$/ { print $1 ; exit 0 ; }')"
     fi
     date
     if [ "$FOLDER" != "" ]
@@ -26,7 +27,7 @@ data:
       chown postgres:root "${PGDATA}"
       chmod 0700 "${PGDATA}"
       date
-      rclone copyto -P "rem:${FOLDER}" "/loc/${FOLDER}"
+      rclone copyto -P "rem:${DNAME}/${FOLDER}" "/loc/${FOLDER}"
       date
       tar -C "${PGDATA}" -xvzf "/loc/${FOLDER}/base.tar.gz"
       date
@@ -51,6 +52,7 @@ metadata:
 data:
   backup.sh: |
     #!/bin/sh
+    DNAME="full"
     set -x -e -o pipefail
     date
     cp /shared/rclone /usr/local/bin/rclone
@@ -58,12 +60,12 @@ data:
     chmod 755 /usr/local/bin/rclone
     while ! pg_isready ; do date ; sleep 1 ; done
     date
-    FOLDER="bck-$(date +%Y%m%d-%H%M%S)"
+    FOLDER="$(date +%Y%m%d-%H%M%S)"
     mkdir -p /loc
     date
     pg_basebackup -U postgres -c fast -D "/loc/${FOLDER}" -F tar -z -P -v
     date
-    rclone copyto -P "/loc/${FOLDER}" "rem:${FOLDER}"
+    rclone copyto -P "/loc/${FOLDER}" "rem:${DNAME}/${FOLDER}"
     date
 
 ---
