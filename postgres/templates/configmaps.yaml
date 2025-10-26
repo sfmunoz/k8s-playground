@@ -94,6 +94,8 @@ data:
     set -x -e -o pipefail
     # cleanup (full backups)
     date
+    rclone lsf "rem:${DNAME}" | sort
+    date
     rclone lsf "rem:${DNAME}" | \
       awk -F '/' '/^[0-9]{8}-[0-9]{6}-[0-9A-F]{24}\/$/ {
         print $1
@@ -104,6 +106,8 @@ data:
         printf("rclone -v delete rem:%s/%s\n",DNAME,$1)
       }' | \
       sh -x -e -o pipefail
+    date
+    rclone lsf "rem:${DNAME}" | sort
     # cleanup (WALs)
     date
     WAL_MIN="$(
