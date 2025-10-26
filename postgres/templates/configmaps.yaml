@@ -65,6 +65,8 @@ data:
     date
     pg_basebackup -U postgres -c fast -D "/loc/${LABEL}" -l "${LABEL}" -F tar -z -P -v
     date
+    pg_verifybackup -nP "/loc/${LABEL}"
+    date
     rclone copyto -P "/loc/${LABEL}" "rem:${DNAME}/${LABEL}"
     date
 
