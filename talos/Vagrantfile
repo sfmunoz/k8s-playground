@@ -93,5 +93,6 @@ Vagrant.configure("2") do |config|
     echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' > /home/vagrant/.bashrc
     sudo -u vagrant -i /bin/bash -c "brew install siderolabs/tap/talosctl"
     echo 'source <(talosctl completion bash)' >> /home/vagrant/.bashrc
+    sudo -u vagrant -i /bin/bash -c "brew install kubernetes-cli"
   SHELL
 end
