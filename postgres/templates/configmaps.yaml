@@ -89,7 +89,7 @@ data:
     rclone copyto -P "/loc/${LABEL}" "rem:${DNAME}/${LABEL}-${START_WAL_LOCATION}"
     date
   cleanup.sh: |
-    [ "$FULL_KEEP" = "" ] && FULL_KEEP="10"
+    [ "$BACKUP_FULL_KEEP" = "" ] && BACKUP_FULL_KEEP="10"
     DNAME="full"
     set -x -e -o pipefail
     # cleanup (full backups)
@@ -99,7 +99,7 @@ data:
         print $1
       }' | \
       sort | \
-      head -n -${FULL_KEEP} | \
+      head -n -${BACKUP_FULL_KEEP} | \
       awk -v DNAME="${DNAME}" '{
         printf("rclone -v delete rem:%s/%s\n",DNAME,$1)
       }' | \

@@ -34,6 +34,8 @@ containers:
       secretKeyRef:
         name: {{ include "postgres.secret.superuser.password" . }}
         key: POSTGRES_PASSWORD
+  - name: BACKUP_FULL_KEEP
+    value: {{ .Values.postgres.backupFullKeep | default 10 | quote }}
   imagePullPolicy: IfNotPresent
   command: ["/bin/sh","-c"]
   args:
