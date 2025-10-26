@@ -17,6 +17,7 @@ spec:
       pgbench -i
       pgbench -c 3 -j 2 -T 2
       psql -c checkpoint
+      psql -c 'select pg_switch_wal()'
     env:
     - name: PGHOST
       value: {{ include "postgres.service.main" . }}
