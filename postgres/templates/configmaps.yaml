@@ -7,6 +7,7 @@ metadata:
 data:
   init.sh: |
     #!/bin/sh
+    DNAME="full"
     set -x -e -o pipefail
     date
     cp /shared/rclone /usr/local/bin/rclone
@@ -14,28 +15,35 @@ data:
     chmod 755 /usr/local/bin/rclone
     date
     [ "${HOSTNAME: -2}" = "-0" ] || exec tail -f /dev/null
-    FOLDER=""
+    LABEL=""
     if [ "$EMPTY" != "yes" ]
     then
-      FOLDER="$(rclone lsf rem: | sort -r | awk '/^bck-\d{8}-\d{6}\/$/ { print substr($1,1,19) ; exit 0 ; }')"
+      LABEL="$(
+        rclone lsf "rem:${DNAME}" | \
+        sort -r | \
+        awk -F '/' '/^[0-9]{8}-[0-9]{6}-[0-9A-F]{24}\/$/ {
+          print $1
+          exit 0
+        }'
+      )"
     fi
     date
-    if [ "$FOLDER" != "" ]
+    if [ "$LABEL" != "" ]
     then
       mkdir -p "${PGDATA}"
       chown postgres:root "${PGDATA}"
       chmod 0700 "${PGDATA}"
       date
-      rclone copyto -P "rem:${FOLDER}" "/loc/${FOLDER}"
+      rclone copyto -P "rem:${DNAME}/${LABEL}" "/loc/${LABEL}"
       date
-      tar -C "${PGDATA}" -xvzf "/loc/${FOLDER}/base.tar.gz"
+      tar -C "${PGDATA}" -xvzf "/loc/${LABEL}/base.tar.gz"
       date
-      tar -C "${PGDATA}/pg_wal" -xvzf "/loc/${FOLDER}/pg_wal.tar.gz"
+      tar -C "${PGDATA}/pg_wal" -xvzf "/loc/${LABEL}/pg_wal.tar.gz"
       date
       touch "${PGDATA}/recovery.signal"
       chown postgres:postgres "${PGDATA}/recovery.signal"
       chmod 600 "${PGDATA}/recovery.signal"
-      rm -rf "/loc/${FOLDER}"
+      rm -rf "/loc/${LABEL}"
     fi
     date
     exec docker-entrypoint.sh postgres
@@ -51,6 +59,7 @@ metadata:
 data:
   backup.sh: |
     #!/bin/sh
+    DNAME="full"
     set -x -e -o pipefail
     date
     cp /shared/rclone /usr/local/bin/rclone
@@ -58,12 +67,80 @@ data:
     chmod 755 /usr/local/bin/rclone
     while ! pg_isready ; do date ; sleep 1 ; done
     date
-    FOLDER="bck-$(date +%Y%m%d-%H%M%S)"
+    LABEL="$(date +%Y%m%d-%H%M%S)"
     mkdir -p /loc
     date
-    pg_basebackup -U postgres -c fast -D "/loc/${FOLDER}" -F tar -z -P -v
+    pg_basebackup -U postgres -c fast -D "/loc/${LABEL}" -l "${LABEL}" -F tar -z -P -v
     date
-    rclone copyto -P "/loc/${FOLDER}" "rem:${FOLDER}"
+    pg_verifybackup -nP "/loc/${LABEL}"
+    date
+    START_WAL_LOCATION="$(
+      tar xzf "/loc/${LABEL}/base.tar.gz" -O backup_label | \
+      awk '/^START WAL LOCATION:/ {
+        print substr($6,1,24)
+      }'
+    )"
+    date
+    if [ "${#START_WAL_LOCATION}" != "24" ]
+    then
+      echo "error: wrong START_WAL_LOCATION='${START_WAL_LOCATION}' (length is not 24)"
+      exit 1
+    fi
+    rclone copyto -P "/loc/${LABEL}" "rem:${DNAME}/${LABEL}-${START_WAL_LOCATION}"
+    date
+  cleanup.sh: |
+    [ "$BACKUP_FULL_KEEP" = "" ] && BACKUP_FULL_KEEP="10"
+    DNAME="full"
+    set -x -e -o pipefail
+    # cleanup (full backups)
+    date
+    rclone lsf "rem:${DNAME}" | sort
+    date
+    rclone lsf "rem:${DNAME}" | \
+      awk -F '/' '/^[0-9]{8}-[0-9]{6}-[0-9A-F]{24}\/$/ {
+        print $1
+      }' | \
+      sort | \
+      head -n -${BACKUP_FULL_KEEP} | \
+      awk -v DNAME="${DNAME}" '{
+        printf("rclone -v delete rem:%s/%s\n",DNAME,$1)
+      }' | \
+      sh -x -e -o pipefail
+    date
+    rclone lsf "rem:${DNAME}" | sort
+    # cleanup (WALs)
+    date
+    WAL_MIN="$(
+      rclone lsf "rem:${DNAME}" | \
+      sort | \
+      awk -F '/' '/^[0-9]{8}-[0-9]{6}-[0-9A-F]{24}\/$/ {
+        print substr($1,17)
+        exit 0
+      }'
+    )"
+    date
+    if [ "${#WAL_MIN}" != "24" ]
+    then
+      echo "notice: cannot use WAL_MIN='${WAL_MIN}' (length is not 24)"
+      exit 0
+    fi
+    rclone lsf rem:pg_wal | \
+      awk -v WAL_MIN="${WAL_MIN}" -F '/' '
+        BEGIN {
+          WAL_MIN_8 = substr(WAL_MIN,1,8)
+        }
+        /^[0-9A-F]{24}\.([0-9A-F]{8}\.backup\.)?gz$/ {
+          if ( substr($1,1,24) < WAL_MIN ) {
+            printf("rclone -v delete rem:pg_wal/%s\n",$1)
+          }
+        }
+        /^[0-9A-F]{8}\.history\.gz$/ {
+          if ( substr($1,1,8) < WAL_MIN_8 ) {
+            printf("rclone -v delete rem:pg_wal/%s\n",$1)
+          }
+        }
+      ' | \
+      sh -x -e -o pipefail
     date
 
 ---
