@@ -37,7 +37,10 @@ containers:
   imagePullPolicy: IfNotPresent
   command: ["/bin/sh","-c"]
   args:
-  - "exec /bin/sh /postgres-backup/backup.sh"
+  - |
+    set -x -e -o pipefail
+    /bin/sh /postgres-backup/backup.sh
+    /bin/sh /postgres-backup/cleanup.sh
   volumeMounts:
   - name: vol-c
     mountPath: /root/.config/rclone

@@ -88,8 +88,12 @@ data:
     fi
     rclone copyto -P "/loc/${LABEL}" "rem:${DNAME}/${LABEL}-${START_WAL_LOCATION}"
     date
+  cleanup.sh: |
+    [ "$FULL_KEEP" = "" ] && FULL_KEEP="10"
+    DNAME="full"
+    set -x -e -o pipefail
     # cleanup (full backups)
-    FULL_KEEP=10
+    date
     rclone lsf "rem:${DNAME}" | \
       awk -F '/' '/^[0-9]{8}-[0-9]{6}-[0-9A-F]{24}\/$/ {
         print $1
@@ -101,6 +105,7 @@ data:
       }' | \
       sh -x -e -o pipefail
     # cleanup (WALs)
+    date
     WAL_MIN="$(
       rclone lsf "rem:${DNAME}" | \
       sort | \
@@ -109,6 +114,7 @@ data:
         exit 0
       }'
     )"
+    date
     if [ "${#WAL_MIN}" != "24" ]
     then
       echo "notice: cannot use WAL_MIN='${WAL_MIN}' (length is not 24)"
@@ -131,6 +137,7 @@ data:
         }
       ' | \
       sh -x -e -o pipefail
+    date
 
 ---
 
