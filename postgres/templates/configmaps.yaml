@@ -115,11 +115,21 @@ data:
       exit 0
     fi
     rclone lsf rem:pg_wal | \
-      awk -v WAL_MIN="${WAL_MIN}" -F '/' '/^[0-9A-F]{24}\..*gz$/ {
-        if ( substr($1,1,24) < WAL_MIN ) {
-          printf("rclone -v delete rem:pg_wal/%s\n",$1)
+      awk -v WAL_MIN="${WAL_MIN}" -F '/' '
+        BEGIN {
+          WAL_MIN_8 = substr(WAL_MIN,1,8)
         }
-      }' | \
+        /^[0-9A-F]{24}\.([0-9A-F]{8}\.backup\.)?gz$/ {
+          if ( substr($1,1,24) < WAL_MIN ) {
+            printf("rclone -v delete rem:pg_wal/%s\n",$1)
+          }
+        }
+        /^[0-9A-F]{8}\.history\.gz$/ {
+          if ( substr($1,1,8) < WAL_MIN_8 ) {
+            printf("rclone -v delete rem:pg_wal/%s\n",$1)
+          }
+        }
+      ' | \
       sh -x -e -o pipefail
 
 ---
