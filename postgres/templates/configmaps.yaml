@@ -63,7 +63,7 @@ data:
     FOLDER="$(date +%Y%m%d-%H%M%S)"
     mkdir -p /loc
     date
-    pg_basebackup -U postgres -c fast -D "/loc/${FOLDER}" -F tar -z -P -v
+    pg_basebackup -U postgres -c fast -D "/loc/${FOLDER}" -l "${FOLDER}" -F tar -z -P -v
     date
     rclone copyto -P "/loc/${FOLDER}" "rem:${DNAME}/${FOLDER}"
     date
