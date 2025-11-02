@@ -16,9 +16,7 @@ Kubernetes playground
 ## References
 
 - https://kubernetes.io/
-- https://k3s.io/
-- https://kind.sigs.k8s.io/
-- https://www.vultr.com/
+- https://helm.sh/
 
 ## Usage
 
@@ -169,6 +167,8 @@ $ vagrant halt    (alt: "vagrant destroy" to do away with everything)
 
 ## talos-docker (vagrant)
 
+Ref: https://www.talos.dev/
+
 ```
 $ cd talos-docker
 
@@ -202,6 +202,8 @@ talos-default-worker-2         Ready    <none>          9m29s   v1.34.1
 ```
 
 ## Vultr
+
+Ref: https://www.vultr.com/
 
 Instance creation with **Debian 13** and **k3s** installed (plan/region/OS/script/ssh-key details follow):
 ```
