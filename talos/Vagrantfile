@@ -89,7 +89,8 @@ Vagrant.configure("2") do |config|
     # Remove /home/vagrant/.bashrc: blocks non-interactive execution at the beginning
     # which leads to sudo commands not finding 'brew'
     rm -f /home/vagrant/.bashrc
-    sudo -u vagrant -i /bin/bash -c "NONINTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | \
+      sudo -u vagrant -i /usr/bin/env NONINTERACTIVE=1 /bin/bash
     echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' > /home/vagrant/.bashrc
     sudo -u vagrant -i /bin/bash -c "brew install siderolabs/tap/talosctl"
     echo 'source <(talosctl completion bash)' >> /home/vagrant/.bashrc
