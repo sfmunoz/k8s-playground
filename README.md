@@ -9,7 +9,8 @@ Kubernetes playground
   - [3. s3](#3-s3)
 - [kubectl](#kubectl)
 - [k3s](#k3s)
-- [Vagrant](#vagrant)
+- [k3s (vagrant)](#k3s-vagrant)
+- [Talos (vagrant)](#talos-vagrant)
 - [Vultr](#vultr)
 - [kind](#kind)
 
@@ -131,7 +132,7 @@ Uninstall:
 # k3s-uninstall.sh
 ```
 
-## Vagrant
+## k3s (vagrant)
 
 Refs:
 
@@ -165,6 +166,40 @@ NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
 service/kubernetes   ClusterIP   10.43.0.1    <none>        443/TCP   2m4s
 
 $ vagrant halt    (alt: "vagrant destroy" to do away with everything)
+```
+
+## Talos (vagrant)
+
+```
+$ cd talos
+
+$ vagrant up
+
+$ vagrant ssh
+
+vagrant@vbox:~$ talosctl cluster show
+PROVISIONER           docker
+NAME                  talos-default
+NETWORK NAME          talos-default
+NETWORK CIDR          10.5.0.0/24
+NETWORK GATEWAY
+NETWORK MTU           1500
+KUBERNETES ENDPOINT   https://127.0.0.1:45687
+
+NODES:
+
+NAME                           TYPE           IP         CPU    RAM      DISK
+talos-default-controlplane-1   controlplane   10.5.0.2   2.00   2.1 GB   -
+talos-default-controlplane-2   controlplane   10.5.0.3   2.00   2.1 GB   -
+talos-default-worker-1         worker         10.5.0.4   2.00   2.1 GB   -
+talos-default-worker-2         worker         10.5.0.5   2.00   2.1 GB   -
+
+vagrant@vbox:~$ kubectl get nodes
+NAME                           STATUS   ROLES           AGE     VERSION
+talos-default-controlplane-1   Ready    control-plane   9m24s   v1.34.1
+talos-default-controlplane-2   Ready    control-plane   9m30s   v1.34.1
+talos-default-worker-1         Ready    <none>          9m29s   v1.34.1
+talos-default-worker-2         Ready    <none>          9m29s   v1.34.1
 ```
 
 ## Vultr
