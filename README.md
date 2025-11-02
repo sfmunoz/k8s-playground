@@ -147,6 +147,8 @@ Environment:
 Usage from the root of this repository clone (provided with [Vagrantfile](https://github.com/sfmunoz/k8s-playground/blob/main/Vagrantfile)):
 
 ```
+$ cd k3s
+
 $ vagrant up
 
 $ vagrant ssh -c 'sudo -u root cat /etc/rancher/k3s/k3s.yaml' > ~/.kube/config
