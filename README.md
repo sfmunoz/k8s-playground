@@ -3,68 +3,20 @@
 Kubernetes playground
 
 - [References](#references)
-- [Usage](#usage)
-  - [1. s3-cfg](#1-s3-cfg)
-  - [2. aws-mountpoint-s3-csi-driver](#2-aws-mountpoint-s3-csi-driver)
-  - [3. s3](#3-s3)
 - [kubectl](#kubectl)
 - [k3s (vagrant)](#k3s-vagrant)
 - [talos-docker (vagrant)](#talos-docker-vagrant)
+- [AWS mountpoint](#aws-mountpoint)
+  - [1. s3-cfg](#1-s3-cfg)
+  - [2. aws-mountpoint-s3-csi-driver](#2-aws-mountpoint-s3-csi-driver)
+  - [3. s3](#3-s3)
 - [Vultr](#vultr)
 - [kind](#kind)
 
 ## References
 
 - https://kubernetes.io/
-- https://k3s.io/
-- https://kind.sigs.k8s.io/
-- https://www.vultr.com/
-
-## Usage
-
-Step by step from a clean slate:
-
-### 1. s3-cfg
-```
-$ cat s3-cfg/Chart.yaml
-(...)
-# Required:
-#
-#   - https://github.com/FiloSottile/age
-#     # apt install age
-#   - https://github.com/getsops/sops
-#     $ curl -LO https://github.com/getsops/sops/releases/download/v3.10.2/sops-v3.10.2.linux.amd64
-#   - https://github.com/jkroepke/helm-secrets
-#     $ helm plugin install https://github.com/jkroepke/helm-secrets
-#
-# Install/upgrade:
-#
-#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml s3-cfg .
-(...)
-```
-## 2. aws-mountpoint-s3-csi-driver
-```
-$ cat aws-mountpoint-s3-csi-driver/install.sh
-#!/bin/bash
-(...)
-helm repo add aws-mountpoint-s3-csi-driver https://awslabs.github.io/mountpoint-s3-csi-driver
-helm repo update
-(...)
-helm upgrade \
-  --install aws-mountpoint-s3-csi-driver \
-  --namespace kube-system \
-  aws-mountpoint-s3-csi-driver/aws-mountpoint-s3-csi-driver
-(...)
-```
-## 3. s3
-```
-$ cat s3/Chart.yaml 
-(...)
-# Install/upgrade:
-#
-#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml s3 .
-(...)
-```
+- https://helm.sh/
 
 ## kubectl
 
@@ -169,6 +121,37 @@ $ vagrant halt    (alt: "vagrant destroy" to do away with everything)
 
 ## talos-docker (vagrant)
 
+Ref: https://www.talos.dev/
+
+**Note**: use `talosctl config nodes ...` as described to avoid the following error in most of **talosctl** commands:
+
+> *nodes are not set for the command: please use `--nodes` flag or configuration file to set the nodes to run the command against*
+
+```
+vagrant@vbox:~$ kubectl get nodes
+NAME                           STATUS   ROLES           AGE   VERSION
+talos-default-controlplane-1   Ready    control-plane   64m   v1.34.1
+talos-default-worker-1         Ready    <none>          64m   v1.34.1
+
+vagrant@vbox:~$ talosctl config info
+Current context:     talos-default
+Nodes:               not defined
+Endpoints:           127.0.0.1:42875
+Roles:               os:admin
+Certificate expires: 1 year from now (2026-11-02)
+
+vagrant@vbox:~$ talosctl config nodes talos-default-controlplane-1 talos-default-worker-1
+
+vagrant@vbox:~$ talosctl config info
+Current context:     talos-default
+Nodes:               talos-default-controlplane-1, talos-default-worker-1
+Endpoints:           127.0.0.1:42875
+Roles:               os:admin
+Certificate expires: 1 year from now (2026-11-02)
+```
+
+Usage:
+
 ```
 $ cd talos-docker
 
@@ -201,7 +184,55 @@ talos-default-worker-1         Ready    <none>          9m29s   v1.34.1
 talos-default-worker-2         Ready    <none>          9m29s   v1.34.1
 ```
 
+## AWS mountpoint
+
+Step by step from a clean slate:
+
+### 1. s3-cfg
+```
+$ cat s3-cfg/Chart.yaml
+(...)
+# Required:
+#
+#   - https://github.com/FiloSottile/age
+#     # apt install age
+#   - https://github.com/getsops/sops
+#     $ curl -LO https://github.com/getsops/sops/releases/download/v3.10.2/sops-v3.10.2.linux.amd64
+#   - https://github.com/jkroepke/helm-secrets
+#     $ helm plugin install https://github.com/jkroepke/helm-secrets
+#
+# Install/upgrade:
+#
+#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml s3-cfg .
+(...)
+```
+## 2. aws-mountpoint-s3-csi-driver
+```
+$ cat aws-mountpoint-s3-csi-driver/install.sh
+#!/bin/bash
+(...)
+helm repo add aws-mountpoint-s3-csi-driver https://awslabs.github.io/mountpoint-s3-csi-driver
+helm repo update
+(...)
+helm upgrade \
+  --install aws-mountpoint-s3-csi-driver \
+  --namespace kube-system \
+  aws-mountpoint-s3-csi-driver/aws-mountpoint-s3-csi-driver
+(...)
+```
+## 3. s3
+```
+$ cat s3/Chart.yaml
+(...)
+# Install/upgrade:
+#
+#   $ helm upgrade --install -n dev --create-namespace -f secrets://secrets.yaml s3 .
+(...)
+```
+
 ## Vultr
+
+Ref: https://www.vultr.com/
 
 Instance creation with **Debian 13** and **k3s** installed (plan/region/OS/script/ssh-key details follow):
 ```
