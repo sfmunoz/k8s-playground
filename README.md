@@ -8,9 +8,8 @@ Kubernetes playground
   - [2. aws-mountpoint-s3-csi-driver](#2-aws-mountpoint-s3-csi-driver)
   - [3. s3](#3-s3)
 - [kubectl](#kubectl)
-- [k3s](#k3s)
 - [k3s (vagrant)](#k3s-vagrant)
-- [Talos (vagrant)](#talos-vagrant)
+- [talos-docker (vagrant)](#talos-docker-vagrant)
 - [Vultr](#vultr)
 - [kind](#kind)
 
@@ -108,7 +107,7 @@ zsh autocompletion:
 $ source <(kubectl completion zsh)
 ```
 
-## k3s
+## k3s (vagrant)
 
 Ref: https://k3s.io/
 
@@ -132,9 +131,7 @@ Uninstall:
 # k3s-uninstall.sh
 ```
 
-## k3s (vagrant)
-
-Refs:
+Vagrant refs:
 
 - https://developer.hashicorp.com/vagrant/docs/boxes
 - https://vagrantcloud.com/boxes/search
@@ -168,10 +165,10 @@ service/kubernetes   ClusterIP   10.43.0.1    <none>        443/TCP   2m4s
 $ vagrant halt    (alt: "vagrant destroy" to do away with everything)
 ```
 
-## Talos (vagrant)
+## talos-docker (vagrant)
 
 ```
-$ cd talos
+$ cd talos-docker
 
 $ vagrant up
 
