@@ -9,21 +9,16 @@ Talos virtualbox:
 
 - [Kubernetes home lab on an old computer](https://www.youtube.com/watch?v=VKfE5BuqlSc)
 - [VirtualBox: Creating Talos Kubernetes cluster using VirtualBox VMs](https://docs.siderolabs.com/talos/v1.9/platform-specific-installations/local-platforms/virtualbox)
-- https://helm.sh/
 
 ## Steps
 
-Start VirtualBox VM using the following ISO:
-
-> https://github.com/siderolabs/talos/releases/download/v1.11.3/metal-amd64.iso
-
-Provide the VM with two network interfaces:
+**(1)** Start VirtualBox VM using using [metal-amd64.iso v1.11.3](https://github.com/siderolabs/talos/releases/download/v1.11.3/metal-amd64.iso) and provinding the VM with two network interfaces:
 
 - NAT
 - Host-only Adapter, 'vboxnet0'
   - Enabling a DHCP Server the VM will get the IP 192.168.56.3 (Lower Address Bound)
 
-Generate cluster config:
+**(2)** Generate the cluster config:
 
 ```
 talosctl gen config mycluster https://192.168.56.3:6443
@@ -35,7 +30,7 @@ Will create the following files:
 - talosconfig
 - worker.yaml
 
-Check disks:
+**(3)** Check VM disks:
 
 ```
 $ talosctl get disks --nodes 192.168.56.3 --insecure 
@@ -45,33 +40,31 @@ NODE   NAMESPACE   TYPE   ID      VERSION   SIZE     ...
        runtime     Disk   sr0     2         301 MB   ...
 ```
 
-Tune **controlpanel.yaml → machine → install → disk** to whatever you want (I'll keep using **/dev/sda**).
+**(4)** Tune **controlpanel.yaml → machine → install → disk** to whatever you want (I'll keep using **/dev/sda**).
 
-Apply **controlpanel.yaml** configuration:
+**(5)** Apply **controlpanel.yaml** configuration:
 
 ```
 $ talosctl apply-config --nodes 192.168.56.3 --file controlplane.yaml --insecure
 ```
 
-Bootstrap:
+**(6)** Bootstrap:
 
 ```
 $ talosctl bootstrap -n 192.168.56.3 -e 192.168.56.3 --talosconfig ./talosconfig
 ```
 
-Access the dashboard:
+**(7)** Access the dashboard:
 
 ```
 $ talosctl dashboard -n 192.168.56.3 -e 192.168.56.3 --talosconfig ./talosconfig
 ```
+**(8)** Check details (etcd, services):
 
-Etcd:
 ```
 $ talosctl logs -f -n 192.168.56.3 -e 192.168.56.3 --talosconfig ./talosconfig etcd
-```
+(... etcd logs ...
 
-Services:
-```
 $ talosctl services -n 192.168.56.3 -e 192.168.56.3 --talosconfig ./talosconfig
 NODE           SERVICE      STATE     HEALTH   LAST CHANGE   LAST EVENT
 192.168.56.3   apid         Running   OK       5m51s ago     Health check successful
@@ -87,12 +80,12 @@ NODE           SERVICE      STATE     HEALTH   LAST CHANGE   LAST EVENT
 192.168.56.3   udevd        Running   OK       5m55s ago     Health check successful
 ```
 
-Fetch kubeconfig:
+**(9)** Fetch **kubeconfig**:
 ```
 $ talosctl -n 192.168.56.3 -e 192.168.56.3 --talosconfig ./talosconfig kubeconfig ./kubeconfig
 ```
 
-Connect with **kubectl**:
+**(10)** Use **kubectl** as using with the fetched **kubeconfig**:
 ```
 $ export KUBECONFIG=./kubeconfig
 
@@ -111,12 +104,13 @@ kube-system   kube-proxy-f5b94                        1/1     Running   0       
 kube-system   kube-scheduler-talos-hr8-nu6            1/1     Running   3 (5m9s ago)    4m18s
 ```
 
-Edit **controlplane.yaml** to set **cluster.allowSchedulingOnControlPlanes: true**
+**(11)** Edit **controlplane.yaml** to set **cluster.allowSchedulingOnControlPlanes: true**
 
-Apply the new configuration:
+This allows workload to be scheduled on the only running node
+
+**(12)** Apply the new configuration:
 
 ```
 $ talosctl apply-config --nodes 192.168.56.3 -e 192.168.56.3 --talosconfig ./talosconfig --file controlplane.yaml
 Applied configuration without a reboot
 ```
-
