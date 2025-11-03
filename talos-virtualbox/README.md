@@ -14,7 +14,7 @@ Talos virtualbox:
 
 Originally based on [Kubernetes home lab on an old computer](https://www.youtube.com/watch?v=VKfE5BuqlSc) but polished from there in a string of iterations:
 
-**(1)** Start VirtualBox VM using using [metal-amd64.iso v1.11.3](https://github.com/siderolabs/talos/releases/download/v1.11.3/metal-amd64.iso) and provinding the VM with two network interfaces:
+**(1)** Start VirtualBox VM using using [metal-amd64.iso v1.11.3](https://github.com/siderolabs/talos/releases/download/v1.11.3/metal-amd64.iso) and providing the VM with two network interfaces:
 
 - NAT
 - Host-only Adapter, 'vboxnet0'
