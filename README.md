@@ -6,6 +6,7 @@ Kubernetes playground
 - [kubectl](#kubectl)
 - [k3s (vagrant)](#k3s-vagrant)
 - [talos-docker (vagrant)](#talos-docker-vagrant)
+- [talos-virtualbox](talos-virtualbox/README.md)
 - [AWS mountpoint](#aws-mountpoint)
   - [1. s3-cfg](#1-s3-cfg)
   - [2. aws-mountpoint-s3-csi-driver](#2-aws-mountpoint-s3-csi-driver)
