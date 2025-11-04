@@ -91,6 +91,8 @@ NODE   NAMESPACE   TYPE   ID      VERSION   SIZE     ...
 $ talosctl apply-config --nodes 192.168.56.3 --file controlplane.yaml --insecure
 ```
 
+**Stage** moved from **Maintenance** to **Installing** and then to **Booting**
+
 **(9)** Bootstrap:
 
 ```
