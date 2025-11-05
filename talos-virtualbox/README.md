@@ -27,6 +27,8 @@ Originally based on [Kubernetes home lab on an old computer](https://www.youtube
 talosctl gen config mycluster https://192.168.56.3:6443
 ```
 
+**Optional**: use `-o some-folder` to the end of the previous command (will be automatically created)
+
 Will create the following files:
 
 - controlplane.yaml
