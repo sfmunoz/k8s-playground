@@ -3,14 +3,15 @@
 Talos virtualbox:
 
 - [References](#references)
-- [Steps](#steps)
+- [Steps (one node)](#steps-one-node)
+- [Steps (multinode)](#steps-multinode)
 
 ## References
 
 - [Kubernetes home lab on an old computer](https://www.youtube.com/watch?v=VKfE5BuqlSc)
 - [VirtualBox: Creating Talos Kubernetes cluster using VirtualBox VMs](https://docs.siderolabs.com/talos/v1.9/platform-specific-installations/local-platforms/virtualbox)
 
-## Steps
+## Steps (one node)
 
 Originally based on [Kubernetes home lab on an old computer](https://www.youtube.com/watch?v=VKfE5BuqlSc) but polished from there in a string of iterations:
 
@@ -173,3 +174,11 @@ $ rm controlplane.yaml.old
 $ talosctl apply-config --file controlplane.yaml
 Applied configuration without a reboot
 ```
+
+## Steps (multinode)
+
+I'm not going to dig into this since the following references are more than enough to understand the process:
+
+- https://docs.siderolabs.com/talos/v1.11/getting-started/prodnotes
+- https://docs.siderolabs.com/talos/v1.11/deploy-and-manage-workloads/scaling-up
+- https://docs.siderolabs.com/talos/v1.11/deploy-and-manage-workloads/scaling-down
