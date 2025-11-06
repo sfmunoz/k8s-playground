@@ -2,6 +2,7 @@
 
 - [References](#references)
 - [Butane vs Ignition](#butane-vs-ignition)
+- [VirtualBox](#virtualbox)
 
 ## References
 
@@ -75,4 +76,55 @@ Restart=always
 RestartSec=5s
 [Install]
 WantedBy=multi-user.target
+```
+
+## VirtualBox
+
+Ref: https://www.flatcar.org/docs/latest/installing/vms/virtualbox/
+
+**(1)** Create virtual disk:
+```
+$ wget https://raw.githubusercontent.com/flatcar/scripts/main/contrib/create-coreos-vdi
+
+$ bash create-coreos-vdi -h
+Usage: create-coreos-vdi [-V version] [-d /target/path]
+Options:
+    -d DEST     Create Flatcar VDI image to the given path.
+    -V VERSION  Version to install (e.g. alpha) [default: stable]
+    -h          This help
+
+This tool creates a Flatcar VDI image to be used with VirtualBox.
+
+$ bash create-coreos-vdi -V stable -d /vps
+
+$ ls -l /vps/flatcar_production_4230.2.4.vdi 
+-rw------- 1 sfm sfm 737148928 Nov  6 19:50 /vps/flatcar_production_4230.2.4.vdi
+```
+
+**(2)** Create config drive:
+```
+$ bash create-basic-configdrive -H my_vm01 -S ~/.ssh/id_rsa.pub -p /vps
+
+$ ls -l /vps/my_vm01.iso
+-rw------- 1 sfm sfm 364544 Nov  6 19:57 /vps/my_vm01.iso
+```
+
+**(3)** Clone disk:
+```
+$ VBoxManage clonehd /vps/flatcar_production_4230.2.4.vdi /vps/my_vm01.vdi
+
+$ VBoxManage modifyhd /vps/my_vm01.vdi --resize 8192
+```
+
+**(4)** Start VirtualBox:
+
+- HDD: /vps/my_vm01.vdi
+- ISO: /vps/my_vm01.iso
+- 2G RAM
+
+**(5)** Login:
+```
+$ ssh core@192.168.56.14
+(...)
+core@myvm01 ~ $ 
 ```
