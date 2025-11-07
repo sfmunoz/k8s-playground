@@ -31,7 +31,7 @@ Didn't work for me (installer failed detecting HDs):
 
 - **Kairos** → default, I used this
 - Kairos (manual)
-- kairos (interactive install)
+- kairos (interactive install) → this is pretty easy to use too (directly using the console)
 - Kairos (remote recovery mode)
 - Kairos (boot local node from livecd)
 - Kairos (debug)
