@@ -2,6 +2,10 @@
 
 - [References](#references)
 - [VirtualBox](#virtualbox)
+- [Binaries](#binaries)
+  - [kairos](#kairos)
+  - [kairos-agent](#kairos-agent)
+  - [k3s](#k3s)
 
 ## References
 
@@ -91,4 +95,148 @@ kube-system   local-path-provisioner-578895bd58-qjf5j   1/1     Running     0   
 kube-system   metrics-server-7b9c9c4b9c-gws9c           1/1     Running     0          46s
 kube-system   svclb-traefik-dc2b036c-nfdpx              2/2     Running     0          11s
 kube-system   traefik-6f986b958c-dm96s                  1/1     Running     0          11s
+```
+
+## Binaries
+
+### kairos
+
+```
+$ kairos
+NAME:
+   kairos - kairos CLI to bootstrap, upgrade, connect and manage a kairos network
+
+USAGE:
+   kairos [global options] command [command options]
+
+VERSION:
+   v2.13.4
+
+DESCRIPTION:
+
+   The kairos CLI can be used to manage a kairos box and perform all day-two tasks, like:
+   - register a node (WARNING: this command will be deprecated in the next release, use the kairosctl binary instead)
+   - connect to a node in recovery mode
+   - to establish a VPN connection
+   - set, list roles
+   - interact with the network API
+
+   and much more.
+
+   For all the example cases, see: https://kairos.io/docs/
+
+
+AUTHOR:
+   Ettore Di Giacinto
+
+COMMANDS:
+   recovery-ssh-server  Starts SSH recovery service
+   register             Registers and bootstraps a node (WARNING: this command will be deprecated in the next release, use the kairosctl binary instead)
+   bridge               Connect to a kairos VPN network (WARNING: this command will be deprecated in the next release, use the kairosctl binary instead)
+   get-kubeconfig       Return a deployment kubeconfig
+   role                 Set or list node roles
+   create-config, c     Creates a pristine config file
+   generate-token, g    Creates a new token
+   validate             Validates a cloud config file
+   version
+   help, h              Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --help, -h     show help
+   --version, -v  print the version
+
+COPYRIGHT:
+   Ettore Di Giacinto
+```
+
+### kairos-agent
+
+```
+$ kairos-agent
+NAME:
+   kairos-agent - kairos agent start
+
+USAGE:
+   kairos-agent [global options] command [command options]
+
+VERSION:
+   v2.24.9
+
+DESCRIPTION:
+
+   The kairos agent is a component to abstract away node ops, providing a common feature-set across kairos variants.
+
+
+AUTHOR:
+   Ettore Di Giacinto
+
+COMMANDS:
+   upgrade
+   notify               notify <event> <config dir>...
+   start, s             Starts the kairos agent
+   install-bundle       Installs a kairos bundle
+   uuid, u              Prints the local UUID
+   webui, w             Starts the webui
+   config, c            Shows the machine configuration
+   state                get machine state
+   render-template      Render a Go template
+   interactive-install  Starts interactive installation
+   manual-install, m    Starts the manual installation
+   install, i           Starts the kairos pairing installation
+   recovery, r          Starts kairos recovery mode
+   reset                Starts kairos reset mode
+   validate             Validates a cloud config file
+   print-schema         Print out Kairos' Cloud Configuration JSON Schema
+   run-stage            Run stage from cloud-init
+   pull-image           Pull remote image to local file
+   version              Print kairos-agent version
+   versioneer           versioneer subcommands
+   bootentry            bootentry [--select]
+   grubedit             grubedit [set] KEY=VALUE
+   sysext               sysext subcommands
+   logs                 Collect logs from the system
+   help, h              Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --strict-validation  Fail instead of warn on validation errors. (default: false) [$STRICT_VALIDATIONS]
+   --debug              enable debug output (default: false) [$KAIROS_AGENT_DEBUG]
+   --help, -h           show help
+   --version, -v        print the version
+
+COPYRIGHT:
+   kairos authors
+```
+
+### k3s
+
+```
+$ k3s
+NAME:
+   k3s - Kubernetes, but small and simple
+
+USAGE:
+   k3s [global options] command [command options]
+
+VERSION:
+   v1.34.1+k3s1 (24fc436e)
+
+COMMANDS:
+   server           Run management server
+   agent            Run node agent
+   kubectl          Run kubectl
+   crictl           Run crictl
+   ctr              Run ctr
+   check-config     Run config check
+   token            Manage tokens
+   etcd-snapshot    Manage etcd snapshots
+   secrets-encrypt  Control secrets encryption and keys rotation
+   certificate      Manage K3s certificates
+   completion       Install shell completion script
+   help, h          Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --debug                     (logging) Turn on debug logs (default: false) [$K3S_DEBUG]
+   --data-dir value, -d value  (data) Folder to hold state default /var/lib/rancher/k3s or ${HOME}/.rancher/k3s if not root [$K3S_DATA_DIR]
+   --help, -h                  show help
+   --version, -v               print the version
 ```
