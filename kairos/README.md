@@ -30,7 +30,7 @@ Didn't work for me (installer failed detecting HDs):
 **(3)** Grub options:
 
 - **Kairos** → default, I used this
-- Kairos (manual)
+- Kairos (manual) → root shell... you can use `kairos-agent interactive-install` to launch the installer (3rd option of this grub menu)
 - kairos (interactive install) → this is pretty easy to use too (directly using the console)
 - Kairos (remote recovery mode)
 - Kairos (boot local node from livecd)
