@@ -4,6 +4,7 @@
 - [Butane vs Ignition](#butane-vs-ignition)
 - [Install (VirtualBox)](#install-virtualbox)
   - [user-configdrive.service](#user-configdriveservice)
+  - [coreos-cloudinit](#coreos-cloudinit)
 
 ## References
 
@@ -166,6 +167,7 @@ core@myvm01 ~ $
 
 ```
 $ ssh core@192.168.56.14
+
 core@myvm01 ~ $ systemctl cat user-configdrive.service
 # /usr/lib/systemd/system/user-configdrive.service
 [Unit]
@@ -197,4 +199,58 @@ TimeoutSec=10min
 RemainAfterExit=yes
 EnvironmentFile=-/etc/environment
 ExecStart=/usr/bin/coreos-cloudinit --from-configdrive=/media/configdrive
+```
+
+### coreos-cloudinit
+
+Useful for testing on VirtualBox:
+
+- Host: `busybox httpd -p 192.168.56.1:8080 -f -v`
+- VM: `core@myvm01 ~ $ sudo coreos-cloudinit --from-url=http://192.168.56.1:8080/install.yaml`
+
+```
+$ ssh core@192.168.56.14
+
+core@myvm01 ~ $ coreos-cloudinit -h
+Usage of coreos-cloudinit:
+  -convert-netconf string
+    	Read the network config provided in cloud-drive and translate it from the specified format into networkd unit files
+  -from-cloudsigma-metadata
+    	Download data from CloudSigma server context
+  -from-configdrive string
+    	Read data from provided cloud-drive directory
+  -from-digitalocean-metadata string
+    	Download DigitalOcean data from the provided url
+  -from-ec2-metadata string
+    	Download EC2 data from the provided url
+  -from-file string
+    	Read user-data from provided file
+  -from-gce-metadata string
+    	Download GCE data from the provided url
+  -from-metadata-service
+    	[DEPRECATED - Use -from-ec2-metadata] Download data from metadata service
+  -from-packet-metadata string
+    	Download Packet data from metadata service
+  -from-proc-cmdline
+    	Parse /proc/cmdline for 'cloud-config-url=<url>', using the cloud-config served by an HTTP GET to <url>
+  -from-url string
+    	Download user-data from provided url
+  -from-vmware-guestinfo
+    	Read data from VMware guestinfo
+  -from-vmware-ovf-env string
+    	Read data from OVF Environment
+  -from-waagent string
+    	Read data from provided waagent directory
+  -ignore-failure
+    	Exits with 0 status in the event of malformed input from user-data
+  -oem string
+    	Use the settings specific to the provided OEM
+  -ssh-key-name string
+    	Add SSH keys to the system with the given name (default "coreos-cloudinit")
+  -validate
+    	[EXPERIMENTAL] Validate the user-data but do not apply it to the system
+  -version
+    	Print the version and exit
+  -workspace string
+    	Base directory coreos-cloudinit should use to store data (default "/var/lib/coreos-cloudinit")
 ```
