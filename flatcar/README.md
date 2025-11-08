@@ -2,7 +2,8 @@
 
 - [References](#references)
 - [Butane vs Ignition](#butane-vs-ignition)
-- [VirtualBox](#virtualbox)
+- [Install (VirtualBox)](#install-virtualbox)
+  - [user-configdrive.service](#user-configdriveservice)
 
 ## References
 
@@ -78,7 +79,7 @@ RestartSec=5s
 WantedBy=multi-user.target
 ```
 
-## VirtualBox
+## Install (VirtualBox)
 
 Ref: https://www.flatcar.org/docs/latest/installing/vms/virtualbox/
 
@@ -159,4 +160,41 @@ $ VBoxManage modifyhd /vps/my_vm01.vdi --resize 8192
 $ ssh core@192.168.56.14
 (...)
 core@myvm01 ~ $ 
+```
+
+### user-configdrive.service
+
+```
+$ ssh core@192.168.56.14
+core@myvm01 ~ $ systemctl cat user-configdrive.service
+# /usr/lib/systemd/system/user-configdrive.service
+[Unit]
+Description=Load cloud-config from /media/configdrive
+Requires=flatcar-setup-environment.service
+After=flatcar-setup-environment.service system-config.target
+Before=user-config.target
+
+# HACK: work around ordering between config drive and ec2 metadata It is
+# possible for OpenStack style systems to provide both the metadata service
+# and config drive, to prevent the two from stomping on each other, force
+# this to run after OEM and after metadata (if it exsts). I'm doing this
+# here instead of in the oem service because the oem unit is not written
+# to disk until the OEM cloud config is evaluated and I want to make sure
+# systemd knows about the ordering as early as possible.
+# coreos-cloudinit could implement a simple lock but that cannot be used
+# until after the systemd dbus calls are made non-blocking.
+After=enable-oem-cloudinit.service oem-cloudinit.service
+
+# Skip on clouds that are covered by flatcar/init:systemd/system/oem-cloudinit.service
+ConditionKernelCommandLine=!flatcar.oem.id=digitalocean
+ConditionKernelCommandLine=!coreos.oem.id=digitalocean
+ConditionKernelCommandLine=!coreos.oem.id=openstack
+ConditionKernelCommandLine=!flatcar.oem.id=openstack
+[Service]
+Type=oneshot
+ExecCondition=/usr/bin/bash -c "if [ -f '/etc/.ignition-result.json' ] && /usr/bin/jq -e '.userConfigProvided == true' /etc/.ignition-result.json; then exit 1; fi"
+TimeoutSec=10min
+RemainAfterExit=yes
+EnvironmentFile=-/etc/environment
+ExecStart=/usr/bin/coreos-cloudinit --from-configdrive=/media/configdrive
 ```
