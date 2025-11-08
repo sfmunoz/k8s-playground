@@ -4,6 +4,7 @@
 - [Config systems](#config-systems)
 - [Butane vs Ignition](#butane-vs-ignition)
 - [Install ISO (VirtualBox)](#install-iso-virtualbox)
+- [K3s install](#k3s-install)
 - [OS updates](#os-updates)
 - [(OLD) Install (VirtualBox)](#old-install-virtualbox)
   - [(OLD) user-configdrive.service](#old-user-configdriveservice)
@@ -195,6 +196,136 @@ $ ssh core@192.168.56.27
 (...)
 Flatcar Container Linux by Kinvolk stable 4230.2.4
 core@localhost ~ $
+```
+
+## K3s install
+
+> **Notice**: procedure tested on https://vultr.com using **Flatcar Stable x64** version
+
+Butane config (e.g. **cl.yaml**). For vultr ssh key is set using **Server Settings → SSH Keys** option even though it's OK to have it in the butane file:
+```yaml
+variant: flatcar
+version: 1.0.0
+
+systemd:
+  units:
+    - name: k3s-install.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=K3s install
+        Wants=network-online.target
+        After=network-online.target
+        ConditionFirstBoot=yes
+        [Service]
+        Type=oneshot
+        Restart=on-failure
+        RemainAfterExit=true
+        ExecStart=/usr/bin/bash -c 'curl -sfL https://get.k3s.io | sh -'
+        [Install]
+        WantedBy=multi-user.target
+
+passwd:
+  users:
+  - name: core
+    ssh_authorized_keys:
+    - "ssh-rsa AAAA..."
+```
+
+Generate **ignition.json** and use it when creating **Flatcar Stable x64** instance
+```
+docker run --rm -i quay.io/coreos/butane:latest < cl.yaml > ignition.json
+```
+k3s-install status:
+```
+vultr ~ # systemctl status k3s-install -n 10000
+● k3s-install.service - K3s install
+     Loaded: loaded (/etc/systemd/system/k3s-install.service; enabled; preset: enabled)
+     Active: active (exited) since Sat 2025-11-08 19:52:43 UTC; 1min 54s ago
+ Invocation: 54d5065ad1a84364a9a7345f139bb1a3
+    Process: 1459 ExecStart=/usr/bin/bash -c curl -sfL https://get.k3s.io | sh - (code=exited, status=0/SUCCESS)
+   Main PID: 1459 (code=exited, status=0/SUCCESS)
+   Mem peak: 147.1M
+        CPU: 1.189s
+
+Nov 08 19:52:25 vultr.guest systemd[1]: Starting k3s-install.service - K3s install...
+Nov 08 19:52:25 vultr.guest bash[1500]: touch: cannot touch '/usr/local/bin/k3s-ro-test': Read-only file system
+Nov 08 19:52:25 vultr.guest bash[1463]: [INFO]  Finding release for channel stable
+Nov 08 19:52:26 vultr.guest bash[1463]: [INFO]  Using v1.33.5+k3s1 as release
+Nov 08 19:52:26 vultr.guest bash[1463]: [INFO]  Downloading hash https://github.com/k3s-io/k3s/releases/download/v1.33.5+k3s1/sha256sum-amd64.txt
+Nov 08 19:52:27 vultr.guest bash[1463]: [INFO]  Downloading binary https://github.com/k3s-io/k3s/releases/download/v1.33.5+k3s1/k3s
+Nov 08 19:52:28 vultr.guest bash[1463]: [INFO]  Verifying binary download
+Nov 08 19:52:28 vultr.guest bash[1463]: [INFO]  Installing k3s to /opt/bin/k3s
+Nov 08 19:52:28 vultr.guest bash[1463]: [INFO]  Finding available k3s-selinux versions
+Nov 08 19:52:29 vultr.guest bash[1463]: [WARN]  Please reboot your machine to activate the changes and avoid data loss.
+Nov 08 19:52:29 vultr.guest bash[1463]: [INFO]  Creating /opt/bin/kubectl symlink to k3s
+Nov 08 19:52:29 vultr.guest bash[1463]: [INFO]  Skipping /opt/bin/crictl symlink to k3s, command exists in PATH at /usr/sbin/crictl
+Nov 08 19:52:29 vultr.guest bash[1463]: [INFO]  Skipping /opt/bin/ctr symlink to k3s, command exists in PATH at /usr/sbin/ctr
+Nov 08 19:52:29 vultr.guest bash[1463]: [INFO]  Creating killall script /opt/bin/k3s-killall.sh
+Nov 08 19:52:29 vultr.guest bash[1463]: [INFO]  Creating uninstall script /opt/bin/k3s-uninstall.sh
+Nov 08 19:52:29 vultr.guest bash[1463]: [INFO]  env: Creating environment file /etc/systemd/system/k3s.service.env
+Nov 08 19:52:29 vultr.guest bash[1463]: [INFO]  systemd: Creating service file /etc/systemd/system/k3s.service
+Nov 08 19:52:29 vultr.guest bash[1463]: [INFO]  systemd: Enabling k3s unit
+Nov 08 19:52:29 vultr.guest systemctl[1565]: Created symlink '/etc/systemd/system/multi-user.target.wants/k3s.service' → '/etc/systemd/system/k3s.service'.
+Nov 08 19:52:30 vultr.guest bash[1463]: [INFO]  systemd: Starting k3s
+Nov 08 19:52:43 vultr.guest systemd[1]: Finished k3s-install.service - K3s install.
+```
+Trying to run it again won't do it:
+```
+vultr ~ # systemctl stop k3s-install
+
+vultr ~ # systemctl start k3s-install
+
+vultr ~ # systemctl status k3s-install -n 10000
+(...)
+Nov 08 20:17:56 vultr.guest systemd[1]: k3s-install.service: Deactivated successfully.
+Nov 08 20:17:56 vultr.guest systemd[1]: Stopped k3s-install.service - K3s install.
+Nov 08 20:18:04 vultr.guest systemd[1]: k3s-install.service - K3s install was skipped because of an unmet condition check (ConditionFirstBoot=yes).
+```
+After reboot:
+```
+vultr ~ # systemctl status k3s-install -n 10000
+○ k3s-install.service - K3s install
+     Loaded: loaded (/etc/systemd/system/k3s-install.service; enabled; preset: enabled)
+     Active: inactive (dead)
+  Condition: start condition unmet at Sat 2025-11-08 20:19:29 UTC; 21s ago
+             └─ ConditionFirstBoot=yes was not met
+
+Nov 08 20:19:29 vultr.guest systemd[1]: k3s-install.service - K3s install was skipped because of an unmet condition check (ConditionFirstBoot=yes).
+```
+Everything was set:
+```
+vultr ~ # systemctl status k3s -n 0 | cat
+● k3s.service - Lightweight Kubernetes
+     Loaded: loaded (/etc/systemd/system/k3s.service; enabled; preset: disabled)
+     Active: active (running) since Sat 2025-11-08 20:19:44 UTC; 1min 28s ago
+ Invocation: 47f091c93fc84240aa9e8db12020d050
+       Docs: https://k3s.io
+    Process: 1373 ExecStartPre=/sbin/modprobe br_netfilter (code=exited, status=0/SUCCESS)
+    Process: 1376 ExecStartPre=/sbin/modprobe overlay (code=exited, status=0/SUCCESS)
+   Main PID: 1381 (k3s-server)
+      Tasks: 92
+     Memory: 709.4M (peak: 714M)
+        CPU: 16.202s
+     CGroup: /system.slice/k3s.service
+             ├─1381 "/opt/bin/k3s server"
+             ├─1405 "containerd "
+             ├─1943 /var/lib/rancher/k3s/data/86a616cdaf0fb57fa13670ac5a16f1699f4b2be4772e842d97904c69698ffdc2/bin/containerd-shim-runc-v2 -namespace k8s.io -id c0eaf8625f0e7ce511cbbfd8c16fa034215c206b649bf3e2cd25cd5342a28d86 -address /run/k3s/containerd/containerd.sock
+             ├─2076 /var/lib/rancher/k3s/data/86a616cdaf0fb57fa13670ac5a16f1699f4b2be4772e842d97904c69698ffdc2/bin/containerd-shim-runc-v2 -namespace k8s.io -id 8c83bc27fa5dd6d96c93f5a66298c06e86eba7dedc26924c54461a1245f07f4c -address /run/k3s/containerd/containerd.sock
+             ├─2150 /var/lib/rancher/k3s/data/86a616cdaf0fb57fa13670ac5a16f1699f4b2be4772e842d97904c69698ffdc2/bin/containerd-shim-runc-v2 -namespace k8s.io -id 348f88bb7ff68fe40a839b21fc0d45e07cf37940099671a573417ebcf5725841 -address /run/k3s/containerd/containerd.sock
+             ├─2233 /var/lib/rancher/k3s/data/86a616cdaf0fb57fa13670ac5a16f1699f4b2be4772e842d97904c69698ffdc2/bin/containerd-shim-runc-v2 -namespace k8s.io -id fa3c250eae23865d562055de5dbccfd033c5ae8980188cf5f732ff10b50a285c -address /run/k3s/containerd/containerd.sock
+             └─2321 /var/lib/rancher/k3s/data/86a616cdaf0fb57fa13670ac5a16f1699f4b2be4772e842d97904c69698ffdc2/bin/containerd-shim-runc-v2 -namespace k8s.io -id cd586e7ebd5f1c8c0a38f3991ba3192445f5a722568ab5ba763dfdcb4f8f16ff -address /run/k3s/containerd/containerd.sock
+
+vultr ~ # kubectl get nodes
+NAME          STATUS   ROLES                  AGE   VERSION
+vultr.guest   Ready    control-plane,master   28m   v1.33.5+k3s1
+
+vultr ~ # ls -l /opt/bin/
+total 72592
+-rwxr-xr-x. 1 root root 74322104 Nov  8 19:52 k3s
+-rwxr-xr-x. 1 root root     2318 Nov  8 19:52 k3s-killall.sh
+-rwxr-xr-x. 1 root root     1975 Nov  8 19:52 k3s-uninstall.sh
+lrwxrwxrwx. 1 root root        3 Nov  8 19:52 kubectl -> k3s
 ```
 
 ## OS updates
