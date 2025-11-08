@@ -103,6 +103,8 @@ $ ls -l /vps/flatcar_production_4230.2.4.vdi
 
 **(2)** Create config drive:
 ```
+$ wget https://raw.github.com/flatcar/scripts/main/contrib/create-basic-configdrive
+
 $ bash create-basic-configdrive -H my_vm01 -S ~/.ssh/id_rsa.pub -p /vps
 
 $ ls -l /vps/my_vm01.iso
