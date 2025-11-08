@@ -200,6 +200,8 @@ core@localhost ~ $
 
 ## K3s install
 
+Ready to be used file: [k3s.yaml](k3s.yaml)
+
 > **Notice**: procedure tested on https://vultr.com using **Flatcar Stable x64** version
 
 Butane config (e.g. **cl.yaml**). For vultr ssh key is set using **Server Settings → SSH Keys** option even though it's OK to have it in the butane file:
