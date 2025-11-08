@@ -3,9 +3,10 @@
 - [References](#references)
 - [Config systems](#config-systems)
 - [Butane vs Ignition](#butane-vs-ignition)
-- [Install (VirtualBox)](#install-virtualbox)
-  - [user-configdrive.service](#user-configdriveservice)
-  - [coreos-cloudinit](#coreos-cloudinit)
+- [Install ISO (VirtualBox)](#install-iso-virtualbox)
+- [(OLD) Install (VirtualBox)](#old-install-virtualbox)
+  - [(OLD) user-configdrive.service](#old-user-configdriveservice)
+  - [(OLD) coreos-cloudinit](#old-coreos-cloudinit)
 
 ## References
 
@@ -120,7 +121,82 @@ RestartSec=5s
 WantedBy=multi-user.target
 ```
 
-## Install (VirtualBox)
+## Install ISO (VirtualBox)
+
+Refs:
+
+- https://www.flatcar.org/docs/latest/installing/bare-metal/booting-with-iso/
+- https://www.flatcar.org/docs/latest/installing/bare-metal/installing-to-disk/
+
+**(1)** Butane **cl.yaml** config (at least **core** user with known ssh_authorized_key to be able to access the VM):
+```
+$ cat cl.yaml
+variant: flatcar
+version: 1.0.0
+passwd:
+  users:
+  - name: core
+    ssh_authorized_keys:
+    - "ssh-rsa AAAA..."
+```
+**(2)** Generate **ignition.json** config out of butane **cl.yaml** config:
+```
+$ docker run --rm -i quay.io/coreos/butane:latest < cl.yaml > ignition.json
+```
+**(3)** Start HTTP server on the host (same **ignition.json** folder):
+```
+$ busybox httpd -p 192.168.56.1:8080 -f -v
+```
+**(4)** ISO download:
+```
+$ wget https://stable.release.flatcar-linux.net/amd64-usr/current/flatcar_production_iso_image.iso
+
+$ ls -l flatcar_production_iso_image.iso
+-rw------- 1 sfm sfm 462422016 Oct 12 23:32 flatcar_production_iso_image.iso
+```
+**(5)** VM start:
+
+- ISO: **flatcar_production_iso_image.iso**
+- RAM: 2GB
+- HD: 8GB
+
+Console:
+
+```
+Flatcar Container Linux by Kinvolk stable 4230.2.4
+Update Strategy: No Reboots
+core@localhost ~ $
+```
+
+**(6)** Trigger process on VM (**lsblk** to figure out the device):
+
+> Ref: https://www.flatcar.org/docs/latest/installing/bare-metal/installing-to-disk/
+
+```
+core@localhost ~ $ wget http://192.168.56.1:8080/ignition.json
+
+core@localhost ~ $ sudo flatcar-install -d /dev/sda -i ignition.json
+(...)
+Success! Flatcar Container Linux stable 4230.2.4 is installed on /dev/sda
+```
+
+**(7)** Poweroff
+
+```
+core@localhost ~ $ sudo poweroff
+```
+
+**(8)** Remove the ISO from VM and start
+
+**(9)** Access the VM:
+```
+$ ssh core@192.168.56.27
+(...)
+Flatcar Container Linux by Kinvolk stable 4230.2.4
+core@localhost ~ $
+```
+
+## (OLD) Install (VirtualBox)
 
 Ref: https://www.flatcar.org/docs/latest/installing/vms/virtualbox/
 
@@ -203,7 +279,7 @@ $ ssh core@192.168.56.14
 core@myvm01 ~ $ 
 ```
 
-### user-configdrive.service
+### (OLD) user-configdrive.service
 
 ```
 $ ssh core@192.168.56.14
@@ -241,7 +317,7 @@ EnvironmentFile=-/etc/environment
 ExecStart=/usr/bin/coreos-cloudinit --from-configdrive=/media/configdrive
 ```
 
-### coreos-cloudinit
+### (OLD) coreos-cloudinit
 
 Useful for testing on VirtualBox:
 
