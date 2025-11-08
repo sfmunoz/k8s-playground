@@ -5,6 +5,7 @@
 - [talos-docker](talos-docker/README.md)
 - [talos-virtualbox](talos-virtualbox/README.md)
 - [flatcar](flatcar/README.md)
+- [kairos](kairos/README.md)
 - [AWS mountpoint](docs/aws-mountpoint.md)
 - [Vultr](docs/vultr.md)
 - [kind](docs/kind.md)
