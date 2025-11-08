@@ -15,6 +15,8 @@
 
 ## Kairos install (default)
 
+Ref: https://kairos.io/v3.5.6/docs/installation/webui/
+
 **(1)** Download from [https://github.com/kairos-io/kairos/releases](https://github.com/kairos-io/kairos/releases):
 
 - **kairos-rocky-9.6-standard-amd64-generic-v3.5.7-k3sv1.34.1+k3s1.iso**
@@ -99,6 +101,8 @@ kube-system   traefik-6f986b958c-dm96s                  1/1     Running     0   
 ```
 
 ## Kairos install (manual)
+
+Ref: https://kairos.io/v3.5.6/docs/installation/manual/
 
 **cloud-config** file on the host:
 
