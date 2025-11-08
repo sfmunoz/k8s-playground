@@ -18,6 +18,8 @@ Recap:
 
 - Now: **Butane + Ignition**
   - **Butane**: successor of **Container Linux Config**
+  - Butane generates Ignition v3+ configurations
+  - [Container Linux Config Transpiler](https://www.flatcar.org/docs/latest/provisioning/cl-config/) generates Ignition v2 configurations
 - Old: **cloud-config**
 
 https://www.flatcar.org/docs/latest/installing/
