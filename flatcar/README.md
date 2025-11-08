@@ -4,6 +4,7 @@
 - [Config systems](#config-systems)
 - [Butane vs Ignition](#butane-vs-ignition)
 - [Install ISO (VirtualBox)](#install-iso-virtualbox)
+- [OS updates](#os-updates)
 - [(OLD) Install (VirtualBox)](#old-install-virtualbox)
   - [(OLD) user-configdrive.service](#old-user-configdriveservice)
   - [(OLD) coreos-cloudinit](#old-coreos-cloudinit)
@@ -195,6 +196,38 @@ $ ssh core@192.168.56.27
 Flatcar Container Linux by Kinvolk stable 4230.2.4
 core@localhost ~ $
 ```
+
+## OS updates
+
+Refs:
+
+- https://www.flatcar.org/docs/latest/setup/releases/update-strategies/
+- https://www.flatcar.org/docs/latest/tutorial/hands-on-4/
+- https://www.flatcar.org/docs/latest/nebraska/
+
+Useful commands:
+
+- `systemctl status update-engine.service locksmithd.service`
+- `cat /etc/os-release`
+- `update_engine_client -update`
+- `update_engine_client -check_for_update`
+
+https://www.flatcar.org/faq
+(...)
+**If the image is immutable, how does it get updated?**
+
+Flatcar uses the **USR-A** and **USR-B** update mechanism, first introduced by ChromeOS. There are two partitions where the **/usr/** filesystem can be deployed. One of them is used as the active **/usr** filesystem, while the other stays in stand-by.
+
+When a new Flatcar Container Linux version is released, the update payload is deployed to the inactive **/usr/** partition. The next time the machine reboots, it mounts this other partition and boots into a fully updated system.
+
+If for any reason something goes wrong during the boot process, the system automatically falls back to the previous **/usr/** partition.
+(...)
+
+https://www.flatcar.org/docs/latest/installing/
+(...)
+**On automatic updates**
+Flatcar has automatic updates enabled by default. Flatcar instances will download and stage (in the background) new OS versions as well as reboot into the updated OS when a new update becomes available. To change this default - for instance, to define reboot windows or even disable reboots - check out the [update strategies](https://www.flatcar.org/docs/latest/setup/releases/update-strategies/) doc. To disable downloading updates altogether either disable the update-engine service via a user-supplied systemd config, or use an invalid URL in the SERVER field of [update.conf](https://www.flatcar.org/docs/latest/setup/releases/update-conf/) .
+(...)
 
 ## (OLD) Install (VirtualBox)
 
