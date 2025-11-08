@@ -111,6 +111,36 @@ $ ls -l /vps/my_vm01.iso
 -rw------- 1 sfm sfm 364544 Nov  6 19:57 /vps/my_vm01.iso
 ```
 
+**my_vm01.iso** details (one file: **openstack/latest/user_data**):
+```
+$ flatcar sudo mount -o ro my_vm01.iso /mnt4
+
+$ flatcar find /mnt4 -type f
+/mnt4/openstack/latest/user_data
+
+$ cat /mnt4/openstack/latest/user_data
+#cloud-config
+
+coreos:
+  etcd2:
+    name: my_vm01
+    advertise-client-urls: http://$public_ipv4:2379
+    initial-advertise-peer-urls: http://$private_ipv4:2380
+    discovery: https://discovery.etcd.io/TOKEN
+    listen-peer-urls: http://0.0.0.0:2380
+    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+  units:
+    - name: etcd2.service
+      command: start
+    - name: fleet.service
+      command: start
+ssh_authorized_keys:
+  - ssh-rsa AAAA...
+hostname: my_vm01
+
+$ sudo umount /mnt4
+```
+
 **(3)** Clone disk:
 ```
 $ VBoxManage clonehd /vps/flatcar_production_4230.2.4.vdi /vps/my_vm01.vdi
