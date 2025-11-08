@@ -43,6 +43,14 @@ https://www.flatcar.org/docs/latest/provisioning/cl-config/
 >
 > (...)
 
+https://www.flatcar.org/docs/latest/provisioning/config-transpiler/
+
+> (...)
+>
+> **Note**: Butane is utilized to generate Ignition v3+ configurations. If you are still utilizing a version of Container Linux that requires Ignition v2, you can refer to the [Container Linux Config Transpiler](https://www.flatcar.org/docs/latest/provisioning/cl-config/) documentation. This particularly applies to those using the current LTS releases.
+>
+> (...)
+
 ## Butane vs Ignition
 
 Ref: https://www.flatcar.org/docs/latest/installing/
