@@ -1,7 +1,8 @@
 # kairos
 
 - [References](#references)
-- [VirtualBox](#virtualbox)
+- [Kairos install (default)](#kairos-install-default)
+- [Kairos install (manual)](#kairos-install-manual)
 - [Binaries](#binaries)
   - [kairos](#kairos)
   - [kairos-agent](#kairos-agent)
@@ -12,7 +13,7 @@
 - https://kairos.io/
 - https://github.com/kairos-io/kairos
 
-## VirtualBox
+## Kairos install (default)
 
 **(1)** Download from [https://github.com/kairos-io/kairos/releases](https://github.com/kairos-io/kairos/releases):
 
@@ -97,6 +98,71 @@ kube-system   svclb-traefik-dc2b036c-nfdpx              2/2     Running     0   
 kube-system   traefik-6f986b958c-dm96s                  1/1     Running     0          11s
 ```
 
+## Kairos install (manual)
+
+**cloud-config** file on the host:
+
+```
+$ ls -l
+-rw------- 1 sfm sfm 858 Nov  8 08:25 install.yaml
+
+$ cat install.yaml
+#cloud-config
+
+users:
+- name: "kairos"
+  passwd: "kairos"
+  groups: ["admin"]
+  ssh_authorized_keys:
+  - "ssh-rsa AAAA..."
+
+k3s:
+  enabled: true
+```
+
+HTTP server (host-only network):
+
+```
+$ busybox httpd -p 192.168.56.1:8080 -f -v
+```
+
+VM grub option → **Kairos (manual)**:
+
+- Kairos
+- **Kairos (manual)** → this one
+- kairos (interactive install)
+- Kairos (remote recovery mode)
+- Kairos (boot local node from livecd)
+- Kairos (debug)
+
+Trigger installation:
+
+```
+kairos-agent manual-install --device auto --poweroff http://192.168.56.1:8080/install.yaml
+```
+
+> Alternative: `kairos-agent interactive-install` for a menu-based installation (like **kairos (interactive install)** grub option)
+
+`--poweroff` option seems to be ignored so:
+
+- Run `poweroff` command
+- Remove ISO image from VM
+- Start VM
+- ssh to server: `ssh kairos@192.168.56.20`
+
+Everything ready:
+
+```
+[kairos@localhost ~]$ sudo kubectl get pods -A
+NAMESPACE     NAME                                      READY   STATUS      RESTARTS   AGE
+kube-system   coredns-7896679cc-dfpld                   1/1     Running     0          86s
+kube-system   helm-install-traefik-crd-rtgzd            0/1     Completed   0          86s
+kube-system   helm-install-traefik-rg7rp                0/1     Completed   2          86s
+kube-system   local-path-provisioner-578895bd58-7v988   1/1     Running     0          86s
+kube-system   metrics-server-7b9c9c4b9c-mmhpt           1/1     Running     0          86s
+kube-system   svclb-traefik-579d0cf2-5mj56              2/2     Running     0          51s
+kube-system   traefik-6f986b958c-td9hc                  1/1     Running     0          51s
+```
 ## Binaries
 
 ### kairos
