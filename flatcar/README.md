@@ -128,16 +128,33 @@ Refs:
 - https://www.flatcar.org/docs/latest/installing/bare-metal/booting-with-iso/
 - https://www.flatcar.org/docs/latest/installing/bare-metal/installing-to-disk/
 
-**(1)** ISO download:
-
+**(1)** Butane **cl.yaml** config (at least **core** user with known ssh_authorized_key to be able to access the VM):
+```
+$ cat cl.yaml
+variant: flatcar
+version: 1.0.0
+passwd:
+  users:
+  - name: core
+    ssh_authorized_keys:
+    - "ssh-rsa AAAA..."
+```
+**(2)** Generate **ignition.json** config out of butane **cl.yaml** config:
+```
+$ docker run --rm -i quay.io/coreos/butane:latest < cl.yaml > ignition.json
+```
+**(3)** Start HTTP server on the host (same **ignition.json** folder):
+```
+$ busybox httpd -p 192.168.56.1:8080 -f -v
+```
+**(4)** ISO download:
 ```
 $ wget https://stable.release.flatcar-linux.net/amd64-usr/current/flatcar_production_iso_image.iso
 
 $ ls -l flatcar_production_iso_image.iso
 -rw------- 1 sfm sfm 462422016 Oct 12 23:32 flatcar_production_iso_image.iso
 ```
-
-**(2)** VM start:
+**(5)** VM start:
 
 - ISO: **flatcar_production_iso_image.iso**
 - RAM: 2GB
@@ -151,12 +168,7 @@ Update Strategy: No Reboots
 core@localhost ~ $
 ```
 
-**(3)** Start HTTP server on the host (**ignition.json** file ready there, read previous section of this doc):
-```
-$ busybox httpd -p 192.168.56.1:8080 -f -v
-```
-
-**(4)** Trigger process on VM (**lsblk** to figure out the device):
+**(6)** Trigger process on VM (**lsblk** to figure out the device):
 
 > Ref: https://www.flatcar.org/docs/latest/installing/bare-metal/installing-to-disk/
 
@@ -166,13 +178,19 @@ core@localhost ~ $ wget http://192.168.56.1:8080/ignition.json
 core@localhost ~ $ sudo flatcar-install -d /dev/sda -i ignition.json
 ```
 
-**(5)** Poweroff
+**(7)** Poweroff
 
 ```
 core@localhost ~ $ sudo poweroff
 ```
 
-**(6)** Remove the ISO from VM and start
+**(8)** Remove the ISO from VM and start
+
+**(9)** Access the VM:
+```
+$ ssh core@192.168.56.23
+```
+
 ## (OLD) Install (VirtualBox)
 
 Ref: https://www.flatcar.org/docs/latest/installing/vms/virtualbox/
