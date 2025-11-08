@@ -176,6 +176,8 @@ core@localhost ~ $
 core@localhost ~ $ wget http://192.168.56.1:8080/ignition.json
 
 core@localhost ~ $ sudo flatcar-install -d /dev/sda -i ignition.json
+(...)
+Success! Flatcar Container Linux stable 4230.2.4 is installed on /dev/sda
 ```
 
 **(7)** Poweroff
