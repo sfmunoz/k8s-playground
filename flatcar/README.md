@@ -190,7 +190,10 @@ core@localhost ~ $ sudo poweroff
 
 **(9)** Access the VM:
 ```
-$ ssh core@192.168.56.23
+$ ssh core@192.168.56.27
+(...)
+Flatcar Container Linux by Kinvolk stable 4230.2.4
+core@localhost ~ $
 ```
 
 ## (OLD) Install (VirtualBox)
