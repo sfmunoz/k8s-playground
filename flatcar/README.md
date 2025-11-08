@@ -3,9 +3,9 @@
 - [References](#references)
 - [Config systems](#config-systems)
 - [Butane vs Ignition](#butane-vs-ignition)
-- [Install (VirtualBox)](#install-virtualbox)
-  - [user-configdrive.service](#user-configdriveservice)
-  - [coreos-cloudinit](#coreos-cloudinit)
+- [(OLD) Install (VirtualBox)](#old-install-virtualbox)
+  - [(OLD) user-configdrive.service](#old-user-configdriveservice)
+  - [(OLD) coreos-cloudinit](#old-coreos-cloudinit)
 
 ## References
 
@@ -120,7 +120,7 @@ RestartSec=5s
 WantedBy=multi-user.target
 ```
 
-## Install (VirtualBox)
+## (OLD) Install (VirtualBox)
 
 Ref: https://www.flatcar.org/docs/latest/installing/vms/virtualbox/
 
@@ -203,7 +203,7 @@ $ ssh core@192.168.56.14
 core@myvm01 ~ $ 
 ```
 
-### user-configdrive.service
+### (OLD) user-configdrive.service
 
 ```
 $ ssh core@192.168.56.14
@@ -241,7 +241,7 @@ EnvironmentFile=-/etc/environment
 ExecStart=/usr/bin/coreos-cloudinit --from-configdrive=/media/configdrive
 ```
 
-### coreos-cloudinit
+### (OLD) coreos-cloudinit
 
 Useful for testing on VirtualBox:
 
