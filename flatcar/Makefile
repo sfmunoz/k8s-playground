@@ -1,9 +1,26 @@
-all: ignition.json
+define bu_to_ign
+	docker run --rm -i quay.io/coreos/butane:latest < $< > $@
+endef
 
-ignition.json: cl.yaml
-	docker run --rm -i quay.io/coreos/butane:latest < cl.yaml > ignition.json
+define bu_to_ign_dec
+	sops decrypt --input-type yaml --output-type yaml $< | docker run --rm -i quay.io/coreos/butane:latest > $@
+endef
+
+all: cl.json k3s.json
+
+%.json: %.enc.yaml
+	$(bu_to_ign_dec)
+
+%.ign: %.enc.bu
+	$(bu_to_ign_dec)
+
+%.json: %.yaml
+	$(bu_to_ign)
+
+%.ign: %.bu
+	$(bu_to_ign)
 
 clean:
-	${RM} ignition.json
+	${RM} *.json *.ign
 
-.PHONY: all
+.PHONY: all clean
