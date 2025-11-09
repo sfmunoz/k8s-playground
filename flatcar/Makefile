@@ -1,9 +1,9 @@
-all: ignition.json
+all: cl.json k3s.json
 
-ignition.json: cl.yaml
-	docker run --rm -i quay.io/coreos/butane:latest < cl.yaml > ignition.json
+%.json: %.yaml
+	docker run --rm -i quay.io/coreos/butane:latest < $< > $@
 
 clean:
-	${RM} ignition.json
+	${RM} *.json
 
-.PHONY: all
+.PHONY: all clean
