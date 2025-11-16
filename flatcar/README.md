@@ -341,6 +341,7 @@ Refs:
 
 Useful commands:
 
+- `cat /proc/cmdline` → ...BOOT_IMAGE=/flatcar/vmlinuz-a...
 - `systemctl status update-engine.service locksmithd.service`
 - `cat /etc/os-release`
 - `update_engine_client -update`
