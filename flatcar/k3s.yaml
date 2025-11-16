@@ -19,6 +19,17 @@ systemd:
         [Install]
         WantedBy=multi-user.target
 
+storage:
+  files:
+    - path: /etc/flatcar/update.conf
+      overwrite: true
+      contents:
+        inline: |
+          REBOOT_STRATEGY=reboot
+          REBOOT_WINDOW_START=01:30
+          REBOOT_WINDOW_LENGTH=1h
+      mode: 0420
+
 passwd:
   users:
   - name: core

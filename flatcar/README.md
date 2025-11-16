@@ -6,6 +6,9 @@
 - [Install ISO (VirtualBox)](#install-iso-virtualbox)
 - [K3s install](#k3s-install)
 - [OS updates](#os-updates)
+  - [OS updates: useful commands](#os-updates-useful-commands)
+  - [OS updates: example](#os-updates-example)
+  - [OS updates: FAQ](#os-updates-faq)
 - [(OLD) Install (VirtualBox)](#old-install-virtualbox)
   - [(OLD) user-configdrive.service](#old-user-configdriveservice)
   - [(OLD) coreos-cloudinit](#old-coreos-cloudinit)
@@ -337,13 +340,78 @@ Refs:
 - https://www.flatcar.org/docs/latest/setup/releases/update-strategies/
 - https://www.flatcar.org/docs/latest/tutorial/hands-on-4/
 - https://www.flatcar.org/docs/latest/nebraska/
+- https://github.com/flatcar/locksmith
 
-Useful commands:
+### OS updates: useful commands
 
+- `cat /proc/cmdline` → ...BOOT_IMAGE=/flatcar/vmlinuz-a...
 - `systemctl status update-engine.service locksmithd.service`
 - `cat /etc/os-release`
-- `update_engine_client -update`
 - `update_engine_client -check_for_update`
+- `update_engine_client -update`
+- `flatcar-update -V 4230.2.4`
+
+### OS updates: example
+
+Example: **sda3=USR-A (current)** and **sda4=USR-B**:
+```
+localhost ~ # lsblk -o NAME,LABEL,PARTLABEL,MOUNTPOINT
+NAME    LABEL      PARTLABEL  MOUNTPOINT
+loop2
+loop3
+sda
+|-sda1  EFI-SYSTEM EFI-SYSTEM /boot
+|-sda2             BIOS-BOOT
+|-sda3             USR-A
+| `-usr                       /usr
+|-sda4             USR-B
+|-sda6  OEM        OEM        /oem
+|-sda7             OEM-CONFIG
+`-sda9  ROOT       ROOT       /
+```
+os-release (current, USR-A):
+```
+localhost ~ # ls -l /etc/os-release
+lrwxrwxrwx. 1 root root 21 Nov 10 14:32 /etc/os-release -> ../usr/lib/os-release
+
+localhost ~ # cat /etc/os-release
+NAME="Flatcar Container Linux by Kinvolk"
+ID=flatcar
+ID_LIKE=coreos
+VERSION=4459.2.0
+VERSION_ID=4459.2.0
+BUILD_ID=2025-11-10-1432
+SYSEXT_LEVEL=1.0
+PRETTY_NAME="Flatcar Container Linux by Kinvolk 4459.2.0 (Oklo)"
+ANSI_COLOR="38;5;75"
+HOME_URL="https://flatcar.org/"
+BUG_REPORT_URL="https://issues.flatcar.org"
+FLATCAR_BOARD="amd64-usr"
+CPE_NAME="cpe:2.3:o:flatcar-linux:flatcar_linux:4459.2.0:*:*:*:*:*:*:*"
+```
+os-release (inactive, USR-B):
+```
+localhost ~ # mkdir /mnt4
+
+localhost ~ # mount -o ro /dev/sda4 /mnt4
+
+localhost ~ # cat /mnt4/lib/os-release
+NAME="Flatcar Container Linux by Kinvolk"
+ID=flatcar
+ID_LIKE=coreos
+VERSION=4230.2.4
+VERSION_ID=4230.2.4
+BUILD_ID=2025-10-12-2304
+SYSEXT_LEVEL=1.0
+PRETTY_NAME="Flatcar Container Linux by Kinvolk 4230.2.4 (Oklo)"
+ANSI_COLOR="38;5;75"
+HOME_URL="https://flatcar.org/"
+BUG_REPORT_URL="https://issues.flatcar.org"
+FLATCAR_BOARD="amd64-usr"
+CPE_NAME="cpe:2.3:o:flatcar-linux:flatcar_linux:4230.2.4:*:*:*:*:*:*:*"
+```
+
+### OS updates: FAQ
 
 https://www.flatcar.org/faq
 
