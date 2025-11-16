@@ -346,7 +346,9 @@ Useful commands:
 - `update_engine_client -check_for_update`
 
 https://www.flatcar.org/faq
+
 (...)
+
 **If the image is immutable, how does it get updated?**
 
 Flatcar uses the **USR-A** and **USR-B** update mechanism, first introduced by ChromeOS. There are two partitions where the **/usr/** filesystem can be deployed. One of them is used as the active **/usr** filesystem, while the other stays in stand-by.
