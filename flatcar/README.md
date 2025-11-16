@@ -344,6 +344,7 @@ Useful commands:
 - `cat /etc/os-release`
 - `update_engine_client -update`
 - `update_engine_client -check_for_update`
+- `flatcar-update -V 4230.2.4`
 
 https://www.flatcar.org/faq
 
