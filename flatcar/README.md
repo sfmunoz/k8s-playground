@@ -337,6 +337,7 @@ Refs:
 - https://www.flatcar.org/docs/latest/setup/releases/update-strategies/
 - https://www.flatcar.org/docs/latest/tutorial/hands-on-4/
 - https://www.flatcar.org/docs/latest/nebraska/
+- https://github.com/flatcar/locksmith
 
 Useful commands:
 
