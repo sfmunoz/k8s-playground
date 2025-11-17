@@ -9,6 +9,7 @@
 - [AWS mountpoint](docs/aws-mountpoint.md)
 - [Vultr](docs/vultr.md)
 - [kind](docs/kind.md)
+- [etcd-playground (external repository)](https://github.com/sfmunoz/etcd-playground)
 
 ## References
 
