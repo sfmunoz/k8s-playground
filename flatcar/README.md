@@ -192,7 +192,7 @@ core@localhost ~ $ sudo poweroff
 ```
 $ vboxmanage clonehd hd.vdi hd1.vdi --format VDI
 ```
-**Warning**: use `vboxmanage copy` instead of just `cp` to make sure a new **UUID** is generated (required by VirtualBox)
+**Warning**: use `vboxmanage clonehd` instead of just `cp` to make sure a new **UUID** is generated (required by VirtualBox)
 
 **(9)** Create a new VM using **hd1.vdi** (or multiple VMs using the new HDs).
 
