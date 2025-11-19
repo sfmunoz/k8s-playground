@@ -184,22 +184,27 @@ core@localhost ~ $ sudo flatcar-install -d /dev/sda -i ignition.json
 (...)
 Success! Flatcar Container Linux stable 4230.2.4 is installed on /dev/sda
 ```
-
 **(7)** Poweroff
-
 ```
 core@localhost ~ $ sudo poweroff
 ```
+**(8)** Create one copy (or multiple copies) of the HD to start a new VM:
+```
+$ vboxmanage clonehd hd.vdi hd1.vdi --format VDI
+```
+**(9)** Create a new VM using **hd1.vdi** (or multiple VMs using the new HDs).
 
-**(8)** Remove the ISO from VM and start
+**(10)** Start the new VM (or VMs)
 
-**(9)** Access the VM:
+**(11)** Access the VM:
 ```
 $ ssh core@192.168.56.27
 (...)
 Flatcar Container Linux by Kinvolk stable 4230.2.4
 core@localhost ~ $
 ```
+
+**Alternative**: use the same VM installed if you want to start just one VM and don't want to reuse it
 
 ## K3s install
 
