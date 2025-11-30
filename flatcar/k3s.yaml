@@ -29,6 +29,15 @@ storage:
           REBOOT_WINDOW_START=01:30
           REBOOT_WINDOW_LENGTH=1h
       mode: 0420
+  # https://www.flatcar.org/docs/latest/provisioning/sysext/
+  # Remove Docker and Containerd from Flatcar
+  links:
+    - path: /etc/extensions/docker-flatcar.raw
+      target: /dev/null
+      overwrite: true
+    - path: /etc/extensions/containerd-flatcar.raw
+      target: /dev/null
+      overwrite: true
 
 passwd:
   users:
