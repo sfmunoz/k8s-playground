@@ -1,0 +1,11 @@
+# Usage:
+#   $ kind create cluster --name dev --config dev.yaml --wait 5m
+# Multiple control-plane roles led to this problem:
+#   Promoting the learner ec99c8b43476f1c failed: etcdserver: can only promote a learner member which is in sync with leader
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: worker
+- role: worker
+- role: worker
