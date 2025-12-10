@@ -4,6 +4,7 @@
 - [Install](#install)
 - [Basic usage](#basic-usage)
 - [Docker containers](#docker-containers)
+- [kind load image](#kind-load-image)
 
 ## References
 
@@ -108,4 +109,17 @@ f994059786fb8       6 minutes ago       Ready               kube-scheduler-dev-c
 d6c91a3a3f07a       6 minutes ago       Ready               kube-controller-manager-dev-control-plane   kube-system          0                   (default)
 66df3cd437dee       6 minutes ago       Ready               kube-apiserver-dev-control-plane            kube-system          0                   (default)
 ca0199f7e5cfa       6 minutes ago       Ready               etcd-dev-control-plane                      kube-system          0                   (default)
+```
+## kind load image
+kind load image example:
+```
+$ docker image ls | awk '/^(REPOSITORY|python)/'
+REPOSITORY                  TAG                  IMAGE ID       CREATED         SIZE
+python                      3.13.10-alpine3.22   980d0aff90e8   7 days ago      45MB
+
+$ kind load docker-image --name dev python:3.13.10-alpine3.22
+Image: "python:3.13.10-alpine3.22" with ID "sha256:980d0aff90e8003b07bd0b7c0a9a23091cae3a2174cc4e2735474f0dd8ef143c" not yet present on node "dev-control-plane", loading...
+Image: "python:3.13.10-alpine3.22" with ID "sha256:980d0aff90e8003b07bd0b7c0a9a23091cae3a2174cc4e2735474f0dd8ef143c" not yet present on node "dev-worker2", loading...
+Image: "python:3.13.10-alpine3.22" with ID "sha256:980d0aff90e8003b07bd0b7c0a9a23091cae3a2174cc4e2735474f0dd8ef143c" not yet present on node "dev-worker", loading...
+Image: "python:3.13.10-alpine3.22" with ID "sha256:980d0aff90e8003b07bd0b7c0a9a23091cae3a2174cc4e2735474f0dd8ef143c" not yet present on node "dev-worker3", loading...
 ```
