@@ -1,7 +1,13 @@
 # kind
 
+- [References](#references)
 - [Install](#install)
 - [Basic usage](#basic-usage)
+
+## References
+
+- [https://kind.sigs.k8s.io/docs/user/quick-start/](https://kind.sigs.k8s.io/docs/user/quick-start/)
+- [https://github.com/kubernetes-sigs/kind/](https://github.com/kubernetes-sigs/kind/)
 
 ## Install
 
