@@ -17,6 +17,7 @@ Extra refs:
 - https://github.com/vultr/cluster-api-provider-vultr
   - CAPVULTR v1beta1 (v0.1.0)
   - https://github.com/vultr/cluster-api-provider-vultr/blob/main/docs/getting-started.md
+    - https://github.com/kubernetes-sigs/image-builder
  
 ## clusterctl repositories
 
