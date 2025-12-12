@@ -44,3 +44,8 @@ kill -15 $KOPF_PID
 { set +x; } 2> /dev/null
 sleep 1
 
+set -x
+kubectl delete -f 03-example-crd.yaml
+kubectl delete -f 02-peering-obj.yaml
+kubectl delete -f 01-peering-crd.yaml
+{ set +x; } 2> /dev/null
