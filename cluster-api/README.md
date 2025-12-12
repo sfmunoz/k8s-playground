@@ -18,6 +18,8 @@ Extra refs:
   - CAPVULTR v1beta1 (v0.1.0)
   - https://github.com/vultr/cluster-api-provider-vultr/blob/main/docs/getting-started.md
     - https://github.com/kubernetes-sigs/image-builder
+      - **WARNING**: in my opinion it's quite intrusive since it begins installing **Ansible**, **packer** and the like without prior notice!!
+      - It's better to use a disposable VM in order to avoid all the clutter
  
 ## clusterctl repositories
 
