@@ -3,6 +3,7 @@
 - [References](#references)
 - [clusterctl repositories](#clusterctl-repositories)
 - [Vanilla example](#vanilla-example)
+- [Image Builder (Vultr)](#image-builder-vultr)
 
 ## References
 
@@ -14,12 +15,6 @@ Extra refs:
 - https://github.com/k3s-io/cluster-api-k3s
   - Cluster API Bootstrap Provider k3s (CABP3)
   - Cluster API ControlPlane Provider k3s (CACP3)
-- https://github.com/vultr/cluster-api-provider-vultr
-  - CAPVULTR v1beta1 (v0.1.0)
-  - https://github.com/vultr/cluster-api-provider-vultr/blob/main/docs/getting-started.md
-    - https://github.com/kubernetes-sigs/image-builder
-      - **WARNING**: in my opinion it's quite intrusive since it begins installing **Ansible**, **packer** and the like without prior notice!!
-      - It's better to use a disposable VM in order to avoid all the clutter
  
 ## clusterctl repositories
 
@@ -147,4 +142,89 @@ cert-manager                        cert-manager-69fd4bc5fc-jvphk               
 cert-manager                        cert-manager-cainjector-85b6d7fc67-dpkhc                         1/1     Running   0          5m8s
 cert-manager                        cert-manager-webhook-cfbc49fc8-ddtzs                             1/1     Running   0          5m8s
 (...)
+```
+## Image Builder (Vultr)
+
+Ref: [https://github.com/vultr/cluster-api-provider-vultr](https://github.com/vultr/cluster-api-provider-vultr)
+
+- CAPVULTR v1beta1 (v0.1.0)
+- https://github.com/vultr/cluster-api-provider-vultr/blob/main/docs/getting-started.md
+  - https://github.com/kubernetes-sigs/image-builder
+    - **WARNING**: in my opinion it's quite intrusive since it begins installing **Ansible**, **packer** and the like without prior notice!!
+    - It's better to use a disposable VM in order to avoid all the clutter
+
+API KEY at https://my.vultr.com/ → Account → API → Personal Access Tokens:
+```
+$  export VULTR_API_KEY="...generated at https://vultr.com yourapikey
+```
+Setup:
+```
+$ git clone https://github.com/kubernetes-sigs/image-builder.git
+
+$ cd image-builder/images/capi
+
+$ make help | grep vultr
+  deps-vultr                           Installs/checks dependencies for Vultr builds
+  build-vultr-ubuntu-2204              Builds Ubuntu 22.04 Vultr Snapshot
+  build-vultr-ubuntu-2404              Builds Ubuntu 24.04 Vultr Snapshot
+  validate-vultr-ubuntu-2204           Validates Ubuntu 22.04 Vultr Snapshot Packer config
+  validate-vultr-ubuntu-2404           Validates Ubuntu 24.04 Vultr Snapshot Packer config
+```
+Here comes the clutter (no questions asked):
+```
+$ make build-vultr-ubuntu-2204
+hack/ensure-python.sh
+Checking if python is available
+Python 3.12.3
+hack/ensure-ansible.sh
+warning: externally-managed-environment, retrying pip3 install with --break-system-packages
+Collecting ansible-core==2.15.13
+  Using cached ansible_core-2.15.13-py3-none-any.whl.metadata (7.0 kB)
+Requirement already satisfied: jinja2>=3.0.0 in /usr/lib/python3/dist-packages (from ansible-core==2.15.13) (3.1.2)
+Requirement already satisfied: PyYAML>=5.1 in /usr/lib/python3/dist-packages (from ansible-core==2.15.13) (6.0.1)
+Requirement already satisfied: cryptography in /usr/lib/python3/dist-packages (from ansible-core==2.15.13) (41.0.7)
+Requirement already satisfied: packaging in /usr/lib/python3/dist-packages (from ansible-core==2.15.13) (24.0)
+Collecting resolvelib<1.1.0,>=0.5.3 (from ansible-core==2.15.13)
+  Using cached resolvelib-1.0.1-py2.py3-none-any.whl.metadata (4.0 kB)
+Using cached ansible_core-2.15.13-py3-none-any.whl (2.3 MB)
+Using cached resolvelib-1.0.1-py2.py3-none-any.whl (17 kB)
+Installing collected packages: resolvelib, ansible-core
+Successfully installed ansible-core-2.15.13 resolvelib-1.0.1
+ansible [core 2.15.13]
+Starting galaxy collection install process
+Process install dependency map
+Starting collection install process
+Downloading https://galaxy.ansible.com/api/v3/plugin/ansible/content/published/collections/artifacts/ansible-posix-2.1.0.tar.gz to /home/sfm/.ansible/tmp/ansible-local-285281iwf_12x/tmpq_i6mzly/ansible-posix-2.1.0-e6bukkj2
+Installing 'ansible.posix:2.1.0' to '/home/sfm/.ansible/collections/ansible_collections/ansible/posix'
+Downloading https://galaxy.ansible.com/api/v3/plugin/ansible/content/published/collections/artifacts/ansible-windows-3.3.0.tar.gz to /home/sfm/.ansible/tmp/ansible-local-285281iwf_12x/tmpq_i6mzly/ansible-windows-3.3.0-mqxhpuhj
+ansible.posix:2.1.0 was installed successfully
+Installing 'ansible.windows:3.3.0' to '/home/sfm/.ansible/collections/ansible_collections/ansible/windows'
+Downloading https://galaxy.ansible.com/api/v3/plugin/ansible/content/published/collections/artifacts/community-windows-3.1.0.tar.gz to /home/sfm/.ansible/tmp/ansible-local-285281iwf_12x/tmpq_i6mzly/community-windows-3.1.0-yvnym1ub
+ansible.windows:3.3.0 was installed successfully
+Installing 'community.windows:3.1.0' to '/home/sfm/.ansible/collections/ansible_collections/community/windows'
+Downloading https://galaxy.ansible.com/api/v3/plugin/ansible/content/published/collections/artifacts/community-general-11.4.2.tar.gz to /home/sfm/.ansible/tmp/ansible-local-285281iwf_12x/tmpq_i6mzly/community-general-11.4.2-gd8pc0wt
+community.windows:3.1.0 was installed successfully
+Installing 'community.general:11.4.2' to '/home/sfm/.ansible/collections/ansible_collections/community/general'
+community.general:11.4.2 was installed successfully
+hack/ensure-packer.sh
+Installing packer v1.9.5 in .local/bin
+packer_1.9.5_linux_amd64.zip: OK
+Archive:  packer_1.9.5_linux_amd64.zip
+  inflating: packer
+'packer' has been installed to /home/sfm/src/image-builder/images/capi/.local/bin, make sure this directory is in your $PATH
+/home/sfm/src/image-builder/images/capi/.local/bin/packer init packer/config.pkr.hcl
+/home/sfm/src/image-builder/images/capi/.local/bin/packer init packer/vultr/config.pkr.hcl
+/home/sfm/src/image-builder/images/capi/.local/bin/packer build -var-file="/home/sfm/src/image-builder/images/capi/packer/config/kubernetes.json"  -var-file="/home/sfm/src/image-builder/images/capi/packer/config/cni.json"  -var-file="/home/sfm/src/image-builder/images/capi/packer/config/containerd.json"  -var-file="/home/sfm/src/image-builder/images/capi/packer/config/wasm-shims.json"  -var-file="/home/sfm/src/image-builder/images/capi/packer/config/ansible-args.json"  -var-file="/home/sfm/src/image-builder/images/capi/packer/config/goss-args.json"  -var-file="/home/sfm/src/image-builder/images/capi/packer/config/common.json"  -var-file="/home/sfm/src/image-builder/images/capi/packer/config/additional_components.json"  -var-file="/home/sfm/src/image-builder/images/capi/packer/config/ecr_credential_provider.json"  -color=true -var-file="/home/sfm/src/image-builder/images/capi/packer/vultr/ubuntu-2204.json"  packer/vultr/packer.json
+(... it takes ages to apply the playbook ...)
+==> vultr: Performing graceful shutdown...
+==> vultr: Sleeping to ensure that server is shut down...
+==> vultr: Waiting 600s for snapshot 2b0d... to complete...
+==> vultr: Destroying server 353a...
+==> vultr: Deleting temporary SSH key...
+Build 'vultr' finished after 22 minutes 29 seconds.
+
+==> Wait completed after 22 minutes 29 seconds
+
+==> Builds finished. The artifacts of successful builds are:
+--> vultr: Vultr Snapshot: Cluster API Kubernetes v1.32.4 on Ubuntu 22.04
 ```
