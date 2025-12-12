@@ -228,3 +228,4 @@ Build 'vultr' finished after 22 minutes 29 seconds.
 ==> Builds finished. The artifacts of successful builds are:
 --> vultr: Vultr Snapshot: Cluster API Kubernetes v1.32.4 on Ubuntu 22.04  (2b0d...)
 ```
+**NOTICE**: I'm not going any further here... https://github.com/vultr/cluster-api-provider-vultr/blob/main/docs/getting-started.md procedure will be completed should Cluster API support is required
