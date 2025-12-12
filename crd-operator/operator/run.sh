@@ -14,7 +14,7 @@ if [ ! -d "$DNAME" ]
 then
   set -x
   python3 -m virtualenv "$DNAME"
-  "${DNAME}/bin/pip3" install kopf
+  "${DNAME}/bin/pip3" install kopf kubernetes
   { set +x; } 2> /dev/null
 fi
 
