@@ -13,4 +13,5 @@ set -x
 
 "${DNAME}/bin/pip3" install kopf
 
-#kubectl apply -f https://github.com/nolar/kopf/raw/main/peering.yaml
+kubectl apply -f https://github.com/nolar/kopf/raw/main/peering.yaml
+kubectl apply -f https://github.com/nolar/kopf/raw/main/examples/crd.yaml
