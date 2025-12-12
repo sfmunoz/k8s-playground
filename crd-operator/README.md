@@ -77,3 +77,13 @@ Refs:
 - https://kopf.readthedocs.io/en/stable/install/
 - https://github.com/nolar/kopf
   - https://github.com/nolar/kopf/tree/main/examples/01-minimal
+
+Execution:
+```
+$ ./operator/run.sh
+```
+Details:
+- python virtualenv is created with Kopf installed
+- CRDs are applied to the cluster
+- Kopf is executed
+- kubectl apply/delete executed to show Kopf behaviour
