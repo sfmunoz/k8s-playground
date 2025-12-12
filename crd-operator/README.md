@@ -3,6 +3,7 @@
 - [References](#references)
 - [CRD](#crd)
 - [Operator](#operator)
+  - [Kopf](#kopf)
 
 ## References
 
@@ -59,7 +60,7 @@ From [https://kubernetes.io/docs/concepts/extend-kubernetes/operator/](https://k
 
 - [Charmed Operator Framework](https://juju.is/)
 - [Java Operator SDK](https://github.com/operator-framework/java-operator-sdk)
-- [Kopf](https://github.com/nolar/kopf) (Kubernetes Operator Pythonic Framework)
+- **[Kopf](https://github.com/nolar/kopf) (Kubernetes Operator Pythonic Framework)**
 - [kube-rs](https://kube.rs/) (Rust)
 - [kubebuilder](https://book.kubebuilder.io/)
 - [KubeOps](https://dotnet.github.io/dotnet-operator-sdk/) (.NET operator SDK)
@@ -67,3 +68,11 @@ From [https://kubernetes.io/docs/concepts/extend-kubernetes/operator/](https://k
 - [Metacontroller](https://metacontroller.github.io/metacontroller/intro.html) along with WebHooks that you implement yourself
 - [Operator Framework](https://operatorframework.io/)
 - [shell-operator](https://github.com/flant/shell-operator)
+
+### Kopf
+
+Refs:
+
+- https://kopf.readthedocs.io/en/stable/install/
+- https://github.com/nolar/kopf
+  - https://github.com/nolar/kopf/tree/main/examples/01-minimal
