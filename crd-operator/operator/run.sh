@@ -3,6 +3,7 @@
 # Ref: https://kopf.readthedocs.io/en/stable/install/
 
 [ "$CYCLES" = "" ] && CYCLES="5"
+[ "$CLEANUP" = "" ] && CLEANUP="1"
 DNAME="vpy"
 
 set -e -o pipefail
@@ -44,6 +45,8 @@ set -x
 kill -15 $KOPF_PID
 { set +x; } 2> /dev/null
 sleep 1
+
+[ "$CLEANUP" = "0" ] && exit
 
 set -x
 kubectl delete -f 03-example-crd.yaml
