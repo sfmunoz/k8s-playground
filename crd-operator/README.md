@@ -2,6 +2,7 @@
 
 - [References](#references)
 - [CRD](#crd)
+- [Operator](#operator)
 
 ## References
 
@@ -53,3 +54,16 @@ widget.example.com "large-4" deleted from default namespace
 $ kubectl delete -f widget-rd.yaml
 customresourcedefinition.apiextensions.k8s.io "widgets.example.com" deleted
 ```
+## Operator
+From [https://kubernetes.io/docs/concepts/extend-kubernetes/operator/](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/):
+
+- [Charmed Operator Framework](https://juju.is/)
+- [Java Operator SDK](https://github.com/operator-framework/java-operator-sdk)
+- [Kopf](https://github.com/nolar/kopf) (Kubernetes Operator Pythonic Framework)
+- [kube-rs](https://kube.rs/) (Rust)
+- [kubebuilder](https://book.kubebuilder.io/)
+- [KubeOps](https://dotnet.github.io/dotnet-operator-sdk/) (.NET operator SDK)
+- [Mast](https://docs.ansi.services/mast/user_guide/operator/)
+- [Metacontroller](https://metacontroller.github.io/metacontroller/intro.html) along with WebHooks that you implement yourself
+- [Operator Framework](https://operatorframework.io/)
+- [shell-operator](https://github.com/flant/shell-operator)
