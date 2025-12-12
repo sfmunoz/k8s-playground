@@ -12,25 +12,25 @@ spec:
     shortNames:
       - wgt
   versions:
-    - name: v1alpha1
-      served: true
-      storage: true
-      schema:
-        openAPIV3Schema:
-          type: object
-          properties:
-            spec:
-              type: object
-              properties:
-                size:
-                  type: string
-                  enum: ["small", "medium", "large"]
-                replicas:
-                  type: integer
-                  minimum: 1
-              required: ["size"]
-            status:
-              type: object
-              properties:
-                phase:
-                  type: string
+  - name: v1alpha1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              size:
+                type: string
+                enum: ["small", "medium", "large"]
+              replicas:
+                type: integer
+                minimum: 1
+            required: ["size"]
+          status:
+            type: object
+            properties:
+              phase:
+                type: string
