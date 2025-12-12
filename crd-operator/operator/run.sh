@@ -2,7 +2,7 @@
 
 # Ref: https://kopf.readthedocs.io/en/stable/install/
 
-[ "$CYCLES" = "" ] && CYCLES="5"
+[ "$CYCLES" = "" ] && CYCLES="2"
 [ "$CLEANUP" = "" ] && CLEANUP="1"
 DNAME="vpy"
 
