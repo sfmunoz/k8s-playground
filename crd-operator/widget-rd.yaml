@@ -28,6 +28,8 @@ spec:
               replicas:
                 type: integer
                 minimum: 1
+              color:
+                type: string
             required: ["size"]
           status:
             type: object
@@ -37,6 +39,7 @@ spec:
     selectableFields:
     - jsonPath: .spec.size
     - jsonPath: .spec.replicas
+    - jsonPath: .spec.color
     additionalPrinterColumns:
     - jsonPath: .spec.size
       name: Size
@@ -44,3 +47,6 @@ spec:
     - jsonPath: .spec.replicas
       name: Replicas
       type: integer
+    - jsonPath: .spec.color
+      name: Color
+      type: string

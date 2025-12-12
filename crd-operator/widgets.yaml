@@ -5,6 +5,7 @@ metadata:
 spec:
   size: small
   replicas: 6
+  color: blue
 
 ---
 
