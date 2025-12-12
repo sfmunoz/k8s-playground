@@ -2,6 +2,7 @@
 
 # Ref: https://kopf.readthedocs.io/en/stable/install/
 
+[ "$CYCLES" = "" ] && CYCLES="5"
 DNAME="vpy"
 
 set -e -o pipefail
@@ -27,7 +28,7 @@ kubectl apply -f 03-example-crd.yaml
 
 KOPF_PID="$!"
 
-for i in `seq 1 10`
+for i in `seq 1 $(( 2 * CYCLES ))`
 do
   CMD="apply"
   [ $(( i % 2 )) = 0 ] && CMD="delete"
