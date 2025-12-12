@@ -1,0 +1,27 @@
+apiVersion: stable.example.com/v1
+kind: Shirt
+metadata:
+  name: red-large-shirt
+spec:
+  color: "red"
+  size: "large"
+
+---
+
+apiVersion: stable.example.com/v1
+kind: Shirt
+metadata:
+  name: blue-large-shirt
+spec:
+  color: "blue"
+  size: "large"
+
+---
+
+apiVersion: stable.example.com/v1
+kind: Shirt
+metadata:
+  name: green-small-shirt
+spec:
+  color: "green"
+  size: "small"
