@@ -34,3 +34,13 @@ spec:
             properties:
               phase:
                 type: string
+    selectableFields:
+    - jsonPath: .spec.size
+    - jsonPath: .spec.replicas
+    additionalPrinterColumns:
+    - jsonPath: .spec.size
+      name: Size
+      type: string
+    - jsonPath: .spec.replicas
+      name: Replicas
+      type: integer
