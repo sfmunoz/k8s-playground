@@ -3,6 +3,7 @@
 - [References](#references)
 - [CRD](#crd)
 - [Operator](#operator)
+  - [Raw](#raw)
   - [Kopf](#kopf)
 
 ## References
@@ -69,6 +70,12 @@ From [https://kubernetes.io/docs/concepts/extend-kubernetes/operator/](https://k
 - [Metacontroller](https://metacontroller.github.io/metacontroller/intro.html) along with WebHooks that you implement yourself
 - [Operator Framework](https://operatorframework.io/)
 - [shell-operator](https://github.com/flant/shell-operator)
+
+### Raw
+
+```
+$ ./raw-op/run.sh
+```
 
 ### Kopf
 
