@@ -80,7 +80,7 @@ Refs:
 
 Execution:
 ```
-$ ./operator/run.sh
+$ ./kopf-op/run.sh
 ```
 Details:
 - python virtualenv is created with Kopf installed
