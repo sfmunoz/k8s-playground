@@ -23,7 +23,7 @@ $ kubectl api-resources -o json | jq '.resources | length'
 $ kubectl api-resources | awk '/^(NAME|widget)/'
 NAME                                SHORTNAMES   APIVERSION                        NAMESPACED   KIND
 
-$ kubectl apply -f widget-rd.yaml
+$ kubectl apply -f raw-op/widget-rd.yaml
 customresourcedefinition.apiextensions.k8s.io/widgets.example.com created
 
 $ kubectl api-resources -o json | jq '.resources | length'
@@ -35,7 +35,7 @@ widgets                             wgt          example.com/v1alpha1           
 ```
 Add elements:
 ```
-$ kubectl apply -f widgets.yaml
+$ kubectl apply -f raw-op/widgets.yaml
 widget.example.com/small-6 created
 widget.example.com/medium-2 created
 widget.example.com/large-4 created
@@ -48,12 +48,12 @@ small-6    small    6          blue
 ```
 Cleanup:
 ```
-$ kubectl delete -f widgets.yaml
+$ kubectl delete -f raw-op/widgets.yaml
 widget.example.com "small-6" deleted from default namespace
 widget.example.com "medium-2" deleted from default namespace
 widget.example.com "large-4" deleted from default namespace
 
-$ kubectl delete -f widget-rd.yaml
+$ kubectl delete -f raw-op/widget-rd.yaml
 customresourcedefinition.apiextensions.k8s.io "widgets.example.com" deleted
 ```
 ## Operator
