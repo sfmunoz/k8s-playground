@@ -4,19 +4,12 @@
 
 [ "$CYCLES" = "" ] && CYCLES="2"
 [ "$CLEANUP" = "" ] && CLEANUP="1"
-[ "$DNAME" = "" ] && DNAME="venv"
 
 set -e -o pipefail
 
 cd "$(dirname "$0")"
 
-if [ ! -d "$DNAME" ]
-then
-  set -x
-  python3 -m virtualenv "$DNAME"
-  "${DNAME}/bin/pip3" install kopf kubernetes
-  { set +x; } 2> /dev/null
-fi
+../install.sh
 
 set -x
 # peering split into CRD and OBJ to prevent errors
@@ -25,7 +18,7 @@ kubectl apply -f 02-peering-obj.yaml
 kubectl apply -f 03-example-crd.yaml
 { set +x; } 2> /dev/null
 
-"${DNAME}/bin/kopf" run example.py --verbose &
+../venv/bin/kopf run example.py --verbose &
 
 KOPF_PID="$!"
 
