@@ -73,9 +73,15 @@ From [https://kubernetes.io/docs/concepts/extend-kubernetes/operator/](https://k
 
 ### Raw
 
+Execution:
 ```
 $ ./raw-op/run.sh
 ```
+Details:
+- python virtualenv is created with kubernetes installed
+- CRDs are applied to the cluster
+- Raw operator is executed
+- kubectl apply/delete executed to show operator behaviour
 
 ### Kopf
 
