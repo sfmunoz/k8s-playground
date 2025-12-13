@@ -4,7 +4,7 @@
 
 [ "$CYCLES" = "" ] && CYCLES="2"
 [ "$CLEANUP" = "" ] && CLEANUP="1"
-DNAME="vpy"
+[ "$DNAME" = "" ] && DNAME="venv"
 
 set -e -o pipefail
 
