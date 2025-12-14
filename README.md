@@ -10,6 +10,7 @@
 - [Vultr](docs/vultr.md)
 - [kind](kind/README.md)
 - [cluster-api](cluster-api/README.md)
+- [crd-operator](crd-operator/README.md)
 - [etcd-playground (external repository)](https://github.com/sfmunoz/etcd-playground)
 
 ## References

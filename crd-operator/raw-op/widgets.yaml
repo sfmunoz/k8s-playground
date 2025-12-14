@@ -1,0 +1,28 @@
+apiVersion: example.com/v1alpha1
+kind: Widget
+metadata:
+  name: small-6
+spec:
+  size: small
+  replicas: 6
+  color: blue
+
+---
+
+apiVersion: example.com/v1alpha1
+kind: Widget
+metadata:
+  name: medium-2
+spec:
+  size: medium
+  replicas: 2
+
+---
+
+apiVersion: example.com/v1alpha1
+kind: Widget
+metadata:
+  name: large-4
+spec:
+  size: large
+  replicas: 4
