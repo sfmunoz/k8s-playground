@@ -1,6 +1,12 @@
 # rbac
 
+- [References](#references)
 - [Usage](#usage)
+
+## References
+
+- https://kubernetes.io/docs/reference/access-authn-authz/rbac/
+- https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/
 
 ## Usage
 
