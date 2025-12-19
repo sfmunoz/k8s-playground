@@ -1,0 +1,11 @@
+# Install:
+#   $ helm upgrade --install -n rbac --create-namespace rbac rbac
+# Uninstall:
+#   $ helm uninstall -n rbac rbac
+#   $ kubectl delete namespaces rbac
+apiVersion: v2
+name: rbac
+description: rbac
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
