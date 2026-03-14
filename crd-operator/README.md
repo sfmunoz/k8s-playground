@@ -1,11 +1,5 @@
 # CRD + Operator
 
-- [References](#references)
-- [CRD](#crd)
-- [Operator](#operator)
-  - [Raw](#raw)
-  - [Kopf](#kopf)
-
 ## References
 
 - https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/

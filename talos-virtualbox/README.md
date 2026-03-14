@@ -1,11 +1,5 @@
 # talos-virtualbox
 
-Talos virtualbox:
-
-- [References](#references)
-- [Steps (one node)](#steps-one-node)
-- [Steps (multinode)](#steps-multinode)
-
 ## References
 
 - [Kubernetes home lab on an old computer](https://www.youtube.com/watch?v=VKfE5BuqlSc)

@@ -1,10 +1,5 @@
 # cluster-api
 
-- [References](#references)
-- [clusterctl repositories](#clusterctl-repositories)
-- [Vanilla example](#vanilla-example)
-- [Image Builder (Vultr)](#image-builder-vultr)
-
 ## References
 
 - [https://cluster-api.sigs.k8s.io/](https://cluster-api.sigs.k8s.io/)

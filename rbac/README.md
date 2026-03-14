@@ -1,8 +1,5 @@
 # rbac
 
-- [References](#references)
-- [Usage](#usage)
-
 ## References
 
 - https://kubernetes.io/docs/reference/access-authn-authz/rbac/

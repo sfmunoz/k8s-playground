@@ -1,11 +1,5 @@
 # kind
 
-- [References](#references)
-- [Install](#install)
-- [Basic usage](#basic-usage)
-- [Docker containers](#docker-containers)
-- [kind load image](#kind-load-image)
-
 ## References
 
 - [https://kind.sigs.k8s.io/docs/user/quick-start/](https://kind.sigs.k8s.io/docs/user/quick-start/)
