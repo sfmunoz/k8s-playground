@@ -1,18 +1,5 @@
 # flatcar
 
-- [References](#references)
-- [Config systems](#config-systems)
-- [Butane vs Ignition](#butane-vs-ignition)
-- [Install ISO (VirtualBox)](#install-iso-virtualbox)
-- [K3s install](#k3s-install)
-- [OS updates](#os-updates)
-  - [OS updates: useful commands](#os-updates-useful-commands)
-  - [OS updates: example](#os-updates-example)
-  - [OS updates: FAQ](#os-updates-faq)
-- [(OLD) Install (VirtualBox)](#old-install-virtualbox)
-  - [(OLD) user-configdrive.service](#old-user-configdriveservice)
-  - [(OLD) coreos-cloudinit](#old-coreos-cloudinit)
-
 ## References
 
 - https://www.flatcar.org/
