@@ -1,8 +1,5 @@
 # k3s
 
-- [k3s (plain)](#k3s-plain)
-- [k3s (vagrant)](#k3s-vagrant)
-
 ## k3s (plain)
 
 Ref: https://k3s.io/
