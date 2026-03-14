@@ -1,13 +1,5 @@
 # kairos
 
-- [References](#references)
-- [Kairos install (default)](#kairos-install-default)
-- [Kairos install (manual)](#kairos-install-manual)
-- [Binaries](#binaries)
-  - [kairos](#kairos)
-  - [kairos-agent](#kairos-agent)
-  - [k3s](#k3s)
-
 ## References
 
 - https://kairos.io/
