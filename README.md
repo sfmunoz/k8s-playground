@@ -13,6 +13,7 @@
 - [crd-operator](crd-operator/README.md)
 - [rbac](rbac/README.md)
 - [etcd-playground (external repository)](https://github.com/sfmunoz/etcd-playground)
+- [postgres-rclone (external repository)](https://github.com/sfmunoz/postgres-rclone)
 
 ## References
 
