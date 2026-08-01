@@ -4,6 +4,7 @@
 
 - https://kubernetes.io/docs/reference/access-authn-authz/rbac/
 - https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/
+- [Kubernetes RBAC Explained](https://www.youtube.com/watch?v=iE9Qb8dHqWI)
 
 ## Usage
 
