@@ -8,7 +8,7 @@
 - [RoleBinding examples → subjects](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-binding-examples)
   - kind:User + name:user + apiGroup:rbac.authorization.k8s.io
   - kind:Group + name:developers + apiGroup:rbac.authorization.k8s.io
-  - kind:ServiceAccount + name:system:serviceaccounts:qa + apiGroup:rbac.authorization.k8s.io
+  - kind:ServiceAccount + name:system:serviceaccounts:qa + namespace:kube-system
   - kind:Group + name:system:serviceaccounts + apiGroup:rbac.authorization.k8s.io
   - kind:Group + name:system:authenticated + apiGroup:rbac.authorization.k8s.io
   - kind:Group + name:system:unauthenticated + apiGroup:rbac.authorization.k8s.io
