@@ -103,3 +103,28 @@ Username                                            user1
 Groups                                              [system:masters system:authenticated]
 Extra: authentication.kubernetes.io/credential-id   [X509SHA256=85525dcd...]
 ```
+
+### ClusterRoleBinding: ClusterRole=cluster-admin → Group=system:masters
+
+```yaml
+$ kubectl get clusterrolebindings.rbac.authorization.k8s.io cluster-admin -o yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    rbac.authorization.kubernetes.io/autoupdate: "true"
+  creationTimestamp: "2026-07-29T17:07:19Z"
+  labels:
+    kubernetes.io/bootstrapping: rbac-defaults
+  name: cluster-admin
+  resourceVersion: "136"
+  uid: 53713704-c6b6-4694-be01-d85c5936b1cb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:masters
+```
