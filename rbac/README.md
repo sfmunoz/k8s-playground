@@ -32,6 +32,8 @@ $ kubectl delete namespaces rbac
 
 ## Client auth example
 
+### Certificate creation
+
 Generate **user1.key** and **user1.crt** in the **Flatcar + K3s** node (make sure to use **O=system:masters**):
 
 ```
@@ -49,6 +51,8 @@ core@n0007 ~ $ sudo openssl x509 -req \
 Certificate request self-signature ok
 subject=CN=user1, O=system:masters
 ```
+
+### ~/.kube/config setup
 
 Update **~/.kube/config** using `kube config ...` commands (192.168.56.51 is the IP of the **Flatcar + K3s** node the certificate was generated at):
 
