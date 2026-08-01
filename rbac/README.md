@@ -5,6 +5,15 @@
 - https://kubernetes.io/docs/reference/access-authn-authz/rbac/
 - https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/
 - [Kubernetes RBAC Explained](https://www.youtube.com/watch?v=iE9Qb8dHqWI)
+  - RoleBindings:
+    - Link Role to Subjects
+    - Must exist in the same namespace to Roles
+    - Can exist in separate namespaces to ServiceAccounts
+    - Can link ClusterRoles to namespace of the RoleBinding
+  - ClusterRoleBindings:
+    - Link accounts to ClusterRoles
+    - Grant access across all resources
+    - Can not reference Roles
 - [RoleBinding examples → subjects](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-binding-examples)
   - kind:User + name:user + apiGroup:rbac.authorization.k8s.io
   - kind:Group + name:developers + apiGroup:rbac.authorization.k8s.io
