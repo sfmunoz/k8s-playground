@@ -30,6 +30,78 @@ $ helm uninstall -n rbac rbac
 $ kubectl delete namespaces rbac
 ```
 
+## User impersonation
+
+```
+$ kubectl auth whoami
+ATTRIBUTE                                           VALUE
+Username                                            system:admin
+Groups                                              [system:masters system:authenticated]
+Extra: authentication.kubernetes.io/credential-id   [X509SHA256=4b4de9f2...]
+
+$ kubectl auth whoami --as=system:serviceaccount:i12e:default
+ATTRIBUTE   VALUE
+Username    system:serviceaccount:i12e:default
+Groups      [system:serviceaccounts system:serviceaccounts:i12e system:authenticated]
+```
+
+## Service account + token client authentication
+
+The key here is `kubectl create token ...`: it's meant to create a token associated to the specified serviceaccount:
+
+```
+$ ssh core@192.168.56.51 'sudo cat /etc/rancher/k3s/k3s.yaml' > ~/.kube/config
+
+$ kubectl config get-contexts
+CURRENT   NAME      CLUSTER   AUTHINFO   NAMESPACE
+*         default   default   default
+
+$ kubectl config get-users
+NAME
+default
+
+$ kubectl config set-credentials sa-i12e-default --token=$(kubectl create token -n i12e default)
+User "sa-i12e-default" set.
+
+$ kubectl config get-contexts
+CURRENT   NAME      CLUSTER   AUTHINFO   NAMESPACE
+*         default   default   default
+
+$ kubectl config get-users
+NAME
+default
+sa-i12e-default
+
+$ kubectl config set-context sa-i12e-ctx --user=sa-i12e-default --cluster=default
+Context "sa-i12e-ctx" created.
+
+$ kubectl config get-contexts
+CURRENT   NAME          CLUSTER   AUTHINFO          NAMESPACE
+*         default       default   default
+          sa-i12e-ctx   default   sa-i12e-default
+
+$ kubectl config use-context sa-i12e-ctx
+Switched to context "sa-i12e-ctx".
+
+$ kubectl config get-contexts
+CURRENT   NAME          CLUSTER   AUTHINFO          NAMESPACE
+          default       default   default
+*         sa-i12e-ctx   default   sa-i12e-default
+
+$ kubectl auth whoami
+ATTRIBUTE                                           VALUE
+Username                                            system:serviceaccount:i12e:default
+UID                                                 31a55b72...
+Groups                                              [system:serviceaccounts system:serviceaccounts:i12e system:authenticated]
+Extra: authentication.kubernetes.io/credential-id   [JTI=48cc355d...]
+
+$ kubectl get pods -A
+Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:i12e:default" cannot list resource "pods" in API group "" at the cluster scope
+
+$ kubectl get pods
+Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:i12e:default" cannot list resource "pods" in API group "" in the namespace "default"
+```
+
 ## Certificate based client authentication
 
 ### Certificate creation
@@ -179,76 +251,4 @@ subjects:
 - apiGroup: rbac.authorization.k8s.io
   kind: Group
   name: system:masters
-```
-
-## Service account + token client authentication
-
-The key here is `kubectl create token ...`: it's meant to create a token associated to the specified serviceaccount:
-
-```
-$ ssh core@192.168.56.51 'sudo cat /etc/rancher/k3s/k3s.yaml' > ~/.kube/config
-
-$ kubectl config get-contexts
-CURRENT   NAME      CLUSTER   AUTHINFO   NAMESPACE
-*         default   default   default
-
-$ kubectl config get-users
-NAME
-default
-
-$ kubectl config set-credentials sa-i12e-default --token=$(kubectl create token -n i12e default)
-User "sa-i12e-default" set.
-
-$ kubectl config get-contexts
-CURRENT   NAME      CLUSTER   AUTHINFO   NAMESPACE
-*         default   default   default
-
-$ kubectl config get-users
-NAME
-default
-sa-i12e-default
-
-$ kubectl config set-context sa-i12e-ctx --user=sa-i12e-default --cluster=default
-Context "sa-i12e-ctx" created.
-
-$ kubectl config get-contexts
-CURRENT   NAME          CLUSTER   AUTHINFO          NAMESPACE
-*         default       default   default
-          sa-i12e-ctx   default   sa-i12e-default
-
-$ kubectl config use-context sa-i12e-ctx
-Switched to context "sa-i12e-ctx".
-
-$ kubectl config get-contexts
-CURRENT   NAME          CLUSTER   AUTHINFO          NAMESPACE
-          default       default   default
-*         sa-i12e-ctx   default   sa-i12e-default
-
-$ kubectl auth whoami
-ATTRIBUTE                                           VALUE
-Username                                            system:serviceaccount:i12e:default
-UID                                                 31a55b72...
-Groups                                              [system:serviceaccounts system:serviceaccounts:i12e system:authenticated]
-Extra: authentication.kubernetes.io/credential-id   [JTI=48cc355d...]
-
-$ kubectl get pods -A
-Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:i12e:default" cannot list resource "pods" in API group "" at the cluster scope
-
-$ kubectl get pods
-Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:i12e:default" cannot list resource "pods" in API group "" in the namespace "default"
-```
-
-## User impersonation
-
-```
-$ kubectl auth whoami
-ATTRIBUTE                                           VALUE
-Username                                            system:admin
-Groups                                              [system:masters system:authenticated]
-Extra: authentication.kubernetes.io/credential-id   [X509SHA256=4b4de9f2...]
-
-$ kubectl auth whoami --as=system:serviceaccount:i12e:default
-ATTRIBUTE   VALUE
-Username    system:serviceaccount:i12e:default
-Groups      [system:serviceaccounts system:serviceaccounts:i12e system:authenticated]
 ```
