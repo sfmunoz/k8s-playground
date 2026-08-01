@@ -106,9 +106,9 @@ Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:i1
 
 ### Certificate creation
 
-#### Option 1: O=<anything> except for O=systems:masters
+#### Option 1: O="anything" except for O=systems:masters
 
-There's no need to log in to the control panel since everything is done on the client side:
+Attempts to create **O=systems:masters** users raise **forbidden errors** when using this method. There's no need to log in to the control panel since everything is done on the client side:
 
 ```
 $ kubectl auth whoami
