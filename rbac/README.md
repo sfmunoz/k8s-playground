@@ -189,3 +189,18 @@ Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:i1
 $ kubectl get pods
 Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:i12e:default" cannot list resource "pods" in API group "" in the namespace "default"
 ```
+
+## User impersonation
+
+```
+$ kubectl auth whoami
+ATTRIBUTE                                           VALUE
+Username                                            system:admin
+Groups                                              [system:masters system:authenticated]
+Extra: authentication.kubernetes.io/credential-id   [X509SHA256=4b4de9f2...]
+
+$ kubectl auth whoami --as=system:serviceaccount:i12e:default
+ATTRIBUTE   VALUE
+Username    system:serviceaccount:i12e:default
+Groups      [system:serviceaccounts system:serviceaccounts:i12e system:authenticated]
+```
