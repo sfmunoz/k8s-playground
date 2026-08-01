@@ -34,7 +34,55 @@ $ kubectl delete namespaces rbac
 
 ### Certificate creation
 
-Generate **user1.key** and **user1.crt** in the **Flatcar + K3s** node (make sure to use **O=system:masters**):
+#### Option 1: O=<anything> except for O=systems:masters
+
+There's no need to log in to the control panel since everything is done on the client side:
+
+```
+$ kubectl auth whoami
+ATTRIBUTE                                           VALUE
+Username                                            system:admin
+Groups                                              [system:masters system:authenticated]
+Extra: authentication.kubernetes.io/credential-id   [X509SHA256=4b4de9f2...]
+
+$ openssl genrsa -out user1.key 2048
+
+$ openssl req -new -key user1.key -out user1.csr -subj "/CN=user1/O=developers"
+
+$ kubectl get csr -A
+No resources found
+
+$ cat <<EOF | kubectl apply -f -
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: user1
+spec:
+  request: $(base64 -w0 user1.csr)
+  signerName: kubernetes.io/kube-apiserver-client
+  expirationSeconds: $((365*24*60*60))
+  usages:
+  - client auth
+EOF
+certificatesigningrequest.certificates.k8s.io/user1 created
+
+$ kubectl get csr -A
+NAME    AGE   SIGNERNAME                            REQUESTOR      REQUESTEDDURATION   CONDITION
+user1   9s    kubernetes.io/kube-apiserver-client   system:admin   365d                Pending
+
+$ kubectl certificate approve user1
+certificatesigningrequest.certificates.k8s.io/user1 approved
+
+$ kubectl get csr user1
+NAME    AGE     SIGNERNAME                            REQUESTOR      REQUESTEDDURATION   CONDITION
+user1   2m59s   kubernetes.io/kube-apiserver-client   system:admin   365d                Approved,Issued
+
+$ kubectl get csr user1 -o jsonpath='{ .status.certificate }' | base64 -d > user1.crt
+```
+
+#### Option 2: only if O=systems:masters is required
+
+Generate **user1.key** and **user1.crt** in the **Flatcar + K3s** node:
 
 ```
 core@n0007 ~ $ openssl genrsa -out user1.key 2048
@@ -138,7 +186,7 @@ subjects:
 The key here is `kubectl create token ...`: it's meant to create a token associated to the specified serviceaccount:
 
 ```
-$ ssh core@192.168.56.51 'sudo cat /etc/rancher/k3s/k3s.yaml' > ~/.kube/config.dev
+$ ssh core@192.168.56.51 'sudo cat /etc/rancher/k3s/k3s.yaml' > ~/.kube/config
 
 $ kubectl config get-contexts
 CURRENT   NAME      CLUSTER   AUTHINFO   NAMESPACE
