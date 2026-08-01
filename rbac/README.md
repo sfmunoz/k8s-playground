@@ -5,6 +5,13 @@
 - https://kubernetes.io/docs/reference/access-authn-authz/rbac/
 - https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/
 - [Kubernetes RBAC Explained](https://www.youtube.com/watch?v=iE9Qb8dHqWI)
+- [RoleBinding examples → subjects](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-binding-examples)
+  - kind:User + name:user + apiGroup:rbac.authorization.k8s.io
+  - kind:Group + name:developers + apiGroup:rbac.authorization.k8s.io
+  - kind:ServiceAccount + name:system:serviceaccounts:qa + apiGroup:rbac.authorization.k8s.io
+  - kind:Group + name:system:serviceaccounts + apiGroup:rbac.authorization.k8s.io
+  - kind:Group + name:system:authenticated + apiGroup:rbac.authorization.k8s.io
+  - kind:Group + name:system:unauthenticated + apiGroup:rbac.authorization.k8s.io
 
 ## Usage
 
