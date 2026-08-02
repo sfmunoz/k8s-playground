@@ -21,6 +21,17 @@
   - kind:Group + name:system:serviceaccounts + apiGroup:rbac.authorization.k8s.io
   - kind:Group + name:system:authenticated + apiGroup:rbac.authorization.k8s.io
   - kind:Group + name:system:unauthenticated + apiGroup:rbac.authorization.k8s.io
+- [Kubernetes Security Best Practices you need to know | THE Guide for securing your K8s cluster!](https://www.youtube.com/watch?v=oBf5lrmquYI)
+  - 1. Image scanning
+  - 2. Run as non-root users
+  - 3. Users and permissions
+  - 4. Use network policies
+  - 5. Encrypt communications
+  - 6. Secure secret data
+  - 7. Secure etcd
+  - 8. Backup and restore
+  - 9. Configure security policies
+  - 10. Disaster recovery
 
 ## Usage
 
