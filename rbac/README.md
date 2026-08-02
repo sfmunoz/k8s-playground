@@ -129,6 +129,17 @@ $ kubectl get pods
 Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:i12e:default" cannot list resource "pods" in API group "" in the namespace "default"
 ```
 
+## Run kubectl within pod
+
+In this example the associated service account **system:serviceaccount:default:default** cannot list pods in the default namespace:
+
+```
+$ kubectl run -it --rm --image=rancher/kubectl:v1.36.2-amd64 --restart=Never kubectl -- get pods
+Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:default:default" cannot list resource "pods" in API group "" in the namespace "default"
+pod "kubectl" deleted from default namespace
+pod default/kubectl terminated (Error)
+```
+
 ## Certificate based client authentication
 
 ### Certificate creation
