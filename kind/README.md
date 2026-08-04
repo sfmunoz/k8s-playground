@@ -27,6 +27,9 @@ zsh autocompletion:
 $ source <(kind completion zsh)
 ```
 ## Basic usage
+
+Use `export KIND_CLUSTER_NAME=c1` to avoid `--name c1` use. Omit `--wait 5m` to wait *forever*:
+
 ```
 $ kind create cluster --name c1 --wait 5m
 (...)
