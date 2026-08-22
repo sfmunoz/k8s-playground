@@ -59,7 +59,26 @@ spec:
 
 ## csi-rclone (Veloxpack)
 
-[https://www.veloxpack.io/docs/csi-driver-rclone/storageclass](https://www.veloxpack.io/docs/csi-driver-rclone/storageclass): be careful since `csi.storage.*` entries are not properly indented under `parameters`:
+From [https://github.com/sfmunoz/i12e/issues/273#issuecomment-5183456335](https://github.com/sfmunoz/i12e/issues/273#issuecomment-5183456335):
+
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rclone-multitenant
+provisioner: rclone.csi.veloxpack.io
+parameters:
+  remote: "s3"
+  # Each PVC gets its own isolated directory
+  remotePath: "buckets/${pvc.metadata.namespace}/${pvc.metadata.name}"
+  csi.storage.k8s.io/node-publish-secret-name: "rclone-secret"
+  csi.storage.k8s.io/node-publish-secret-namespace: "default"
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+allowVolumeExpansion: false
+```
+
+From [https://www.veloxpack.io/docs/csi-driver-rclone/storageclass](https://www.veloxpack.io/docs/csi-driver-rclone/storageclass): be careful since `csi.storage.*` entries are not properly indented under `parameters` (that issue is fixed here):
 
 ```
 apiVersion: storage.k8s.io/v1
