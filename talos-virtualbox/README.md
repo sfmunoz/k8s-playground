@@ -5,6 +5,9 @@
 - [Kubernetes home lab on an old computer](https://www.youtube.com/watch?v=VKfE5BuqlSc)
 - [VirtualBox: Creating Talos Kubernetes cluster using VirtualBox VMs](https://docs.siderolabs.com/talos/v1.9/platform-specific-installations/local-platforms/virtualbox)
 
+> [!TIP]
+> Do check out [setup.sh](./setup.sh): it provides a very simple example
+
 ## Steps (one node)
 
 Originally based on [Kubernetes home lab on an old computer](https://www.youtube.com/watch?v=VKfE5BuqlSc) but polished from there in a string of iterations
