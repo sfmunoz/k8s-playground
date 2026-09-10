@@ -2,7 +2,6 @@
 
 export KUBECONFIG="${HOME}/.kube/config.talos"
 export TALOSCONFIG="./talosconfig"
-export CONTROL_PLANE_IP="127.0.0.1"
 
 set -e -o pipefail
 
@@ -10,10 +9,9 @@ cd "$(dirname "$0")"
 
 case "$1" in
 install)
+  export CONTROL_PLANE_IP="127.0.0.1"
   export CLUSTER_NAME="c1"
-
   set -x
-
   rm -fv "$KUBECONFIG" controlplane.yaml talosconfig worker.yaml
   talosctl gen config $CLUSTER_NAME https://${CONTROL_PLANE_IP}:6443
   talosctl config endpoint $CONTROL_PLANE_IP
@@ -29,7 +27,6 @@ source)
   cat <<__EOF
 export KUBECONFIG="${HOME}/.kube/config.talos"
 export TALOSCONFIG="./talosconfig"
-export CONTROL_PLANE_IP="127.0.0.1"
 __EOF
   ;;
 *)
