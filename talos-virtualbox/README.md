@@ -19,7 +19,9 @@ Ref: https://docs.siderolabs.com/talos/v1.11/platform-specific-installations/loc
 
 Alternative:
 
-- NAT + port-forward 127.0.0.1:50000 → 50000 (guest IP blank)
+- NAT + port-forward:
+  - talos: 127.0.0.1:50000 → 50000 (guest IP blank)
+  - k8s: 127.0.0.1:6443 → 6443 (guest IP blank)
 - `export CONTROL_PLANE_IP=127.0.0.1`
 - `talosctl get disks --insecure --nodes $CONTROL_PLANE_IP`
 
