@@ -13,7 +13,14 @@ config)
   export CLUSTER_NAME="c1"
   set -x
   rm -fv "$KUBECONFIG" controlplane.yaml talosconfig worker.yaml
-  talosctl gen config $CLUSTER_NAME https://${CONTROL_PLANE_IP}:6443
+  talosctl gen config $CLUSTER_NAME https://${CONTROL_PLANE_IP}:6443 \
+    --config-patch-control-plane @/dev/stdin <<__EOF
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+taints:
+  node-role.kubernetes.io/control-plane:
+    \$patch: delete
+__EOF
   talosctl config endpoint $CONTROL_PLANE_IP
   talosctl config node $CONTROL_PLANE_IP
   #talosctl get disks --insecure --nodes $CONTROL_PLANE_IP
