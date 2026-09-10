@@ -17,6 +17,12 @@ Ref: https://docs.siderolabs.com/talos/v1.11/platform-specific-installations/loc
 - Host-only Adapter, 'vboxnet0'
   - Enabling a DHCP Server the VM will get the IP 192.168.56.3 (Lower Address Bound)
 
+Alternative:
+
+- NAT + port-forward 127.0.0.1:50000 → 50000 (guest IP blank)
+- `export CONTROL_PLANE_IP=127.0.0.1`
+- `talosctl get disks --insecure --nodes $CONTROL_PLANE_IP`
+
 **(2)** Generate the cluster config using the name you want (e.g. **mycluster**) and the IP of the VM (**192.168.56.3**):
 
 ```
