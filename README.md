@@ -2,7 +2,6 @@
 
 - [kubectl](docs/kubectl.md)
 - [k3s](k3s/README.md)
-- [talos-docker](talos-docker/README.md)
 - [talos-virtualbox](talos-virtualbox/README.md)
 - [flatcar](flatcar/README.md)
 - [kairos](kairos/README.md)
