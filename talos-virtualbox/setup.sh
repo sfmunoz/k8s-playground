@@ -12,7 +12,7 @@ case "$1" in
 config)
   export CLUSTER_NAME="c1"
   set -x
-  rm -fv "$KUBECONFIG" controlplane.yaml talosconfig worker.yaml
+  rm -fv controlplane.yaml talosconfig worker.yaml
   talosctl gen config $CLUSTER_NAME https://${CONTROL_PLANE_IP}:6443 \
     --config-patch-control-plane @/dev/stdin <<__EOF
 apiVersion: v1alpha1
@@ -33,6 +33,7 @@ install)
     talosctl bootstrap && break
     sleep 10
   done
+  rm -fv "$KUBECONFIG"
   talosctl kubeconfig
   ;;
 source)
