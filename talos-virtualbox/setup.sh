@@ -2,7 +2,9 @@
 
 export KUBECONFIG="${HOME}/.kube/config.talos"
 export TALOSCONFIG="./talosconfig"
-export CONTROL_PLANE_IP="127.0.0.1"
+
+[ "$CONTROL_PLANE_IP" = "" ] && CONTROL_PLANE_IP="127.0.0.1"
+export CONTROL_PLANE_IP
 
 set -e -o pipefail
 
