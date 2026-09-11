@@ -13,7 +13,9 @@ config)
   export CLUSTER_NAME="c1"
   set -x
   rm -fv controlplane.yaml talosconfig worker.yaml
+  [ -f secrets.yaml ] || talosctl gen secrets
   talosctl gen config $CLUSTER_NAME https://${CONTROL_PLANE_IP}:6443 \
+    --with-secrets secrets.yaml \
     --output-types controlplane,talosconfig \
     --install-disk /dev/sda \
     --config-patch-control-plane @/dev/stdin <<__EOF
