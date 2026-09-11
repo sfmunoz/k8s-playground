@@ -29,8 +29,10 @@ install)
   set -x
   # --nodes must be explicit
   talosctl apply-config --nodes $CONTROL_PLANE_IP --file controlplane.yaml --insecure
-  sleep 60
-  talosctl bootstrap
+  while true; do
+    talosctl bootstrap && break
+    sleep 10
+  done
   talosctl kubeconfig
   ;;
 source)
