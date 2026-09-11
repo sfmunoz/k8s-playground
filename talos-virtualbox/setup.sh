@@ -1,26 +1,32 @@
 #!/bin/bash
 
-export KUBECONFIG="${HOME}/.kube/config.talos"
-export TALOSCONFIG="./talosconfig"
-
-[ "$CONTROL_PLANE_IP" = "" ] && CONTROL_PLANE_IP="127.0.0.1"
-export CONTROL_PLANE_IP
-
 set -e -o pipefail
 
 cd "$(dirname "$0")"
 
+[ "$CLUSTER_NAME" = "" ] && CLUSTER_NAME="cdev"
+[ "$CONTROL_PLANE_IP" = "" ] && CONTROL_PLANE_IP="127.0.0.1"
+
+export CLUSTER_NAME CONTROL_PLANE_IP
+
+export KUBECONFIG="./${CLUSTER_NAME}/kubeconfig"
+export TALOSCONFIG="./${CLUSTER_NAME}/talosconfig"
+
+CONTROLPLANE_YAML="./${CLUSTER_NAME}/controlplane.yaml"
+WORKER_YAML="./${CLUSTER_NAME}/worker.yaml"
+
 case "$1" in
 config)
-  [ "$CLUSTER_NAME" = "" ] && CLUSTER_NAME="cdev"
-  export CLUSTER_NAME
+  SECRETS_YAML="./${CLUSTER_NAME}/secrets.yaml"
   set -x
-  rm -fv controlplane.yaml talosconfig worker.yaml
-  [ -f secrets.yaml ] || talosctl gen secrets
+  mkdir -p "${CLUSTER_NAME}"
+  rm -fv "$TALOSCONFIG" "$CONTROLPLANE_YAML" "$WORKER_YAML"
+  [ -f "${SECRETS_YAML}" ] || talosctl gen secrets -o "${SECRETS_YAML}"
   talosctl gen config $CLUSTER_NAME https://${CONTROL_PLANE_IP}:6443 \
-    --with-secrets secrets.yaml \
+    --with-secrets "${SECRETS_YAML}" \
     --output-types controlplane,talosconfig \
     --install-disk /dev/sda \
+    --output "${CLUSTER_NAME}" \
     --config-patch-control-plane @/dev/stdin <<__EOF
 apiVersion: v1alpha1
 kind: KubeNodeConfig
@@ -35,7 +41,7 @@ __EOF
 install)
   set -x
   # --nodes must be explicit
-  talosctl apply-config --nodes $CONTROL_PLANE_IP --file controlplane.yaml --insecure
+  talosctl apply-config --nodes $CONTROL_PLANE_IP --file "$CONTROLPLANE_YAML" --insecure
   while true; do
     talosctl bootstrap && break
     sleep 10
@@ -45,8 +51,8 @@ install)
   ;;
 source)
   cat <<__EOF
-export KUBECONFIG="${HOME}/.kube/config.talos"
-export TALOSCONFIG="./talosconfig"
+export KUBECONFIG="$KUBECONFIG"
+export TALOSCONFIG="$TALOSCONFIG"
 __EOF
   ;;
 *)
