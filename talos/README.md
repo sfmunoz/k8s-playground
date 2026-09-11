@@ -44,7 +44,7 @@ Usage:
 ## Config generation
 
 ```
-./setup.sh config
+$ ./setup.sh config
 + mkdir -p cdev
 + rm -fv ./cdev/talosconfig ./cdev/controlplane.yaml ./cdev/worker.yaml
 + '[' -f ./cdev/secrets.yaml ']'
