@@ -14,6 +14,7 @@ config)
   set -x
   rm -fv controlplane.yaml talosconfig worker.yaml
   talosctl gen config $CLUSTER_NAME https://${CONTROL_PLANE_IP}:6443 \
+    --install-disk /dev/sda \
     --config-patch-control-plane @/dev/stdin <<__EOF
 apiVersion: v1alpha1
 kind: KubeNodeConfig
