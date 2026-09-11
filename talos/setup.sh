@@ -24,7 +24,6 @@ config)
   [ -f "${SECRETS_YAML}" ] || talosctl gen secrets -o "${SECRETS_YAML}"
   talosctl gen config $CLUSTER_NAME https://${CONTROL_PLANE_IP}:6443 \
     --with-secrets "${SECRETS_YAML}" \
-    --output-types controlplane,talosconfig \
     --install-disk /dev/sda \
     --output "${CLUSTER_NAME}" \
     --config-patch-control-plane @/dev/stdin <<__EOF
