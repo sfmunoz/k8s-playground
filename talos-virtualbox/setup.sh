@@ -10,7 +10,8 @@ cd "$(dirname "$0")"
 
 case "$1" in
 config)
-  export CLUSTER_NAME="c1"
+  [ "$CLUSTER_NAME" = "" ] && CLUSTER_NAME="cdev"
+  export CLUSTER_NAME
   set -x
   rm -fv controlplane.yaml talosconfig worker.yaml
   [ -f secrets.yaml ] || talosctl gen secrets
