@@ -2,7 +2,7 @@
 
 - [kubectl](docs/kubectl.md)
 - [k3s](k3s/README.md)
-- [talos-virtualbox](talos-virtualbox/README.md)
+- [talos](talos/README.md)
 - [flatcar](flatcar/README.md)
 - [kairos](kairos/README.md)
 - [AWS mountpoint](docs/aws-mountpoint.md)
