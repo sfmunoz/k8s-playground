@@ -29,6 +29,9 @@ config)
     --config-patch-control-plane @/dev/stdin <<__EOF
 apiVersion: v1alpha1
 kind: KubeNodeConfig
+nodeIP:
+  validSubnets:
+  - 192.168.56.0/24
 taints:
   node-role.kubernetes.io/control-plane:
     \$patch: delete
@@ -37,12 +40,6 @@ cluster:
   etcd:
     advertisedSubnets:
     - 192.168.56.0/24
----
-apiVersion: v1alpha1
-kind: KubeNodeConfig
-nodeIP:
-  validSubnets:
-  - 192.168.56.0/24
 __EOF
   talosctl config endpoint $CONTROL_PLANE_IP
   talosctl config node $CONTROL_PLANE_IP
