@@ -47,7 +47,7 @@ __EOF
   talosctl config node $IP1
   #talosctl get disks --insecure --nodes $IP1
   ;;
-install-57)
+install-1)
   set -x
   # --nodes must be explicit
   talosctl apply-config --nodes $IP1 --file "$CONTROLPLANE_YAML" --insecure
@@ -58,11 +58,11 @@ install-57)
   rm -fv "$KUBECONFIG"
   talosctl kubeconfig
   ;;
-install-58)
+install-2)
   set -x
   talosctl apply-config --nodes $IP2 --file "${WORKER_YAML}" --insecure
   ;;
-install-59)
+install-3)
   set -x
   talosctl apply-config --nodes $IP3 --file "${WORKER_YAML}" --insecure
   ;;
@@ -78,9 +78,9 @@ __EOF
   echo "Usage:"
   echo
   echo "  \$ ${BNAME} config             (delete and create configuration)"
-  echo "  \$ ${BNAME} install-57         (control-plane node)"
-  echo "  \$ ${BNAME} install-58         (worker node)"
-  echo "  \$ ${BNAME} install-59         (worker node)"
+  echo "  \$ ${BNAME} install-1          (control-plane node)"
+  echo "  \$ ${BNAME} install-2          (worker node)"
+  echo "  \$ ${BNAME} install-3          (worker node)"
   echo "  \$ eval \$(${BNAME} source)"
   echo
   ;;
