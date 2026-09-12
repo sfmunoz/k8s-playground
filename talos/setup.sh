@@ -44,7 +44,7 @@ cluster:
     - 192.168.56.0/24
 __EOF
   talosctl config endpoint $IP1
-  talosctl config node $IP1
+  talosctl config node $IP1 $IP2 $IP3
   #talosctl get disks --insecure --nodes $IP1
   ;;
 install-1)
