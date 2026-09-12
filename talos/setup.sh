@@ -5,9 +5,9 @@ set -e -o pipefail
 cd "$(dirname "$0")"
 
 [ "$CLUSTER_NAME" = "" ] && CLUSTER_NAME="cdev"
-[ "$CONTROL_PLANE_IP" = "" ] && CONTROL_PLANE_IP="192.168.56.57"
+[ "$IP1" = "" ] && IP1="192.168.56.57"
 
-export CLUSTER_NAME CONTROL_PLANE_IP
+export CLUSTER_NAME IP1
 
 export KUBECONFIG="./${CLUSTER_NAME}/kubeconfig"
 export TALOSCONFIG="./${CLUSTER_NAME}/talosconfig"
@@ -22,7 +22,7 @@ config)
   mkdir -p "${CLUSTER_NAME}"
   rm -fv "$TALOSCONFIG" "$CONTROLPLANE_YAML" "$WORKER_YAML"
   [ -f "${SECRETS_YAML}" ] || talosctl gen secrets -o "${SECRETS_YAML}"
-  talosctl gen config $CLUSTER_NAME https://${CONTROL_PLANE_IP}:6443 \
+  talosctl gen config $CLUSTER_NAME https://${IP1}:6443 \
     --with-secrets "${SECRETS_YAML}" \
     --install-disk /dev/sda \
     --output "${CLUSTER_NAME}" \
@@ -41,14 +41,14 @@ cluster:
     advertisedSubnets:
     - 192.168.56.0/24
 __EOF
-  talosctl config endpoint $CONTROL_PLANE_IP
-  talosctl config node $CONTROL_PLANE_IP
-  #talosctl get disks --insecure --nodes $CONTROL_PLANE_IP
+  talosctl config endpoint $IP1
+  talosctl config node $IP1
+  #talosctl get disks --insecure --nodes $IP1
   ;;
 install-57)
   set -x
   # --nodes must be explicit
-  talosctl apply-config --nodes $CONTROL_PLANE_IP --file "$CONTROLPLANE_YAML" --insecure
+  talosctl apply-config --nodes $IP1 --file "$CONTROLPLANE_YAML" --insecure
   while true; do
     talosctl bootstrap && break
     sleep 10
