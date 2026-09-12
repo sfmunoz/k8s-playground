@@ -56,6 +56,14 @@ install)
   rm -fv "$KUBECONFIG"
   talosctl kubeconfig
   ;;
+install-58)
+  set -x
+  talosctl apply-config --nodes 192.168.56.58 --file "${WORKER_YAML}" --insecure
+  ;;
+install-59)
+  set -x
+  talosctl apply-config --nodes 192.168.56.59 --file "${WORKER_YAML}" --insecure
+  ;;
 source)
   cat <<__EOF
 export KUBECONFIG="$KUBECONFIG"
@@ -69,6 +77,8 @@ __EOF
   echo
   echo "  \$ ${BNAME} config             (delete and create configuration)"
   echo "  \$ ${BNAME} install            (apply to a new cluster)"
+  echo "  \$ ${BNAME} install-58         (worker node)"
+  echo "  \$ ${BNAME} install-59         (worker node)"
   echo "  \$ eval \$(${BNAME} source)"
   echo
   ;;
