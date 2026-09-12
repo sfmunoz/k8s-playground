@@ -15,17 +15,16 @@
 
 Start VirtualBox VM with a **Bare-metal Machine** ISO from https://factory.talos.dev/ and providing the VM with a NAT network interface like this:
 
-- NAT + port-forward:
-  - talos: 127.0.0.1:50000 → 50000 (guest IP blank)
-  - k8s: 127.0.0.1:6443 → 6443 (guest IP blank)
-- `export CONTROL_PLANE_IP=127.0.0.1`
-- `talosctl get disks --insecure --nodes $CONTROL_PLANE_IP`
-
-Alternative:
-
+- NAT
 - Host-only Adapter, 'vboxnet0'
   - Enabling a DHCP Server the VM will get the IP 192.168.56.3 (Lower Address Bound)
-- NAT
+  - Alternative: use https://github.com/sfmunoz/i12e/blob/main/dev-tools/dhcpd.sh server
+
+Connect:
+
+```
+$ talosctl get disks --insecure --nodes 192.168.56.3
+```
 
 ## Usage
 
