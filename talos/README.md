@@ -37,7 +37,9 @@ $ ./setup.sh
 Usage:
 
   $ setup.sh config             (delete and create configuration)
-  $ setup.sh install            (apply to a new cluster)
+  $ setup.sh install-57         (control-plane node)
+  $ setup.sh install-58         (worker node)
+  $ setup.sh install-59         (worker node)
   $ eval $(setup.sh source)
 ```
 
@@ -49,23 +51,24 @@ $ ./setup.sh config
 + rm -fv ./cdev/talosconfig ./cdev/controlplane.yaml ./cdev/worker.yaml
 + '[' -f ./cdev/secrets.yaml ']'
 + talosctl gen secrets -o ./cdev/secrets.yaml
-+ talosctl gen config cdev https://127.0.0.1:6443 --with-secrets ./cdev/secrets.yaml --output-types controlplane,talosconfig --install-disk /dev/sda --output cdev --config-patch-control-plane @/dev/stdin
++ talosctl gen config cdev https://192.168.56.57:6443 --with-secrets ./cdev/secrets.yaml --install-disk /dev/sda --output cdev --config-patch-control-plane @/dev/stdin
 generating PKI and tokens
 Created cdev/controlplane.yaml
+Created cdev/worker.yaml
 Created cdev/talosconfig
-+ talosctl config endpoint 127.0.0.1
-+ talosctl config node 127.0.0.1
++ talosctl config endpoint 192.168.56.57
++ talosctl config node 192.168.56.57
 ```
 
-## Install
+## Install control-plane node
 
 ```
-$ ./setup.sh install
-+ talosctl apply-config --nodes 127.0.0.1 --file ./cdev/controlplane.yaml --insecure
+$ ./setup.sh install-57
++ talosctl apply-config --nodes 192.168.56.57 --file ./cdev/controlplane.yaml --insecure
 Applied configuration without a reboot
 + true
 + talosctl bootstrap
-error executing bootstrap: rpc error: code = Unavailable desc = connection error: desc = "transport: authentication handshake failed: EOF"
+error executing bootstrap: rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing: dial tcp 192.168.56.57:50000: connect: connection refused"
 + sleep 10
 + true
 (... several attempts ...)
@@ -75,13 +78,24 @@ error executing bootstrap: rpc error: code = Unavailable desc = connection error
 + talosctl kubeconfig
 ```
 
-## Connect
+## Install worker nodes (optional)
 
-When **READY=True** in the VM console:
+```
+$ ./setup.sh install-58
++ talosctl apply-config --nodes 192.168.56.58 --file ./cdev/worker.yaml --insecure
+Applied configuration without a reboot
+```
+```
+$ ./setup.sh install-59
++ talosctl apply-config --nodes 192.168.56.59 --file ./cdev/worker.yaml --insecure
+Applied configuration without a reboot
+```
+
+## Connect
 
 ```
 $ talosctl health
-discovered nodes: ["10.0.2.15"]
+discovered nodes: ["10.0.2.15" "10.0.2.15" "10.0.2.15"]
 waiting for etcd to be healthy: ...
 waiting for etcd to be healthy: OK
 waiting for etcd members to be consistent across nodes: ...
@@ -116,13 +130,24 @@ waiting for all k8s nodes to report schedulable: ...
 waiting for all k8s nodes to report schedulable: OK
 ```
 ```
+$ kubectl get nodes
+NAME   STATUS   ROLES           AGE     VERSION
+fc7    Ready    control-plane   2m22s   v1.37.0
+fc8    Ready    <none>          113s    v1.37.0
+fc9    Ready    <none>          75s     v1.37.0
+```
+```
 $ kubectl get pods -A
-NAMESPACE     NAME                                    READY   STATUS    RESTARTS      AGE
-kube-system   coredns-f98564579-bfkh4                 1/1     Running   0             58s
-kube-system   coredns-f98564579-bl52k                 1/1     Running   0             58s
-kube-system   kube-apiserver-talos-2jh-qih            1/1     Running   0             40s
-kube-system   kube-controller-manager-talos-2jh-qih   1/1     Running   3 (91s ago)   40s
-kube-system   kube-flannel-ktbrv                      1/1     Running   0             53s
-kube-system   kube-proxy-77zbw                        1/1     Running   0             53s
-kube-system   kube-scheduler-talos-2jh-qih            1/1     Running   3 (91s ago)   40s
+NAMESPACE     NAME                          READY   STATUS    RESTARTS        AGE
+kube-system   coredns-f98564579-57j4n       1/1     Running   0               3m3s
+kube-system   coredns-f98564579-97rzn       1/1     Running   0               3m3s
+kube-system   kube-apiserver-fc7            1/1     Running   0               2m45s
+kube-system   kube-controller-manager-fc7   1/1     Running   2 (3m25s ago)   2m45s
+kube-system   kube-flannel-ktx2t            1/1     Running   0               2m17s
+kube-system   kube-flannel-rv4m8            1/1     Running   0               99s
+kube-system   kube-flannel-ztcrc            1/1     Running   0               2m46s
+kube-system   kube-proxy-gwxs2              1/1     Running   0               2m46s
+kube-system   kube-proxy-hq5r6              1/1     Running   0               2m17s
+kube-system   kube-proxy-jlvfx              1/1     Running   0               99s
+kube-system   kube-scheduler-fc7            1/1     Running   2 (3m22s ago)   2m45s
 ```
