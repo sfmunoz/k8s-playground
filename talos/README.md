@@ -56,7 +56,7 @@ Created cdev/controlplane.yaml
 Created cdev/worker.yaml
 Created cdev/talosconfig
 + talosctl config endpoint 192.168.56.57
-+ talosctl config node 192.168.56.57
++ talosctl config node 192.168.56.57 192.168.56.58 192.168.56.59
 ```
 
 ## Install control-plane node
