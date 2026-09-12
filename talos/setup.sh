@@ -6,8 +6,10 @@ cd "$(dirname "$0")"
 
 [ "$CLUSTER_NAME" = "" ] && CLUSTER_NAME="cdev"
 [ "$IP1" = "" ] && IP1="192.168.56.57"
+[ "$IP2" = "" ] && IP2="192.168.56.58"
+[ "$IP3" = "" ] && IP3="192.168.56.59"
 
-export CLUSTER_NAME IP1
+export CLUSTER_NAME
 
 export KUBECONFIG="./${CLUSTER_NAME}/kubeconfig"
 export TALOSCONFIG="./${CLUSTER_NAME}/talosconfig"
@@ -58,11 +60,11 @@ install-57)
   ;;
 install-58)
   set -x
-  talosctl apply-config --nodes 192.168.56.58 --file "${WORKER_YAML}" --insecure
+  talosctl apply-config --nodes $IP2 --file "${WORKER_YAML}" --insecure
   ;;
 install-59)
   set -x
-  talosctl apply-config --nodes 192.168.56.59 --file "${WORKER_YAML}" --insecure
+  talosctl apply-config --nodes $IP3 --file "${WORKER_YAML}" --insecure
   ;;
 source)
   cat <<__EOF
