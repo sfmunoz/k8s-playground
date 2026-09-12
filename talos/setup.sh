@@ -28,12 +28,21 @@ config)
     --with-secrets "${SECRETS_YAML}" \
     --install-disk /dev/sda \
     --output "${CLUSTER_NAME}" \
-    --config-patch-control-plane @/dev/stdin <<__EOF
+    --config-patch <(
+      { set +x; } 2>/dev/null
+      cat <<__EOF
 apiVersion: v1alpha1
 kind: KubeNodeConfig
 nodeIP:
   validSubnets:
   - 192.168.56.0/24
+__EOF
+    ) \
+    --config-patch-control-plane <(
+      { set +x; } 2>/dev/null
+      cat <<__EOF
+apiVersion: v1alpha1
+kind: KubeNodeConfig
 taints:
   node-role.kubernetes.io/control-plane:
     \$patch: delete
@@ -43,6 +52,7 @@ cluster:
     advertisedSubnets:
     - 192.168.56.0/24
 __EOF
+    )
   talosctl config endpoint $IP1
   talosctl config node $IP1 $IP2 $IP3
   #talosctl get disks --insecure --nodes $IP1
