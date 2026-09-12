@@ -23,9 +23,11 @@ config)
   set -x
   mkdir -p "${CLUSTER_NAME}"
   rm -fv "$TALOSCONFIG" "$CONTROLPLANE_YAML" "$WORKER_YAML"
-  [ -f "${SECRETS_YAML}" ] || talosctl gen secrets -o "${SECRETS_YAML}"
+  [ -f "${SECRETS_YAML}" ] ||
+    talosctl gen secrets -o - |
+    sops encrypt --filename-override secrets.yaml --output "${SECRETS_YAML}"
   talosctl gen config $CLUSTER_NAME https://${IP1}:6443 \
-    --with-secrets "${SECRETS_YAML}" \
+    --with-secrets <(sops decrypt "${SECRETS_YAML}") \
     --install-disk /dev/sda \
     --output "${CLUSTER_NAME}" \
     --config-patch <(
