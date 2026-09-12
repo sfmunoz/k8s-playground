@@ -52,11 +52,11 @@ install-1)
   # --nodes must be explicit
   talosctl apply-config --nodes $IP1 --file "$CONTROLPLANE_YAML" --insecure
   while true; do
-    talosctl bootstrap && break
+    talosctl bootstrap --nodes $IP1 && break
     sleep 10
   done
   rm -fv "$KUBECONFIG"
-  talosctl kubeconfig
+  talosctl kubeconfig --nodes $IP1
   ;;
 install-2)
   set -x

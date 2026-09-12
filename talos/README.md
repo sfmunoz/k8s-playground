@@ -71,10 +71,10 @@ error executing bootstrap: rpc error: code = Unavailable desc = connection error
 + sleep 10
 + true
 (... several attempts ...)
-+ talosctl bootstrap
++ talosctl bootstrap --nodes 192.168.56.57
 + break
 + rm -fv ./cdev/kubeconfig
-+ talosctl kubeconfig
++ talosctl kubeconfig --nodes 192.168.56.57
 ```
 
 ## Install worker nodes (optional)
