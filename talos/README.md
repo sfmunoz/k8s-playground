@@ -136,17 +136,17 @@ fc8    Ready    <none>          113s    v1.37.0
 fc9    Ready    <none>          75s     v1.37.0
 ```
 ```
-$ kubectl get pods -A
-NAMESPACE     NAME                          READY   STATUS    RESTARTS        AGE
-kube-system   coredns-f98564579-57j4n       1/1     Running   0               3m3s
-kube-system   coredns-f98564579-97rzn       1/1     Running   0               3m3s
-kube-system   kube-apiserver-fc7            1/1     Running   0               2m45s
-kube-system   kube-controller-manager-fc7   1/1     Running   2 (3m25s ago)   2m45s
-kube-system   kube-flannel-ktx2t            1/1     Running   0               2m17s
-kube-system   kube-flannel-rv4m8            1/1     Running   0               99s
-kube-system   kube-flannel-ztcrc            1/1     Running   0               2m46s
-kube-system   kube-proxy-gwxs2              1/1     Running   0               2m46s
-kube-system   kube-proxy-hq5r6              1/1     Running   0               2m17s
-kube-system   kube-proxy-jlvfx              1/1     Running   0               99s
-kube-system   kube-scheduler-fc7            1/1     Running   2 (3m22s ago)   2m45s
+$ kubectl get pods -A -o wide
+NAMESPACE     NAME                          READY   STATUS    RESTARTS        AGE     IP              NODE   NOMINATED NODE   READINESS GATES
+kube-system   coredns-f98564579-57j4n       1/1     Running   1 (2m29s ago)   12m     10.244.0.4      fc7    <none>           <none>
+kube-system   coredns-f98564579-97rzn       1/1     Running   1 (2m29s ago)   12m     10.244.0.5      fc7    <none>           <none>
+kube-system   kube-apiserver-fc7            1/1     Running   0               47s     192.168.56.57   fc7    <none>           <none>
+kube-system   kube-controller-manager-fc7   1/1     Running   2 (49s ago)     47s     192.168.56.57   fc7    <none>           <none>
+kube-system   kube-flannel-mx6l8            1/1     Running   0               3m36s   10.0.2.15       fc8    <none>           <none>
+kube-system   kube-flannel-tqbch            1/1     Running   0               3m19s   10.0.2.15       fc9    <none>           <none>
+kube-system   kube-flannel-ztcrc            1/1     Running   1 (2m34s ago)   12m     192.168.56.57   fc7    <none>           <none>
+kube-system   kube-proxy-gpl26              1/1     Running   0               3m19s   10.0.2.15       fc9    <none>           <none>
+kube-system   kube-proxy-gwxs2              1/1     Running   1 (2m34s ago)   12m     192.168.56.57   fc7    <none>           <none>
+kube-system   kube-proxy-m5ns9              1/1     Running   0               3m35s   10.0.2.15       fc8    <none>           <none>
+kube-system   kube-scheduler-fc7            1/1     Running   2 (49s ago)     47s     192.168.56.57   fc7    <none>           <none>
 ```
