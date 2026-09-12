@@ -36,9 +36,9 @@ $ ./setup.sh
 Usage:
 
   $ setup.sh config             (delete and create configuration)
-  $ setup.sh install-57         (control-plane node)
-  $ setup.sh install-58         (worker node)
-  $ setup.sh install-59         (worker node)
+  $ setup.sh install-1          (control-plane node)
+  $ setup.sh install-2          (worker node)
+  $ setup.sh install-3          (worker node)
   $ eval $(setup.sh source)
 ```
 
@@ -62,7 +62,7 @@ Created cdev/talosconfig
 ## Install control-plane node
 
 ```
-$ ./setup.sh install-57
+$ ./setup.sh install-1
 + talosctl apply-config --nodes 192.168.56.57 --file ./cdev/controlplane.yaml --insecure
 Applied configuration without a reboot
 + true
@@ -80,12 +80,12 @@ error executing bootstrap: rpc error: code = Unavailable desc = connection error
 ## Install worker nodes (optional)
 
 ```
-$ ./setup.sh install-58
+$ ./setup.sh install-2
 + talosctl apply-config --nodes 192.168.56.58 --file ./cdev/worker.yaml --insecure
 Applied configuration without a reboot
 ```
 ```
-$ ./setup.sh install-59
+$ ./setup.sh install-3
 + talosctl apply-config --nodes 192.168.56.59 --file ./cdev/worker.yaml --insecure
 Applied configuration without a reboot
 ```
