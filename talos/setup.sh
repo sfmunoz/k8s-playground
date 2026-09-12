@@ -45,7 +45,7 @@ __EOF
   talosctl config node $CONTROL_PLANE_IP
   #talosctl get disks --insecure --nodes $CONTROL_PLANE_IP
   ;;
-install)
+install-57)
   set -x
   # --nodes must be explicit
   talosctl apply-config --nodes $CONTROL_PLANE_IP --file "$CONTROLPLANE_YAML" --insecure
@@ -76,7 +76,7 @@ __EOF
   echo "Usage:"
   echo
   echo "  \$ ${BNAME} config             (delete and create configuration)"
-  echo "  \$ ${BNAME} install            (apply to a new cluster)"
+  echo "  \$ ${BNAME} install-57         (control-plane node)"
   echo "  \$ ${BNAME} install-58         (worker node)"
   echo "  \$ ${BNAME} install-59         (worker node)"
   echo "  \$ eval \$(${BNAME} source)"
