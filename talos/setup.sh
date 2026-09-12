@@ -5,7 +5,7 @@ set -e -o pipefail
 cd "$(dirname "$0")"
 
 [ "$CLUSTER_NAME" = "" ] && CLUSTER_NAME="cdev"
-[ "$CONTROL_PLANE_IP" = "" ] && CONTROL_PLANE_IP="127.0.0.1"
+[ "$CONTROL_PLANE_IP" = "" ] && CONTROL_PLANE_IP="192.168.56.57"
 
 export CLUSTER_NAME CONTROL_PLANE_IP
 
