@@ -60,6 +60,7 @@ class Mesh:
             "name": "wgi",
             "privateKey": node["private_key"],
             "listenPort": listen_port,
+            "mtu": 1420,
             "peers": peers,
             "up": True,
             "addresses": [{"address": f"192.168.130.{node['index']}/24"}],
