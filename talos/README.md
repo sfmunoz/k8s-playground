@@ -28,66 +28,19 @@ $ talosctl get disks --insecure --nodes 192.168.56.3
 
 ## Usage
 
-Help:
-
 ```
 $ ./setup.sh
 
-Usage:
+Usage (order matters):
 
-  $ setup.sh config             (delete and create configuration)
+  $ setup.sh secrets            (secrets gen)
+  $ setup.sh talosconfig        (talosconfig gen)
   $ setup.sh install-1          (control-plane node)
+  $ setup.sh kubeconfig         (kubeconfig gen)
   $ setup.sh install-2          (worker node)
   $ setup.sh install-3          (worker node)
+  $ setup.sh debug              (generate debug folder)
   $ eval $(setup.sh source)
-```
-
-## Config generation
-
-```
-$ ./setup.sh config
-+ mkdir -p cdev
-+ rm -fv ./cdev/talosconfig ./cdev/controlplane.yaml ./cdev/worker.yaml
-+ '[' -f ./cdev/secrets.yaml ']'
-+ talosctl gen secrets -o ./cdev/secrets.yaml
-+ talosctl gen config cdev https://192.168.56.57:6443 --with-secrets ./cdev/secrets.yaml --install-disk /dev/sda --output cdev --config-patch-control-plane @/dev/stdin
-generating PKI and tokens
-Created cdev/controlplane.yaml
-Created cdev/worker.yaml
-Created cdev/talosconfig
-+ talosctl config endpoint 192.168.56.57
-+ talosctl config node 192.168.56.57 192.168.56.58 192.168.56.59
-```
-
-## Install control-plane node
-
-```
-$ ./setup.sh install-1
-+ talosctl apply-config --nodes 192.168.56.57 --file ./cdev/controlplane.yaml --insecure
-Applied configuration without a reboot
-+ true
-+ talosctl bootstrap
-error executing bootstrap: rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing: dial tcp 192.168.56.57:50000: connect: connection refused"
-+ sleep 10
-+ true
-(... several attempts ...)
-+ talosctl bootstrap --nodes 192.168.56.57
-+ break
-+ rm -fv ./cdev/kubeconfig
-+ talosctl kubeconfig --nodes 192.168.56.57
-```
-
-## Install worker nodes (optional)
-
-```
-$ ./setup.sh install-2
-+ talosctl apply-config --nodes 192.168.56.58 --file ./cdev/worker.yaml --insecure
-Applied configuration without a reboot
-```
-```
-$ ./setup.sh install-3
-+ talosctl apply-config --nodes 192.168.56.59 --file ./cdev/worker.yaml --insecure
-Applied configuration without a reboot
 ```
 
 ## Connect
