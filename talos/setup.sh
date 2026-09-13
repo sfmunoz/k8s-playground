@@ -13,12 +13,25 @@ export CLUSTER_NAME
 
 export KUBECONFIG="./${CLUSTER_NAME}/kubeconfig"
 export TALOSCONFIG="./${CLUSTER_NAME}/talosconfig"
-
-CONTROLPLANE_YAML="./${CLUSTER_NAME}/controlplane.yaml"
-WORKER_YAML="./${CLUSTER_NAME}/worker.yaml"
-SECRETS_YAML="./secrets-${CLUSTER_NAME}.yaml"
+SECRETS_YAML="./${CLUSTER_NAME}/secrets.yaml"
 
 function gen_config {
+  case "$1" in
+  debug)
+    OUTPUT_TYPES="controlplane,worker,talosconfig"
+    OUTPUT="${CLUSTER_NAME}-$(date +%Y%m%d%H%M%S)"
+    rm -rf "${OUTPUT}"
+    mkdir -p "${OUTPUT}"
+    ;;
+  controlplane | worker | talosconfig)
+    OUTPUT_TYPES="$1"
+    OUTPUT="-"
+    ;;
+  *)
+    echo "error: unsupported '$1' argument"
+    exit 1
+    ;;
+  esac
   set -x
   talosctl gen config $CLUSTER_NAME https://${IP1}:6443 \
     --with-secrets <(
@@ -26,7 +39,8 @@ function gen_config {
       sops decrypt "${SECRETS_YAML}"
     ) \
     --install-disk /dev/sda \
-    --output "${CLUSTER_NAME}" \
+    --output "${OUTPUT}" \
+    --output-types "${OUTPUT_TYPES}" \
     --config-patch <(
       { set +x; } 2>/dev/null
       echo "---"
@@ -46,38 +60,46 @@ function gen_config {
       cat patch-worker.yaml
     )
 }
-
 case "$1" in
-config)
+secrets)
   set -x
-  rm -rf "${CLUSTER_NAME}"
-  mkdir -p "${CLUSTER_NAME}"
-  [ -f "${SECRETS_YAML}" ] ||
-    talosctl gen secrets -o - |
+  mkdir -p "$(
+    { set +x; } 2>/dev/null
+    dirname "${SECRETS_YAML}"
+  )"
+  rm -f "${SECRETS_YAML}"
+  talosctl gen secrets -o - |
     sops encrypt --filename-override secrets.yaml --output "${SECRETS_YAML}"
-  gen_config
+  ;;
+talosconfig)
+  set -x
+  gen_config talosconfig >"${TALOSCONFIG}"
   talosctl config endpoint $IP1
   talosctl config node $IP1 $IP2 $IP3
-  #talosctl get disks --insecure --nodes $IP1
   ;;
 install-1)
   set -x
-  # --nodes must be explicit
-  talosctl apply-config --nodes $IP1 --file "$CONTROLPLANE_YAML" --insecure
+  talosctl apply-config --nodes $IP1 --file <(gen_config controlplane) --insecure
   while true; do
     talosctl bootstrap --nodes $IP1 && break
     sleep 10
   done
-  rm -fv "$KUBECONFIG"
+  ;;
+kubeconfig)
+  set -x
   talosctl kubeconfig --nodes $IP1
   ;;
 install-2)
   set -x
-  talosctl apply-config --nodes $IP2 --file "${WORKER_YAML}" --insecure
+  talosctl apply-config --nodes $IP2 --file <(gen_config worker) --insecure
   ;;
 install-3)
   set -x
-  talosctl apply-config --nodes $IP3 --file "${WORKER_YAML}" --insecure
+  talosctl apply-config --nodes $IP3 --file <(gen_config worker) --insecure
+  ;;
+debug)
+  set -x
+  gen_config debug
   ;;
 source)
   cat <<__EOF
@@ -88,12 +110,15 @@ __EOF
 *)
   BNAME="$(basename "$0")"
   echo
-  echo "Usage:"
+  echo "Usage (order matters):"
   echo
-  echo "  \$ ${BNAME} config             (delete and create configuration)"
+  echo "  \$ ${BNAME} secrets            (secrets gen)"
+  echo "  \$ ${BNAME} talosconfig        (talosconfig gen)"
   echo "  \$ ${BNAME} install-1          (control-plane node)"
+  echo "  \$ ${BNAME} kubeconfig         (kubeconfig gen)"
   echo "  \$ ${BNAME} install-2          (worker node)"
   echo "  \$ ${BNAME} install-3          (worker node)"
+  echo "  \$ ${BNAME} debug              (generate debug folder)"
   echo "  \$ eval \$(${BNAME} source)"
   echo
   ;;
