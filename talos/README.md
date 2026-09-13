@@ -33,14 +33,14 @@ $ ./setup.sh
 
 Usage (order matters):
 
-  $ setup.sh secrets            (secrets gen)
-  $ setup.sh talosconfig        (talosconfig gen)
-  $ setup.sh install-1          (control-plane node)
-  $ setup.sh kubeconfig         (kubeconfig gen)
-  $ setup.sh install-2          (worker node)
-  $ setup.sh install-3          (worker node)
-  $ setup.sh debug              (generate debug folder)
-  $ eval $(setup.sh source)
+  $ setup.sh secrets               -- secrets gen
+  $ setup.sh talosconfig           -- talosconfig gen
+  $ setup.sh install-1             -- control-plane node
+  $ setup.sh kubeconfig            -- kubeconfig gen
+  $ setup.sh install-2             -- worker node
+  $ setup.sh install-3             -- worker node
+  $ setup.sh debug                 -- generate debug folder
+  $ eval $(setup.sh source)        -- set KUBECONFIG/TALOSCONFIG env vars
 ```
 
 ## Connect
