@@ -32,13 +32,8 @@ config)
     --output "${CLUSTER_NAME}" \
     --config-patch <(
       { set +x; } 2>/dev/null
-      cat <<__EOF
-apiVersion: v1alpha1
-kind: KubeNodeConfig
-nodeIP:
-  validSubnets:
-  - 192.168.56.0/24
-__EOF
+      echo "---"
+      cat patch-common.yaml
       [ -f wg.yaml ] || exit 0
       echo "---"
       sops decrypt wg.yaml
