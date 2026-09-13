@@ -44,7 +44,7 @@ function gen_config {
     --config-patch <(
       { set +x; } 2>/dev/null
       echo "---"
-      cat patch/common.yaml
+      cat patches/common.yaml
       [ -f wg.yaml ] || exit 0
       echo "---"
       sops decrypt wg.yaml
@@ -52,12 +52,12 @@ function gen_config {
     --config-patch-control-plane <(
       { set +x; } 2>/dev/null
       echo "---"
-      cat patch/control-plane.yaml
+      cat patches/control-plane.yaml
     ) \
     --config-patch-worker <(
       { set +x; } 2>/dev/null
       echo "---"
-      cat patch/worker.yaml
+      cat patches/worker.yaml
     )
 }
 case "$1" in
