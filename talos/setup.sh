@@ -85,6 +85,14 @@ install-1)
     sleep 10
   done
   ;;
+update-1)
+  set -x
+  talosctl apply-config --nodes $IP1 --file <(gen_config controlplane)
+  ;;
+try-1)
+  set -x
+  talosctl apply-config --nodes $IP1 --file <(gen_config controlplane) --mode try
+  ;;
 kubeconfig)
   set -x
   talosctl kubeconfig --nodes $IP1
@@ -93,9 +101,25 @@ install-2)
   set -x
   talosctl apply-config --nodes $IP2 --file <(gen_config worker) --insecure
   ;;
+update-2)
+  set -x
+  talosctl apply-config --nodes $IP2 --file <(gen_config worker)
+  ;;
+try-2)
+  set -x
+  talosctl apply-config --nodes $IP2 --file <(gen_config worker) --mode try
+  ;;
 install-3)
   set -x
   talosctl apply-config --nodes $IP3 --file <(gen_config worker) --insecure
+  ;;
+update-3)
+  set -x
+  talosctl apply-config --nodes $IP3 --file <(gen_config worker)
+  ;;
+try-3)
+  set -x
+  talosctl apply-config --nodes $IP3 --file <(gen_config worker) --mode try
   ;;
 debug)
   set -x
@@ -112,14 +136,16 @@ __EOF
   echo
   echo "Usage (order matters):"
   echo
-  echo "  \$ ${BNAME} secrets               -- secrets gen"
-  echo "  \$ ${BNAME} talosconfig           -- talosconfig gen"
-  echo "  \$ ${BNAME} install-1             -- control-plane node"
-  echo "  \$ ${BNAME} kubeconfig            -- kubeconfig gen"
-  echo "  \$ ${BNAME} install-2             -- worker node"
-  echo "  \$ ${BNAME} install-3             -- worker node"
-  echo "  \$ ${BNAME} debug                 -- generate debug folder"
-  echo "  \$ eval \$(${BNAME} source)        -- set KUBECONFIG/TALOSCONFIG env vars"
+  echo "  \$ ${BNAME} secrets                        -- secrets gen"
+  echo "  \$ ${BNAME} talosconfig                    -- talosconfig gen"
+  echo "  \$ ${BNAME} install-1                      -- control-plane node"
+  echo "  \$ ${BNAME} kubeconfig                     -- kubeconfig gen"
+  echo "  \$ ${BNAME} install-2                      -- worker node"
+  echo "  \$ ${BNAME} install-3                      -- worker node"
+  echo "  \$ ${BNAME} debug                          -- generate debug folder"
+  echo "  \$ ${BNAME} try-1/try-2/try-3              -- try config"
+  echo "  \$ ${BNAME} update-1/update-2/update-3     -- update config"
+  echo "  \$ eval \$(${BNAME} source)                 -- set KUBECONFIG/TALOSCONFIG env vars"
   echo
   ;;
 esac
