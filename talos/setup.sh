@@ -40,18 +40,8 @@ config)
     ) \
     --config-patch-control-plane <(
       { set +x; } 2>/dev/null
-      cat <<__EOF
-apiVersion: v1alpha1
-kind: KubeNodeConfig
-taints:
-  node-role.kubernetes.io/control-plane:
-    \$patch: delete
----
-cluster:
-  etcd:
-    advertisedSubnets:
-    - 192.168.56.0/24
-__EOF
+      echo "---"
+      cat patch-control-plane.yaml
     )
   talosctl config endpoint $IP1
   talosctl config node $IP1 $IP2 $IP3

@@ -1,0 +1,10 @@
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+taints:
+  node-role.kubernetes.io/control-plane:
+    $patch: delete
+---
+cluster:
+  etcd:
+    advertisedSubnets:
+    - 192.168.56.0/24
