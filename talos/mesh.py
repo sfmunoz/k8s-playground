@@ -91,6 +91,7 @@ class Mesh:
                 {
                     "index": index,
                     "endpoint": endpoint["endpoint"],
+                    "port": endpoint["port"],
                     "private_key": private_key,
                     "public_key": public_key,
                 }
@@ -99,7 +100,7 @@ class Mesh:
             structure = self.__create_wireguard_structure(
                 node=node,
                 nodes=nodes,
-                listen_port=args.port,
+                listen_port=node["port"],
             )
             content = self.__render_yaml(structure)
             filename = Path(f"wg{node['index']}.yaml")
@@ -121,14 +122,6 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "-p",
-        "--port",
-        type=int,
-        default=51820,
-        help="WireGuard listen port for every node",
-    )
-
-    parser.add_argument(
         "nodes",
         nargs="+",
         metavar="IP:PORT",
@@ -136,9 +129,6 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-
-    if not 1 <= args.port <= 65535:
-        parser.error("listen port must be between 1 and 65535")
 
     if len(args.nodes) > MAX_NODES:
         parser.error(
