@@ -8,3 +8,13 @@ cluster:
   etcd:
     advertisedSubnets:
     - 192.168.56.0/24
+---
+apiVersion: v1alpha1
+kind: NetworkRuleConfig
+name: apid-ingress
+portSelector:
+  ports:
+    - 50000
+  protocol: tcp
+ingress:
+  - subnet: 0.0.0.0/0

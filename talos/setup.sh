@@ -42,6 +42,11 @@ config)
       { set +x; } 2>/dev/null
       echo "---"
       cat patch-control-plane.yaml
+    ) \
+    --config-patch-worker <(
+      { set +x; } 2>/dev/null
+      echo "---"
+      cat patch-worker.yaml
     )
   talosctl config endpoint $IP1
   talosctl config node $IP1 $IP2 $IP3
