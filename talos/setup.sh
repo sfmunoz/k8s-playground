@@ -16,18 +16,16 @@ export TALOSCONFIG="./${CLUSTER_NAME}/talosconfig"
 
 CONTROLPLANE_YAML="./${CLUSTER_NAME}/controlplane.yaml"
 WORKER_YAML="./${CLUSTER_NAME}/worker.yaml"
+SECRETS_YAML="./${CLUSTER_NAME}/secrets.yaml"
 
 case "$1" in
-config)
-  SECRETS_YAML="./${CLUSTER_NAME}/secrets.yaml"
+_gen_config)
   set -x
-  mkdir -p "${CLUSTER_NAME}"
-  rm -fv "$TALOSCONFIG" "$CONTROLPLANE_YAML" "$WORKER_YAML"
-  [ -f "${SECRETS_YAML}" ] ||
-    talosctl gen secrets -o - |
-    sops encrypt --filename-override secrets.yaml --output "${SECRETS_YAML}"
   talosctl gen config $CLUSTER_NAME https://${IP1}:6443 \
-    --with-secrets <(sops decrypt "${SECRETS_YAML}") \
+    --with-secrets <(
+      { set +x; } 2>/dev/null
+      sops decrypt "${SECRETS_YAML}"
+    ) \
     --install-disk /dev/sda \
     --output "${CLUSTER_NAME}" \
     --config-patch <(
@@ -48,6 +46,15 @@ config)
       echo "---"
       cat patch-worker.yaml
     )
+  ;;
+config)
+  set -x
+  mkdir -p "${CLUSTER_NAME}"
+  rm -fv "$TALOSCONFIG" "$CONTROLPLANE_YAML" "$WORKER_YAML"
+  [ -f "${SECRETS_YAML}" ] ||
+    talosctl gen secrets -o - |
+    sops encrypt --filename-override secrets.yaml --output "${SECRETS_YAML}"
+  bash setup.sh _gen_config
   talosctl config endpoint $IP1
   talosctl config node $IP1 $IP2 $IP3
   #talosctl get disks --insecure --nodes $IP1
