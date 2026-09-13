@@ -39,6 +39,9 @@ nodeIP:
   validSubnets:
   - 192.168.56.0/24
 __EOF
+      [ -f wg.yaml ] || exit 0
+      echo "---"
+      sops decrypt wg.yaml
     ) \
     --config-patch-control-plane <(
       { set +x; } 2>/dev/null
