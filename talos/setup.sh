@@ -112,14 +112,14 @@ __EOF
   echo
   echo "Usage (order matters):"
   echo
-  echo "  \$ ${BNAME} secrets            (secrets gen)"
-  echo "  \$ ${BNAME} talosconfig        (talosconfig gen)"
-  echo "  \$ ${BNAME} install-1          (control-plane node)"
-  echo "  \$ ${BNAME} kubeconfig         (kubeconfig gen)"
-  echo "  \$ ${BNAME} install-2          (worker node)"
-  echo "  \$ ${BNAME} install-3          (worker node)"
-  echo "  \$ ${BNAME} debug              (generate debug folder)"
-  echo "  \$ eval \$(${BNAME} source)"
+  echo "  \$ ${BNAME} secrets               -- secrets gen"
+  echo "  \$ ${BNAME} talosconfig           -- talosconfig gen"
+  echo "  \$ ${BNAME} install-1             -- control-plane node"
+  echo "  \$ ${BNAME} kubeconfig            -- kubeconfig gen"
+  echo "  \$ ${BNAME} install-2             -- worker node"
+  echo "  \$ ${BNAME} install-3             -- worker node"
+  echo "  \$ ${BNAME} debug                 -- generate debug folder"
+  echo "  \$ eval \$(${BNAME} source)        -- set KUBECONFIG/TALOSCONFIG env vars"
   echo
   ;;
 esac
