@@ -7,13 +7,16 @@ from pathlib import Path
 
 import yaml
 
-WG_NETWORK = ipaddress.ip_network("192.168.130.0/24")
-MAX_NODES = WG_NETWORK.num_addresses - 2
+MAX_NODES = 254
 
 
 class Mesh:
     def __init__(self, args):
         self.__args = args
+        self.__network = ipaddress.ip_network(f"192.168.{args.network}.0/24")
+
+    def __host(self, index):
+        return str(self.__network.network_address + index)
 
     def __generate_key(self):
         result = subprocess.run(
@@ -51,7 +54,7 @@ class Mesh:
                 {
                     "publicKey": peer["public_key"],
                     "endpoint": peer["endpoint"],
-                    "allowedIPs": [f"192.168.130.{peer['index']}/32"],
+                    "allowedIPs": [f"{self.__host(peer['index'])}/32"],
                 }
             )
         return {
@@ -63,7 +66,7 @@ class Mesh:
             "mtu": 1420,
             "peers": peers,
             "up": True,
-            "addresses": [{"address": f"192.168.130.{node['index']}/24"}],
+            "addresses": [{"address": f"{self.__host(node['index'])}/24"}],
         }
 
     def __render_yaml(self, structure):
@@ -108,7 +111,7 @@ class Mesh:
             filename.write_text(content, encoding="utf-8")
             print(
                 f"{filename}: "
-                f"192.168.130.{node['index']} "
+                f"{self.__host(node['index'])} "
                 f"endpoint={node['endpoint']} "
                 f"public-key={node['public_key']}"
             )
@@ -129,11 +132,18 @@ if __name__ == "__main__":
         help="WireGuard endpoint(s) for the nodes",
     )
 
+    parser.add_argument(
+        "-n",
+        "--network",
+        type=int,
+        default=130,
+        metavar="OCTET",
+        help="third octet of the WireGuard subnet, enforced to 192.168.<OCTET>.0/24",
+    )
+
     args = parser.parse_args()
 
     if len(args.nodes) > MAX_NODES:
-        parser.error(
-            f"too many nodes: maximum is {MAX_NODES} for {WG_NETWORK.with_prefixlen}"
-        )
+        parser.error(f"too many nodes: maximum is {MAX_NODES} for a /24 subnet")
 
     Mesh(args).run()
