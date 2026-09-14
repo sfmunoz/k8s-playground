@@ -108,6 +108,12 @@ install-1)
     sleep 10
   done
   ;;
+install-2 | install-3)
+  set -x
+  N="${CMD#install-}"
+  NODE="node$N"
+  talosctl apply-config --nodes ${IPS[$N]} --file <(gen_config $NODE) --insecure
+  ;;
 update-1 | update-2 | update-3)
   set -x
   N="${CMD#update-}"
@@ -123,14 +129,6 @@ try-1 | try-2 | try-3)
 kubeconfig)
   set -x
   talosctl kubeconfig --nodes ${IPS[1]}
-  ;;
-install-2)
-  set -x
-  talosctl apply-config --nodes ${IPS[2]} --file <(gen_config node2) --insecure
-  ;;
-install-3)
-  set -x
-  talosctl apply-config --nodes ${IPS[3]} --file <(gen_config node3) --insecure
   ;;
 debug)
   set -x
