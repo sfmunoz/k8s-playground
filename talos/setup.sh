@@ -10,6 +10,7 @@ cd "$(dirname "$0")"
 [ "$IP3" = "" ] && IP3="192.168.56.59"
 
 IP_PUB=("----" "$IP1" "$IP2" "$IP3")
+IP_PRIV=("----" "192.168.130.1" "192.168.130.2" "192.168.130.3")
 
 export CLUSTER_NAME
 
@@ -92,7 +93,7 @@ talosconfig)
   set -x
   gen_config talosconfig >"${TALOSCONFIG}"
   talosctl config endpoint ${IP_PUB[1]}
-  talosctl config node ${IP_PUB[1]} ${IP_PUB[2]} ${IP_PUB[3]}
+  talosctl config node ${IP_PRIV[1]} ${IP_PRIV[2]} ${IP_PRIV[3]}
   ;;
 debug-1 | debug-2 | debug-3)
   set -x
@@ -118,13 +119,13 @@ update-1 | update-2 | update-3)
   set -x
   N="${CMD#update-}"
   NODE="node$N"
-  talosctl apply-config --nodes ${IP_PUB[$N]} --file <(gen_config $NODE)
+  talosctl apply-config --nodes ${IP_PRIV[$N]} --file <(gen_config $NODE)
   ;;
 try-1 | try-2 | try-3)
   set -x
   N="${CMD#try-}"
   NODE="node$N"
-  talosctl apply-config --nodes ${IP_PUB[$N]} --file <(gen_config $NODE) --mode try
+  talosctl apply-config --nodes ${IP_PRIV[$N]} --file <(gen_config $NODE) --mode try
   ;;
 kubeconfig)
   set -x
