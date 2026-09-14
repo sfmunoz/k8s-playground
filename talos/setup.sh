@@ -82,7 +82,7 @@ secrets)
 mesh)
   set -x -e -o pipefail
   cd "${CLUSTER_NAME}"
-  ../mesh.py 192.168.56.57:51823 192.168.56.58:51823 192.168.56.59:51823
+  ../mesh.py ${IPS[1]}:51823 ${IPS[2]}:51823 ${IPS[3]}:51823
   cd ..
   ;;
 talosconfig)
