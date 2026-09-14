@@ -9,7 +9,7 @@ cd "$(dirname "$0")"
 [ "$IP2" = "" ] && IP2="192.168.56.58"
 [ "$IP3" = "" ] && IP3="192.168.56.59"
 
-IPS=("----" "$IP1" "$IP2" "$IP3")
+IP_PUB=("----" "$IP1" "$IP2" "$IP3")
 
 export CLUSTER_NAME
 
@@ -35,7 +35,7 @@ function gen_config {
     ;;
   esac
   set -x
-  talosctl gen config $CLUSTER_NAME https://${IPS[1]}:6443 \
+  talosctl gen config $CLUSTER_NAME https://${IP_PUB[1]}:6443 \
     --with-secrets <(
       { set +x; } 2>/dev/null
       sops decrypt "${SECRETS_YAML}"
@@ -85,14 +85,14 @@ secrets)
 mesh)
   set -x -e -o pipefail
   cd "${CLUSTER_NAME}"
-  ../mesh.py ${IPS[1]}:51823 ${IPS[2]}:51823 ${IPS[3]}:51823
+  ../mesh.py ${IP_PUB[1]}:51823 ${IP_PUB[2]}:51823 ${IP_PUB[3]}:51823
   cd ..
   ;;
 talosconfig)
   set -x
   gen_config talosconfig >"${TALOSCONFIG}"
-  talosctl config endpoint ${IPS[1]}
-  talosctl config node ${IPS[1]} ${IPS[2]} ${IPS[3]}
+  talosctl config endpoint ${IP_PUB[1]}
+  talosctl config node ${IP_PUB[1]} ${IP_PUB[2]} ${IP_PUB[3]}
   ;;
 debug-1 | debug-2 | debug-3)
   set -x
@@ -102,9 +102,9 @@ debug-1 | debug-2 | debug-3)
   ;;
 install-1)
   set -x
-  talosctl apply-config --nodes ${IPS[1]} --file <(gen_config node1) --insecure
+  talosctl apply-config --nodes ${IP_PUB[1]} --file <(gen_config node1) --insecure
   while true; do
-    talosctl bootstrap --nodes ${IPS[1]} && break
+    talosctl bootstrap --nodes ${IP_PUB[1]} && break
     sleep 10
   done
   ;;
@@ -112,23 +112,23 @@ install-2 | install-3)
   set -x
   N="${CMD#install-}"
   NODE="node$N"
-  talosctl apply-config --nodes ${IPS[$N]} --file <(gen_config $NODE) --insecure
+  talosctl apply-config --nodes ${IP_PUB[$N]} --file <(gen_config $NODE) --insecure
   ;;
 update-1 | update-2 | update-3)
   set -x
   N="${CMD#update-}"
   NODE="node$N"
-  talosctl apply-config --nodes ${IPS[$N]} --file <(gen_config $NODE)
+  talosctl apply-config --nodes ${IP_PUB[$N]} --file <(gen_config $NODE)
   ;;
 try-1 | try-2 | try-3)
   set -x
   N="${CMD#try-}"
   NODE="node$N"
-  talosctl apply-config --nodes ${IPS[$N]} --file <(gen_config $NODE) --mode try
+  talosctl apply-config --nodes ${IP_PUB[$N]} --file <(gen_config $NODE) --mode try
   ;;
 kubeconfig)
   set -x
-  talosctl kubeconfig --nodes ${IPS[1]}
+  talosctl kubeconfig --nodes ${IP_PUB[1]}
   ;;
 debug)
   set -x
