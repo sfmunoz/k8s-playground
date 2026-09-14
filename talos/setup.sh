@@ -17,15 +17,23 @@ SECRETS_YAML="./${CLUSTER_NAME}/secrets.yaml"
 
 function gen_config {
   case "$1" in
+  node1)
+    OUTPUT_TYPES="controlplane"
+    OUTPUT="-"
+    ;;
+  node2 | node3)
+    OUTPUT_TYPES="worker"
+    OUTPUT="-"
+    ;;
+  talosconfig)
+    OUTPUT_TYPES="talosconfig"
+    OUTPUT="-"
+    ;;
   debug)
     OUTPUT_TYPES="controlplane,worker,talosconfig"
     OUTPUT="${CLUSTER_NAME}-$(date +%Y%m%d%H%M%S)"
     rm -rf "${OUTPUT}"
     mkdir -p "${OUTPUT}"
-    ;;
-  controlplane | worker | talosconfig)
-    OUTPUT_TYPES="$1"
-    OUTPUT="-"
     ;;
   *)
     echo "error: unsupported '$1' argument"
@@ -79,7 +87,7 @@ talosconfig)
   ;;
 install-1)
   set -x
-  talosctl apply-config --nodes $IP1 --file <(gen_config controlplane) --insecure
+  talosctl apply-config --nodes $IP1 --file <(gen_config node1) --insecure
   while true; do
     talosctl bootstrap --nodes $IP1 && break
     sleep 10
@@ -87,11 +95,11 @@ install-1)
   ;;
 update-1)
   set -x
-  talosctl apply-config --nodes $IP1 --file <(gen_config controlplane)
+  talosctl apply-config --nodes $IP1 --file <(gen_config node1)
   ;;
 try-1)
   set -x
-  talosctl apply-config --nodes $IP1 --file <(gen_config controlplane) --mode try
+  talosctl apply-config --nodes $IP1 --file <(gen_config node1) --mode try
   ;;
 kubeconfig)
   set -x
@@ -99,27 +107,27 @@ kubeconfig)
   ;;
 install-2)
   set -x
-  talosctl apply-config --nodes $IP2 --file <(gen_config worker) --insecure
+  talosctl apply-config --nodes $IP2 --file <(gen_config node2) --insecure
   ;;
 update-2)
   set -x
-  talosctl apply-config --nodes $IP2 --file <(gen_config worker)
+  talosctl apply-config --nodes $IP2 --file <(gen_config node2)
   ;;
 try-2)
   set -x
-  talosctl apply-config --nodes $IP2 --file <(gen_config worker) --mode try
+  talosctl apply-config --nodes $IP2 --file <(gen_config node2) --mode try
   ;;
 install-3)
   set -x
-  talosctl apply-config --nodes $IP3 --file <(gen_config worker) --insecure
+  talosctl apply-config --nodes $IP3 --file <(gen_config node3) --insecure
   ;;
 update-3)
   set -x
-  talosctl apply-config --nodes $IP3 --file <(gen_config worker)
+  talosctl apply-config --nodes $IP3 --file <(gen_config node3)
   ;;
 try-3)
   set -x
-  talosctl apply-config --nodes $IP3 --file <(gen_config worker) --mode try
+  talosctl apply-config --nodes $IP3 --file <(gen_config node3) --mode try
   ;;
 debug)
   set -x
