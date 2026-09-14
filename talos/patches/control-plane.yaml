@@ -7,7 +7,7 @@ taints:
 cluster:
   etcd:
     advertisedSubnets:
-    - 192.168.56.0/24
+    - 192.168.130.0/24
 ---
 apiVersion: v1alpha1
 kind: NetworkRuleConfig
@@ -17,7 +17,8 @@ portSelector:
     - 50000
   protocol: tcp
 ingress:
-  - subnet: 0.0.0.0/0
+  - subnet: 192.168.56.0/24
+  - subnet: 192.168.130.0/24
 ---
 apiVersion: v1alpha1
 kind: NetworkRuleConfig
@@ -27,7 +28,7 @@ portSelector:
     - 50001
   protocol: tcp
 ingress:
-  - subnet: 192.168.56.0/24
+  - subnet: 192.168.130.0/24
 ---
 apiVersion: v1alpha1
 kind: NetworkRuleConfig
@@ -37,7 +38,8 @@ portSelector:
     - 6443
   protocol: tcp
 ingress:
-  - subnet: 0.0.0.0/0
+  - subnet: 192.168.56.0/24
+  - subnet: 192.168.130.0/24
 ---
 apiVersion: v1alpha1
 kind: NetworkRuleConfig
@@ -47,4 +49,4 @@ portSelector:
     - 2379-2380
   protocol: tcp
 ingress:
-  - subnet: 192.168.56.0/24
+  - subnet: 192.168.130.0/24
