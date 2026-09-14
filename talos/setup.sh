@@ -131,10 +131,6 @@ kubeconfig)
   set -x
   talosctl kubeconfig --nodes ${IP_PUB[1]}
   ;;
-debug)
-  set -x
-  gen_config debug
-  ;;
 source)
   cat <<__EOF
 export KUBECONFIG="$KUBECONFIG"
