@@ -9,6 +9,8 @@ cd "$(dirname "$0")"
 [ "$IP2" = "" ] && IP2="192.168.56.58"
 [ "$IP3" = "" ] && IP3="192.168.56.59"
 
+IPS=("----" "$IP1" "$IP2" "$IP3")
+
 export CLUSTER_NAME
 
 export KUBECONFIG="./${CLUSTER_NAME}/kubeconfig"
@@ -33,7 +35,7 @@ function gen_config {
     ;;
   esac
   set -x
-  talosctl gen config $CLUSTER_NAME https://${IP1}:6443 \
+  talosctl gen config $CLUSTER_NAME https://${IPS[1]}:6443 \
     --with-secrets <(
       { set +x; } 2>/dev/null
       sops decrypt "${SECRETS_YAML}"
@@ -86,8 +88,8 @@ mesh)
 talosconfig)
   set -x
   gen_config talosconfig >"${TALOSCONFIG}"
-  talosctl config endpoint $IP1
-  talosctl config node $IP1 $IP2 $IP3
+  talosctl config endpoint ${IPS[1]}
+  talosctl config node ${IPS[1]} ${IPS[2]} ${IPS[3]}
   ;;
 debug-1)
   set -x
@@ -95,23 +97,23 @@ debug-1)
   ;;
 install-1)
   set -x
-  talosctl apply-config --nodes $IP1 --file <(gen_config node1) --insecure
+  talosctl apply-config --nodes ${IPS[1]} --file <(gen_config node1) --insecure
   while true; do
-    talosctl bootstrap --nodes $IP1 && break
+    talosctl bootstrap --nodes ${IPS[1]} && break
     sleep 10
   done
   ;;
 update-1)
   set -x
-  talosctl apply-config --nodes $IP1 --file <(gen_config node1)
+  talosctl apply-config --nodes ${IPS[1]} --file <(gen_config node1)
   ;;
 try-1)
   set -x
-  talosctl apply-config --nodes $IP1 --file <(gen_config node1) --mode try
+  talosctl apply-config --nodes ${IPS[1]} --file <(gen_config node1) --mode try
   ;;
 kubeconfig)
   set -x
-  talosctl kubeconfig --nodes $IP1
+  talosctl kubeconfig --nodes ${IPS[1]}
   ;;
 debug-2)
   set -x
@@ -119,15 +121,15 @@ debug-2)
   ;;
 install-2)
   set -x
-  talosctl apply-config --nodes $IP2 --file <(gen_config node2) --insecure
+  talosctl apply-config --nodes ${IPS[2]} --file <(gen_config node2) --insecure
   ;;
 update-2)
   set -x
-  talosctl apply-config --nodes $IP2 --file <(gen_config node2)
+  talosctl apply-config --nodes ${IPS[2]} --file <(gen_config node2)
   ;;
 try-2)
   set -x
-  talosctl apply-config --nodes $IP2 --file <(gen_config node2) --mode try
+  talosctl apply-config --nodes ${IPS[2]} --file <(gen_config node2) --mode try
   ;;
 debug-3)
   set -x
@@ -135,15 +137,15 @@ debug-3)
   ;;
 install-3)
   set -x
-  talosctl apply-config --nodes $IP3 --file <(gen_config node3) --insecure
+  talosctl apply-config --nodes ${IPS[3]} --file <(gen_config node3) --insecure
   ;;
 update-3)
   set -x
-  talosctl apply-config --nodes $IP3 --file <(gen_config node3)
+  talosctl apply-config --nodes ${IPS[3]} --file <(gen_config node3)
   ;;
 try-3)
   set -x
-  talosctl apply-config --nodes $IP3 --file <(gen_config node3) --mode try
+  talosctl apply-config --nodes ${IPS[3]} --file <(gen_config node3) --mode try
   ;;
 debug)
   set -x
