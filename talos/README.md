@@ -34,6 +34,7 @@ $ ./setup.sh
 Usage (order matters):
 
   $ setup.sh secrets                        -- secrets gen
+  $ setup.sh mesh                           -- mesh gen
   $ setup.sh talosconfig                    -- talosconfig gen
   $ setup.sh install-1                      -- control-plane node
   $ setup.sh kubeconfig                     -- kubeconfig gen
