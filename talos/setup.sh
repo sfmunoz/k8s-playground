@@ -20,21 +20,12 @@ function gen_config {
   case "$CFG_NAME" in
   node1)
     OUTPUT_TYPES="controlplane"
-    OUTPUT="-"
     ;;
   node2 | node3)
     OUTPUT_TYPES="worker"
-    OUTPUT="-"
     ;;
   talosconfig)
     OUTPUT_TYPES="talosconfig"
-    OUTPUT="-"
-    ;;
-  debug)
-    OUTPUT_TYPES="controlplane,worker,talosconfig"
-    OUTPUT="${CLUSTER_NAME}-$(date +%Y%m%d%H%M%S)"
-    rm -rf "${OUTPUT}"
-    mkdir -p "${OUTPUT}"
     ;;
   *)
     echo "error: unsupported '$1' argument"
@@ -48,7 +39,7 @@ function gen_config {
       sops decrypt "${SECRETS_YAML}"
     ) \
     --install-disk /dev/sda \
-    --output "${OUTPUT}" \
+    --output - \
     --output-types "${OUTPUT_TYPES}" \
     --config-patch <(
       { set +x; } 2>/dev/null
@@ -98,6 +89,10 @@ talosconfig)
   talosctl config endpoint $IP1
   talosctl config node $IP1 $IP2 $IP3
   ;;
+debug-1)
+  set -x
+  gen_config node1
+  ;;
 install-1)
   set -x
   talosctl apply-config --nodes $IP1 --file <(gen_config node1) --insecure
@@ -118,6 +113,10 @@ kubeconfig)
   set -x
   talosctl kubeconfig --nodes $IP1
   ;;
+debug-2)
+  set -x
+  gen_config node2
+  ;;
 install-2)
   set -x
   talosctl apply-config --nodes $IP2 --file <(gen_config node2) --insecure
@@ -129,6 +128,10 @@ update-2)
 try-2)
   set -x
   talosctl apply-config --nodes $IP2 --file <(gen_config node2) --mode try
+  ;;
+debug-3)
+  set -x
+  gen_config node3
   ;;
 install-3)
   set -x
@@ -164,7 +167,7 @@ __EOF
   echo "  \$ ${BNAME} kubeconfig                     -- kubeconfig gen"
   echo "  \$ ${BNAME} install-2                      -- worker node"
   echo "  \$ ${BNAME} install-3                      -- worker node"
-  echo "  \$ ${BNAME} debug                          -- generate debug folder"
+  echo "  \$ ${BNAME} debug-1/debug-2/debug-3        -- debug config"
   echo "  \$ ${BNAME} try-1/try-2/try-3              -- try config"
   echo "  \$ ${BNAME} update-1/update-2/update-3     -- update config"
   echo "  \$ eval \$(${BNAME} source)                 -- set KUBECONFIG/TALOSCONFIG env vars"
