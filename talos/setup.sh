@@ -16,7 +16,8 @@ export TALOSCONFIG="./${CLUSTER_NAME}/talosconfig"
 SECRETS_YAML="./${CLUSTER_NAME}/secrets.yaml"
 
 function gen_config {
-  case "$1" in
+  CFG_NAME="$1"
+  case "$CFG_NAME" in
   node1)
     OUTPUT_TYPES="controlplane"
     OUTPUT="-"
@@ -53,6 +54,12 @@ function gen_config {
       { set +x; } 2>/dev/null
       echo "---"
       cat patches/common.yaml
+      case "$CFG_NAME" in
+      node1 | node2 | node3)
+        echo "---"
+        sops decrypt "${CLUSTER_NAME}/wg${CFG_NAME#node}.yaml"
+        ;;
+      esac
       [ -f wg.yaml ] || exit 0
       echo "---"
       sops decrypt wg.yaml
