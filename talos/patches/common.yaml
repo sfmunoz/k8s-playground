@@ -11,6 +11,17 @@ ingress: block
 ---
 apiVersion: v1alpha1
 kind: NetworkRuleConfig
+name: wireguard
+portSelector:
+  ports:
+    - 51820
+    - 51823
+  protocol: udp
+ingress:
+  - subnet: 192.168.56.0/24
+---
+apiVersion: v1alpha1
+kind: NetworkRuleConfig
 name: kubelet-ingress
 portSelector:
   ports:
