@@ -76,6 +76,23 @@ class Mesh:
             default_flow_style=False,
         )
 
+    def __encrypt_yaml(self, content, filename):
+        # The plaintext only ever travels through the pipe: sops is handed the
+        # rendered YAML on stdin and writes the encrypted result itself.
+        subprocess.run(
+            [
+                "sops",
+                "encrypt",
+                "--filename-override",
+                "secrets.yaml",
+                "--output",
+                str(filename),
+            ],
+            input=content,
+            check=True,
+            text=True,
+        )
+
     def run(self):
         endpoints = []
         for value in args.nodes:
@@ -108,7 +125,7 @@ class Mesh:
             )
             content = self.__render_yaml(structure)
             filename = Path(f"wg{node['index']}.yaml")
-            filename.write_text(content, encoding="utf-8")
+            self.__encrypt_yaml(content, filename)
             print(
                 f"{filename}: "
                 f"{self.__host(node['index'])} "
