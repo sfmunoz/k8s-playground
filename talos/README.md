@@ -38,8 +38,7 @@ Usage (order matters):
   $ setup.sh talosconfig                    -- talosconfig gen
   $ setup.sh install-1                      -- control-plane node
   $ setup.sh kubeconfig                     -- kubeconfig gen
-  $ setup.sh install-2                      -- worker node
-  $ setup.sh install-3                      -- worker node
+  $ setup.sh install-2/install-3            -- worker nodes
   $ setup.sh debug-1/debug-2/debug-3        -- debug config
   $ setup.sh try-1/try-2/try-3              -- try config
   $ setup.sh update-1/update-2/update-3     -- update config
