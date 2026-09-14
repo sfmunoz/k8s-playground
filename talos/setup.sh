@@ -79,6 +79,12 @@ secrets)
   talosctl gen secrets -o - |
     sops encrypt --filename-override secrets.yaml --output "${SECRETS_YAML}"
   ;;
+mesh)
+  set -x -e -o pipefail
+  cd "${CLUSTER_NAME}"
+  ../mesh.py 192.168.56.57:51823 192.168.56.58:51823 192.168.56.59:51823
+  cd ..
+  ;;
 talosconfig)
   set -x
   gen_config talosconfig >"${TALOSCONFIG}"
@@ -145,6 +151,7 @@ __EOF
   echo "Usage (order matters):"
   echo
   echo "  \$ ${BNAME} secrets                        -- secrets gen"
+  echo "  \$ ${BNAME} mesh                           -- mesh gen"
   echo "  \$ ${BNAME} talosconfig                    -- talosconfig gen"
   echo "  \$ ${BNAME} install-1                      -- control-plane node"
   echo "  \$ ${BNAME} kubeconfig                     -- kubeconfig gen"
