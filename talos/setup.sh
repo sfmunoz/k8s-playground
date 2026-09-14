@@ -68,7 +68,10 @@ function gen_config {
       cat patches/worker.yaml
     )
 }
-case "$1" in
+
+CMD="$1"
+
+case "$CMD" in
 secrets)
   set -x
   mkdir -p "$(
@@ -91,9 +94,11 @@ talosconfig)
   talosctl config endpoint ${IPS[1]}
   talosctl config node ${IPS[1]} ${IPS[2]} ${IPS[3]}
   ;;
-debug-1)
+debug-1 | debug-2 | debug-3)
   set -x
-  gen_config node1
+  N="${CMD#debug-}"
+  NODE="node$N"
+  gen_config $NODE
   ;;
 install-1)
   set -x
@@ -115,10 +120,6 @@ kubeconfig)
   set -x
   talosctl kubeconfig --nodes ${IPS[1]}
   ;;
-debug-2)
-  set -x
-  gen_config node2
-  ;;
 install-2)
   set -x
   talosctl apply-config --nodes ${IPS[2]} --file <(gen_config node2) --insecure
@@ -130,10 +131,6 @@ update-2)
 try-2)
   set -x
   talosctl apply-config --nodes ${IPS[2]} --file <(gen_config node2) --mode try
-  ;;
-debug-3)
-  set -x
-  gen_config node3
   ;;
 install-3)
   set -x
