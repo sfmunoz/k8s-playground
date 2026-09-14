@@ -76,6 +76,27 @@ class Mesh:
             default_flow_style=False,
         )
 
+    def __render_conf(self, structure):
+        lines = ["[Interface]"]
+        lines.append(f"PrivateKey = {structure['privateKey']}")
+        for address in structure["addresses"]:
+            lines.append(f"Address = {address['address']}")
+        lines.append(f"ListenPort = {structure['listenPort']}")
+        lines.append(f"MTU = {structure['mtu']}")
+        for peer in structure["peers"]:
+            lines.append("")
+            lines.append("[Peer]")
+            lines.append(f"PublicKey = {peer['publicKey']}")
+            lines.append(f"Endpoint = {peer['endpoint']}")
+            lines.append(f"AllowedIPs = {', '.join(peer['allowedIPs'])}")
+        lines.append("")
+        return "\n".join(lines)
+
+    def __write_conf(self, content, filename):
+        # wg-quick .conf files are intentionally left in plaintext: the user runs
+        # wg-quick against them directly, so they are never sops-encrypted.
+        Path(filename).write_text(content)
+
     def __encrypt_yaml(self, content, filename):
         # The plaintext only ever travels through the pipe: sops is handed the
         # rendered YAML on stdin and writes the encrypted result itself.
@@ -132,6 +153,12 @@ class Mesh:
                 f"endpoint={node['endpoint']} "
                 f"public-key={node['public_key']}"
             )
+            if self.__args.conf:
+                self.__write_conf(
+                    self.__render_conf(structure),
+                    Path(f"wg{node['index']}.conf"),
+                )
+                print(f"wg{node['index']}.conf: written (plaintext wg-quick)")
 
 
 if __name__ == "__main__":
@@ -156,6 +183,16 @@ if __name__ == "__main__":
         default=130,
         metavar="OCTET",
         help="third octet of the WireGuard subnet, enforced to 192.168.<OCTET>.0/24",
+    )
+
+    parser.add_argument(
+        "-c",
+        "--conf",
+        action="store_true",
+        help=(
+            "also write wg-quick compatible wg<N>.conf files; "
+            "these are plaintext and never sops-encrypted"
+        ),
     )
 
     args = parser.parse_args()
