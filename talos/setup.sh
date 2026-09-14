@@ -108,9 +108,11 @@ install-1)
     sleep 10
   done
   ;;
-update-1)
+update-1 | update-2 | update-3)
   set -x
-  talosctl apply-config --nodes ${IPS[1]} --file <(gen_config node1)
+  N="${CMD#update-}"
+  NODE="node$N"
+  talosctl apply-config --nodes ${IPS[$N]} --file <(gen_config $NODE)
   ;;
 try-1)
   set -x
@@ -124,10 +126,6 @@ install-2)
   set -x
   talosctl apply-config --nodes ${IPS[2]} --file <(gen_config node2) --insecure
   ;;
-update-2)
-  set -x
-  talosctl apply-config --nodes ${IPS[2]} --file <(gen_config node2)
-  ;;
 try-2)
   set -x
   talosctl apply-config --nodes ${IPS[2]} --file <(gen_config node2) --mode try
@@ -135,10 +133,6 @@ try-2)
 install-3)
   set -x
   talosctl apply-config --nodes ${IPS[3]} --file <(gen_config node3) --insecure
-  ;;
-update-3)
-  set -x
-  talosctl apply-config --nodes ${IPS[3]} --file <(gen_config node3)
   ;;
 try-3)
   set -x
