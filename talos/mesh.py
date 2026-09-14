@@ -95,7 +95,7 @@ class Mesh:
 
     def run(self):
         endpoints = []
-        for value in args.nodes:
+        for value in self.__args.nodes:
             ip, port = self.__parse_endpoint(value)
             endpoints.append(
                 {
