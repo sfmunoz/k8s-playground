@@ -10,6 +10,7 @@
   - https://docs.siderolabs.com/talos/v1.11/getting-started/prodnotes
   - https://docs.siderolabs.com/talos/v1.11/deploy-and-manage-workloads/scaling-up
   - https://docs.siderolabs.com/talos/v1.11/deploy-and-manage-workloads/scaling-down
+- [talos: create configuration base](https://github.com/sfmunoz/i12e/issues/342): it's using **k8s-playground/talos** as a reference
 
 ## VirtualBox
 
