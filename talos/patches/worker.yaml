@@ -6,4 +6,4 @@ portSelector:
     - 50000
   protocol: tcp
 ingress:
-  - subnet: 192.168.130.0/24
+  - subnet: 192.168.186.0/24

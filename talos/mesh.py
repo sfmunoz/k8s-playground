@@ -180,7 +180,7 @@ if __name__ == "__main__":
         "-n",
         "--network",
         type=int,
-        default=130,
+        default=186,
         metavar="OCTET",
         help="third octet of the WireGuard subnet, enforced to 192.168.<OCTET>.0/24",
     )
