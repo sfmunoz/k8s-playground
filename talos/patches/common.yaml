@@ -14,7 +14,6 @@ kind: NetworkRuleConfig
 name: wireguard
 portSelector:
   ports:
-    - 51820
     - 51823
   protocol: udp
 ingress:
